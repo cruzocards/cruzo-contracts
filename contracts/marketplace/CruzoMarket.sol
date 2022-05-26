@@ -48,6 +48,10 @@ contract CruzoMarket is ERC1155Holder, Ownable {
             itemToken.balanceOf(msg.sender, _itemId) != 0,
             "Error: Only owner can list"
         );
+        require(
+            existTrade(_itemId) == false,
+            "Error: This item already opened in trading"
+        );
         itemToken.safeTransferFrom(
             payable(msg.sender),
             address(this),
@@ -67,7 +71,14 @@ contract CruzoMarket is ERC1155Holder, Ownable {
         tradeCounter += 1;
         emit TradeStatusChange(tradeCounter - 1, "Open");
     }
-
+    function existTrade(uint256 _itemId) public view returns (bool){
+        for (uint i; i <= tradeCounter; i++) {
+            if (trades[i].itemId == _itemId) {
+                return true;
+            }    
+        }
+        return false;
+    }
     /*
     Buyer execute trade and pass the trade number
     and an additional data parameter if you dont want to pass data set it to empty string 
@@ -107,7 +118,6 @@ contract CruzoMarket is ERC1155Holder, Ownable {
     if your sending the transaction through Frontend 
     else if you are send the transaction using etherscan or using nodejs set it to 0x00 
     */
-
     function cancelTrade(uint256 _trade, bytes calldata data) public {
         Trade memory trade = trades[_trade];
         IERC1155 itemToken = IERC1155(trade.tokenAddress);
