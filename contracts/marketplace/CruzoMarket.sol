@@ -1,4 +1,3 @@
-//SPDX-License-Identifier: un-licensed
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
@@ -19,6 +18,7 @@ contract CruzoMarket is ERC1155Holder, Ownable {
     }
 
     mapping(uint256 => Trade) private trades;
+    mapping(uint256 => bool) private tradingTrack;
 
     uint256 private tradeCounter;
 
@@ -48,6 +48,7 @@ contract CruzoMarket is ERC1155Holder, Ownable {
             itemToken.balanceOf(msg.sender, _itemId) != 0,
             "Error: Only owner can list"
         );
+        require(tradingTrack[_itemId] != true,"Error: This item already opened in trading");
         itemToken.safeTransferFrom(
             payable(msg.sender),
             address(this),
@@ -63,11 +64,10 @@ contract CruzoMarket is ERC1155Holder, Ownable {
             price: _price,
             status: "Open"
         });
-
+        tradingTrack[_itemId] = true;
         tradeCounter += 1;
         emit TradeStatusChange(tradeCounter - 1, "Open");
     }
-
     /*
     Buyer execute trade and pass the trade number
     and an additional data parameter if you dont want to pass data set it to empty string 
@@ -107,7 +107,6 @@ contract CruzoMarket is ERC1155Holder, Ownable {
     if your sending the transaction through Frontend 
     else if you are send the transaction using etherscan or using nodejs set it to 0x00 
     */
-
     function cancelTrade(uint256 _trade, bytes calldata data) public {
         Trade memory trade = trades[_trade];
         IERC1155 itemToken = IERC1155(trade.tokenAddress);
