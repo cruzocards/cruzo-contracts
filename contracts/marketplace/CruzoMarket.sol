@@ -20,12 +20,18 @@ contract CruzoMarket is ERC1155Holder, Ownable {
 
     mapping(uint256 => Trade) private trades;
 
+    mapping(address => mapping(address => unit256)) private tradeCount;
+
     uint256 private tradeCounter;
 
     // Get individual trade
     function getTrade(uint256 _trade) public view returns (Trade memory) {
         Trade memory trade = trades[_trade];
         return trade;
+    }
+
+    function tradeLimit(address _tokenAddress) public {
+        return tradeCount[msg.sender][_tokenAddress];
     }
 
     /* 
@@ -48,6 +54,7 @@ contract CruzoMarket is ERC1155Holder, Ownable {
             itemToken.balanceOf(msg.sender, _itemId) != 0,
             "Error: Only owner can list"
         );
+        require(tradeCount[msg.sender][_tokenAddress] == 0, "Error: Owner can create one trade for this token only");
         itemToken.safeTransferFrom(
             payable(msg.sender),
             address(this),
@@ -63,6 +70,8 @@ contract CruzoMarket is ERC1155Holder, Ownable {
             price: _price,
             status: "Open"
         });
+
+        tradeCount[msg.sender][_tokenAddress] += 1
 
         tradeCounter += 1;
         emit TradeStatusChange(tradeCounter - 1, "Open");
