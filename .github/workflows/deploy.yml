@@ -25,7 +25,7 @@ jobs:
         if: ${{ inputs.environment == 'testnet' }}
         uses: mathiasvr/command-output@v1
         with:
-          run: yarn deploy --network ethRinkebyX
+          run: yarn deploy --network ethRinkeby
       - name: Deploy to Mainnet network
         id: deploy-ethereum
         if: ${{ inputs.environment == 'mainnet' }}
