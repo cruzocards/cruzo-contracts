@@ -23,7 +23,9 @@ jobs:
       - name: Deploy to Rinkeby network
         id: deploy_ethereum
         if: ${{ inputs.environment == 'testnet' }}
-        run: echo "::set-output name=deploy-log::$(yarn deploy --network ethRinkebyX)\n"
+        uses: mathiasvr/command-output@v1
+        with:
+          run: yarn deploy --network ethRinkebyX
       - name: Deploy to Mainnet network
         id: deploy-ethereum
         if: ${{ inputs.environment == 'mainnet' }}
@@ -31,8 +33,8 @@ jobs:
       - name: Parse contract addresses
         id: parse_contract_addresses
         run: |
-          ethRinkebyTokenAddress=$(${{ steps.deploy_ethereum.outputs.deploy_log }} | sed -n 's/Token Contract Address : \(.*\)/\1/p')
-          ethRinkebyMarketAddress=$(${{ steps.deploy_ethereum.outputs.deploy_log }} deploy_output.log | sed -n 's/Market Contract Address : \(.*\)/\1/p')
+          ethRinkebyTokenAddress=$(echo '${{ steps.deploy_ethereum.outputs.stdout }}' | sed -n 's/Token Contract Address : \(.*\)/\1/p')
+          ethRinkebyMarketAddress=$(echo '${{ steps.deploy_ethereum.outputs.stdout }}' | sed -n 's/Market Contract Address : \(.*\)/\1/p')
           echo "::set-output name=eth_rinkeby_token_address::$ethRinkebyTokenAddress"
           echo "::set-output name=eth_rinkeby_market_address::$ethRinkebyMarketAddress"
           echo $ethRinkebyTokenAddress
