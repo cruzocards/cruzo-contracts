@@ -47,9 +47,9 @@ contract CruzoMarket is ERC1155Holder, Ownable, ReentrancyGuard {
     // Service fee percentage in basis point (100bp = 1%)
     uint16 public serviceFee;
 
-    constructor(uint16 _serviceFee) {
+       constructor(uint16 _serviceFee) {
         setServiceFee(_serviceFee);
-    }
+      }
 
     function openTrade(
         address _tokenAddress,
