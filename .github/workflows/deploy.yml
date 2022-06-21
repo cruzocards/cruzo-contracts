@@ -21,18 +21,21 @@ jobs:
       - name: Compile
         run: yarn compile
       - name: Deploy to Rinkeby network
+        id: deploy_ethereum
         if: ${{ inputs.environment == 'testnet' }}
-        run: yarn deploy --network ethRinkebyX | tee deploy_output.log && echo ${PIPESTATUS[0]}
+        run: echo "::set-output name=deploy-log::$(yarn deploy --network ethRinkebyX)\n"
       - name: Deploy to Mainnet network
+        id: deploy-ethereum
         if: ${{ inputs.environment == 'mainnet' }}
         run: yarn deploy --network ethMainnet | tee deploy_output.log && echo ${PIPESTATUS[0]}
       - name: Parse contract addresses
-        id: parse-contract-addresses
+        id: parse_contract_addresses
         run: |
-          ethRinkebyTokenAddress=$(cat deploy_output.log | sed -n 's/Token Contract Address : \(.*\)/\1/p')
-          ethRinkebyMarketAddress=$(cat deploy_output.log | sed -n 's/Market Contract Address : \(.*\)/\1/p')
+          ethRinkebyTokenAddress=$(${{ steps.deploy_ethereum.outputs.deploy_log }} | sed -n 's/Token Contract Address : \(.*\)/\1/p')
+          ethRinkebyMarketAddress=$(${{ steps.deploy_ethereum.outputs.deploy_log }} deploy_output.log | sed -n 's/Market Contract Address : \(.*\)/\1/p')
           echo "::set-output name=eth_rinkeby_token_address::$ethRinkebyTokenAddress"
           echo "::set-output name=eth_rinkeby_market_address::$ethRinkebyMarketAddress"
+          echo $ethRinkebyTokenAddress
 #      - name: Report contract addresses
 #        uses: appleboy/telegram-action@master
 #        with:
@@ -41,6 +44,6 @@ jobs:
 #          message: |
 #            🚀 Cruzo smart contracts have been deployed successfully.
 #            *Ethereum Rinkeby*
-#            Token: `${{ steps.parse-contract-addresses.outputs.eth_rinkeby_token_address }}`
-#            Market: `${{ steps.parse-contract-addresses.outputs.eth_rinkeby_market_address }}`
+#            Token: `${{ steps.parse_contract_addresses.outputs.eth_rinkeby_token_address }}`
+#            Market: `${{ steps.parse_contract_addresses.outputs.eth_rinkeby_market_address }}`
 #          format: markdown
