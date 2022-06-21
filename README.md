@@ -19,9 +19,6 @@
 
 ## Scripts
 
-### Setup git hooks
-`yarn setup`
-
 ### Compile
 `yarn compile`
 
