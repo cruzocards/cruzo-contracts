@@ -17,15 +17,23 @@
 - avaxMainnet
 - avaxFuji
 
-## Compile
+## Scripts
+
+### Compile
 `yarn compile`
 
-## Deploy
+### Generate typings
+`yarn typegen`
+
+### Run tests
+`yarn test`
+
+### Lint
+`yarn lint`
+
+### Deploy
 `yarn deploy --network <supported network>`
 
-### Legacy scripts:
+### Export ABI
+`yarn abi`
 
-    "deploy-contract-cronos-mainnet": "npx hardhat run scripts/deploy.ts --network cronosMainnetBeta",
-    "deploy-contract-cronos-testnet": "npx hardhat run scripts/deploy.ts --network cronosTestnet",
-    "deploy-contract-avax-mainnet": "npx hardhat run scripts/deploy.ts --network avaxMainnet",
-    "deploy-contract-avax-testnet": "npx hardhat run scripts/deploy.ts --network avaxFuji"
