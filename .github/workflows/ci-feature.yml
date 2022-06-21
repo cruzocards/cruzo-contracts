@@ -6,14 +6,7 @@ on:
       - feature/*
 
 jobs:
-#  test:
-#    name: Run tests
-#    uses: ./.github/workflows/test.yml
-#    secrets: inherit
-  deploy:
-    name: Deploy contracts
-    uses: ./.github/workflows/deploy.yml
-#    needs: test
+  test:
+    name: Run tests
+    uses: ./.github/workflows/test.yml
     secrets: inherit
-    with:
-      environment: testnet

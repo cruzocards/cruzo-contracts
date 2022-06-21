@@ -38,14 +38,14 @@ jobs:
           echo "::set-output name=eth_rinkeby_token_address::$ethRinkebyTokenAddress"
           echo "::set-output name=eth_rinkeby_market_address::$ethRinkebyMarketAddress"
           echo $ethRinkebyTokenAddress
-#      - name: Report contract addresses
-#        uses: appleboy/telegram-action@master
-#        with:
-#          to: ${{ secrets.TELEGRAM_TO }}
-#          token: ${{ secrets.TELEGRAM_TOKEN }}
-#          message: |
-#            🚀 Cruzo smart contracts have been deployed successfully.
-#            *Ethereum Rinkeby*
-#            Token: `${{ steps.parse_contract_addresses.outputs.eth_rinkeby_token_address }}`
-#            Market: `${{ steps.parse_contract_addresses.outputs.eth_rinkeby_market_address }}`
-#          format: markdown
+      - name: Report contract addresses
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            🚀 Cruzo smart contracts have been deployed successfully.
+            *Ethereum Rinkeby*
+            Token: `${{ steps.parse_contract_addresses.outputs.eth_rinkeby_token_address }}`
+            Market: `${{ steps.parse_contract_addresses.outputs.eth_rinkeby_market_address }}`
+          format: markdown
