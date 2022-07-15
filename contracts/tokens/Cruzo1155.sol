@@ -4,8 +4,6 @@ pragma solidity ^0.8.6;
 import "./ERC1155URI.sol";
 
 contract Cruzo1155 is ERC1155URI {
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIds;
     address public marketAddress;
 
     string public name;
@@ -20,15 +18,8 @@ contract Cruzo1155 is ERC1155URI {
         _setBaseURI(_baseMetadataURI);
     }
 
-    /**
-     *
-     * @notice This function return totalNumber of unique tokentypes
-     * @dev This will only return the total number of individual unique tokentypes only
-     * @dev It will not return total inluding suppply of fungible tokens
-     *
-     */
-    function total() public view onlyOwner returns (uint256) {
-        return _tokenIds.current();
+    function setMarketAddress(address _new) public onlyOwner {
+        marketAddress = _new;
     }
 
     /**
@@ -60,20 +51,20 @@ contract Cruzo1155 is ERC1155URI {
      * @dev Used internally to mint new tokens
      */
     function _createToken(
+        uint256 _tokenId,
         uint256 _amount,
         address _to,
         string memory _uri,
         bytes memory _data
     ) internal returns (uint256) {
-        _tokenIds.increment();
-        uint256 newItemId = _tokenIds.current();
-        creators[newItemId] = _msgSender();
+        creators[_tokenId] = _msgSender();
 
         if (bytes(_uri).length > 0) {
-            _setTokenURI(newItemId, _uri);
+            _setTokenURI(_tokenId, _uri);
         }
+        creators[_tokenId] = _msgSender();
 
-        return _mintToken(newItemId, _amount, _to, _data);
+        return _mintToken(_tokenId, _amount, _to, _data);
     }
 
     /**
@@ -85,12 +76,13 @@ contract Cruzo1155 is ERC1155URI {
      *
      */
     function create(
+        uint256 _tokenId,
         uint256 _amount,
         address _to,
         string memory _uri,
         bytes memory _data
     ) public returns (uint256) {
-        return _createToken(_amount, _to, _uri, _data);
+        return _createToken(_tokenId, _amount, _to, _uri, _data);
     }
 
     /**
@@ -109,7 +101,7 @@ contract Cruzo1155 is ERC1155URI {
         bytes memory _data
     ) public onlyCreator(_tokenId) returns (uint256) {
         require(
-            _tokenIds.current() >= _tokenId,
+            creators[_tokenId] != address(0),
             "token doesn't exist; try using `mintNewTo()`"
         );
         return _mintToken(_tokenId, _amount, _to, _data);
@@ -126,12 +118,12 @@ contract Cruzo1155 is ERC1155URI {
     }
 
     function uri(uint256 id) public view override returns (string memory) {
-        require(id <= _tokenIds.current(), "Cruzo1155:non existent tokenId");
+        require(creators[id] != address(0), "Cruzo1155:non existent tokenId");
         return _tokenURI(id);
     }
 
     function setTokenURI(uint256 _id, string memory _uri) public {
-        require(_id <= _tokenIds.current(), "Cruzo1155:non existent tokenId");
+        require(creators[_id] != address(0), "Cruzo1155:non existent tokenId");
         _setTokenURI(_id, _uri);
     }
 

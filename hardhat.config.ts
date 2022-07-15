@@ -4,6 +4,7 @@ import "@typechain/hardhat";
 import "@nomiclabs/hardhat-etherscan";
 import "hardhat-abi-exporter";
 import "hardhat-gas-reporter";
+import '@openzeppelin/hardhat-upgrades';
 import { task, HardhatUserConfig } from "hardhat/config";
 import * as dotenv from "dotenv";
 
@@ -15,7 +16,7 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 });
 
 dotenv.config();
-const PKS = [process.env.PRIVATE_KEY!];
+const PKS = process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [];
 const config: HardhatUserConfig = {
   solidity: {
     version: "0.8.7",
@@ -78,6 +79,16 @@ const config: HardhatUserConfig = {
       chainId: 43113,
       accounts: PKS,
     },
+    bobaMainnet: {
+      url: 'https://mainnet.boba.network',
+      chainId: 288,
+      accounts: PKS
+    },
+    bobaRinkeby: {
+      url: 'https://rinkeby.boba.network',
+      chainId: 28,
+      accounts: PKS
+    }
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,

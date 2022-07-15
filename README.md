@@ -1,39 +1,82 @@
 # Cruzo Contracts
 
-## Tokens 
+## Contracts 
 - Cruzo1155
+- CruzoMarket
 
 ## Networks
-### Binance
-- bscTestnet
-- bscMainnet
-### Polygon
-- polygonMumbai
-- polygonMainnet
-### Cronos
-- cronosMainnetBeta
-- cronosTestnet
-### Avalanche
-- avaxMainnet
-- avaxFuji
+| Blockchain | Network | Name  |
+|---        |---        |---|
+| Ethereum  | mainnet   | ethMainnet        |
+| Ethereum  | testnet   | ethRinkeby        |
+| Binance   | mainnet   | bscMainnet        |
+| Binance   | testnet   | bscTestnet        |
+| Polygon   | mainnet   | polygonMainnet    |
+| Polygon   | testnet   | polygonMumbai     |
+| Cronos    | mainnet   | cronosMainnetBeta |
+| Cronos    | testnet   | cronosTestnet     |
+| Avalanche | mainnet   | avaxMainnet       |
+| Avalanche | testnet   | avaxFuji          |
+| Moonbeam  | mainnet   | moonbeam          |
+| Moonbeam  | testnet   | moonbaseAlpha     |
+| Boba      | mainnet   | bobaMainnet       |
+| Boba      | testnet   | bobaRinkeby       |
 
 ## Scripts
 
 ### Compile
-`yarn compile`
+```sh
+yarn compile
+```
 
 ### Generate typings
-`yarn typegen`
+```sh
+yarn typegen
+```
 
 ### Run tests
-`yarn test`
+```sh
+yarn test
+```
 
 ### Lint
-`yarn lint`
+```sh
+yarn lint
+```
 
 ### Deploy
-`yarn deploy --network <supported network>`
+```sh
+yarn deploy --network <network>
+```
 
 ### Export ABI
-`yarn abi`
+```sh
+yarn abi
+```
+
+## Upgrades, Proxy approach
+We use UUPS proxy pattern.
+
+**Requires:** openzeppelin/hardhat-upgrades
+
+### Simple rules to upgrade contract:
+
+1. Don't forget to implement upgrade method inside implementation(_authorizeUpgrade).
+2. Append new variables to the end of the variables list.
+3. Don't delete old variables.
+
+### In code
+
+#### To deploy proxy:
+`upgrades.deployProxy(ContractFactory, [contructor args], { kind : "uups" })`
+
+#### To update proxy:
+`upgrades.upgradeProxy(address of old impl, newContractFactory)`
+
+### Through command line
+
+```sh
+yarn upgradeMarket --network <network>
+```
+[comment]: <> (yarn upgradeToken --network <network>)
 
