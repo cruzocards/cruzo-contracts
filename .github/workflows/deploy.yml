@@ -29,7 +29,7 @@ jobs:
       - name: Deploy to Mainnet network
         id: deploy-ethereum
         if: ${{ inputs.environment == 'mainnet' }}
-        run: yarn deploy --network ethMainnet | tee deploy_output.log && echo ${PIPESTATUS[0]}
+        run: yarn deploy --network ethMainnet
       - name: Parse contract addresses
         id: parse_contract_addresses
         run: |
