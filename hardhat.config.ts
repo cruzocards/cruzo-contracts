@@ -99,6 +99,16 @@ const config: HardhatUserConfig = {
       chainId: 1029,
       accounts: PKS,
     },
+    xdcMainnet: {
+      url: "https://rpc.xinfin.network/",
+      chainId: 50,
+      accounts: PKS,
+    },
+    xdcApothem: {
+      url: "https://rpc.apothem.network",
+      chainId: 51,
+      accounts: PKS,
+    },
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,
