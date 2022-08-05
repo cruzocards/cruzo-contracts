@@ -1,5 +1,5 @@
 import { ethers, network, upgrades } from "hardhat";
-import { getAddress } from "../utils/addressTracking";
+import { getAddress, setNewMarketAddress } from "../../utils/addressTracking";
 
 async function main() {
   const chainId = network.config.chainId;
@@ -21,6 +21,8 @@ async function main() {
   // TODO: replace with appropriate website depending on the network
   // console.log(`https://polygonscan.com/token/${market.address}`);
   // console.log(`https://mumbai.polygonscan.com/token/${market.address}`);
+  setNewMarketAddress(chainId, market.address);
+
 }
 
 main()

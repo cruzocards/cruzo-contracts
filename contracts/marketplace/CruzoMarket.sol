@@ -101,64 +101,47 @@ contract CruzoMarket is
         );
     }
 
-    /*
-    Buyer execute trade and pass the trade number
-    and an additional data parameter if you dont want to pass data set it to empty string 
-    if your sending the transaction through Frontend 
-    else if you are send the transaction using etherscan or using nodejs set it to 0x00 
-    */
-
     function _executeTrade(
-    uint256 _trade,
-    bytes calldata data,
-    uint256 amount,
-    address _to
-  ) internal {
-    Trade memory trade = trades[_trade];
-    IERC1155 itemToken = IERC1155(trade.tokenAddress);
-    require(trade.status == "Open", "Error: Trade is not Open");
-    require(
-      msg.sender != trade.poster,
-      "Error: msg.sender is zero address or the owner is trying to buy his own nft"
-    );
-    require(
-      trade.price == amount,
-      "Error: value provided is not equal to the nft price"
-    );
+        address _tokenAddress,
+        uint256 _tokenId,
+        address _seller,
+        uint256 _amount,
+        address _to,
+        uint256 value
+    ) internal nonReentrant {
+        require(
+            _msgSender() != _seller,
+            "Trade cannot be executed by the seller"
+        );
+        Trade storage trade = trades[_tokenAddress][_tokenId][_seller];
+        require(_amount > 0, "Amount must be greater than 0");
+        require(trade.amount >= _amount, "Not enough items in trade");
+        require(
+            value == trade.price * _amount,
+            "Ether value sent is incorrect"
+        );
+        trade.amount -= _amount;
+        IERC1155Upgradeable(_tokenAddress).safeTransferFrom(
+            address(this),
+            _to,
+            _tokenId,
+            _amount,
+            ""
+        );
+        AddressUpgradeable.sendValue(
+            payable(_seller),
+            (value * (10000 - uint256(serviceFee))) / 10000
+        );
+        emit TradeExecuted(
+            _tokenAddress,
+            _tokenId,
+            _seller,
+            _msgSender(),
+            _amount,
+            _to
+        );
+    }
 
-    payable(trade.poster).transfer(amount);
-
-    itemToken.safeTransferFrom(
-      address(this),
-      payable(_to),
-      trade.itemId,
-      trade.amount,
-      data
-    );
-    trades[_trade].status = "Executed";
-    ownerToTokenToItem[trade.poster][trade.tokenAddress][trade.itemId] = false;
-
-    trades[_trade].poster = payable(msg.sender);
-
-    emit TradeStatusChange(_trade, "Executed");
-  }
-
-  function buyItem(uint256 _trade, bytes calldata data) external payable {
-    _executeTrade(_trade, data, msg.value, msg.sender);
-  }
-
-  function giftItem(
-    uint256 _trade,
-    bytes calldata data,
-    address _to
-  ) external payable {
-    require(msg.sender != _to, "useless operation");
-    require(_to != address(0), "trying to send gift to 0 address");
-    require(_to != address(this), "trying to send gift to market");
-
-    _executeTrade(_trade, data, msg.value, _to);
-  }
-  
     function buyItem(
         address _tokenAddress,
         uint256 _tokenId,

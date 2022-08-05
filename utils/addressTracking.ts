@@ -1,8 +1,10 @@
 import fs from "fs";
+import { ethers } from "hardhat";
 
 interface AddressTrackingEntry {
-  token: string;
   market: string;
+  factory: string;
+  beacon: string;
 }
 
 type AddressTrackingMap = Map<string, AddressTrackingEntry>;
@@ -42,4 +44,66 @@ const getMapping = (fileName: string): AddressTrackingMap => {
 
 const setMapping = (fileName: string, mapping: AddressTrackingMap) => {
   fs.writeFileSync(fileName, JSON.stringify(Object.fromEntries(mapping)));
+};
+
+
+
+export const setNewMarketAddress = (
+  chainId: number,
+  entry: string
+): void => {
+  try {
+    const addressMapping = getMapping(addressMappingFileName);
+    let temp = addressMapping.get(chainId.toString())
+    temp!.market = entry
+    addressMapping.set(chainId.toString(), temp!);
+    setMapping(addressMappingFileName, addressMapping);
+  } catch (e) {
+    console.warn("Could not update contract address");
+  }
+};
+export const setNewFactoryAddress = (
+  chainId: number,
+  entry: string
+): void => {
+  try {
+    const addressMapping = getMapping(addressMappingFileName);
+    let temp = addressMapping.get(chainId.toString())
+    temp!.factory = entry
+    addressMapping.set(chainId.toString(), temp!);
+    setMapping(addressMappingFileName, addressMapping);
+  } catch (e) {
+    console.warn("Could not update contract address");
+  }
+};
+export const setNewBeaconAddress = (
+  chainId: number,
+  entry: string
+): void => {
+  try {
+    const addressMapping = getMapping(addressMappingFileName);
+    let temp = addressMapping.get(chainId.toString())
+    temp!.beacon = entry
+    addressMapping.set(chainId.toString(), temp!);
+    setMapping(addressMappingFileName, addressMapping);
+  } catch (e) {
+    console.warn("Could not update contract address");
+  }
+};
+
+export const initialize = (
+  chainId: number,
+): void => {
+  try {
+    const addressMapping = getMapping(addressMappingFileName);
+    const zeroEntry: AddressTrackingEntry = {
+      market: ethers.constants.AddressZero,
+      factory: ethers.constants.AddressZero,
+      beacon: ethers.constants.AddressZero,
+    }
+    addressMapping.set(chainId.toString(), zeroEntry);
+    setMapping(addressMappingFileName, addressMapping);
+  } catch (e) {
+    console.warn("Could not update contract address");
+  }
 };

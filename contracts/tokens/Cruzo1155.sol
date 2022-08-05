@@ -3,19 +3,22 @@ pragma solidity ^0.8.6;
 
 import "./ERC1155URI.sol";
 
-contract Cruzo1155 is ERC1155URI {
+contract Cruzo1155 is Initializable, ERC1155URI {
     address public marketAddress;
 
     string public name;
     string public symbol;
 
-    constructor(string memory _baseMetadataURI, address _marketAddress)
-        ERC1155(_baseMetadataURI)
-    {
+    function initialize(
+        string calldata _name,
+        string calldata _symbol,
+        string memory _baseMetadataURI,
+        address _marketAddress
+    ) public initializer {
+        __ERC1155_init(_baseMetadataURI);
         marketAddress = _marketAddress;
-        name = "Cruzo";
-        symbol = "CRZ";
-        _setBaseURI(_baseMetadataURI);
+        name = _name;
+        symbol = _symbol;
     }
 
     function setMarketAddress(address _new) public onlyOwner {
