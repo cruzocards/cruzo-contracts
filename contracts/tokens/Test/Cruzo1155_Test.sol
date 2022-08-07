@@ -1,9 +1,9 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.6;
 
-import "./ERC1155URI.sol";
+import "../ERC1155URI.sol";
 
-contract Cruzo1155 is Initializable, ERC1155URI {
+contract Cruzo1155_v2 is Initializable, ERC1155URI {
     address public marketAddress;
 
     string public name;
@@ -139,5 +139,9 @@ contract Cruzo1155 is Initializable, ERC1155URI {
 
     function setBaseURI(string memory _baseURI) public onlyOwner {
         _setBaseURI(_baseURI);
+    }
+
+    function check() public returns (string memory) {
+        return "hello";
     }
 }

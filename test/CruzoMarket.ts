@@ -9,7 +9,9 @@ describe("CruzoMarket", () => {
   let market: Contract;
   let beacon: Contract;
   let factory: Contract;
-  let token: Cruzo1155;
+  let token: Contract;
+  let token_v2: Contract;
+
 
   let owner: SignerWithAddress;
   let seller: SignerWithAddress;
@@ -27,6 +29,7 @@ describe("CruzoMarket", () => {
 
     const CruzoMarket = await ethers.getContractFactory("CruzoMarket");
     const Cruzo1155 = await ethers.getContractFactory("Cruzo1155");
+
     const Factory = await ethers.getContractFactory("Factory");
 
 
@@ -46,11 +49,11 @@ describe("CruzoMarket", () => {
 
     await beacon.deployed()
 
-    factory = await Factory.deploy(beacon.address, "initialize(string,string,string,address)", "https://cruzo.market", market.address)
+    factory = await Factory.deploy(beacon.address, "initialize(string,string,string,address,address)", "https://cruzo.market", market.address)
 
     await factory.deployed()
 
-    let temp = await factory.connect(seller).create("1", "123")
+    await factory.connect(seller).create("1", "123")
 
 
     let addr = await factory.getToken(1)
@@ -612,19 +615,22 @@ describe("CruzoMarket", () => {
         ).revertedWith("Trade is not open");
       });
     });
-    describe("Proxy upgrade", () => {
+    describe.only("Proxy upgrade", () => {
       it("Change implementation", async () => {
         const tokenId = ethers.BigNumber.from("1");
         const supply = ethers.BigNumber.from("100");
         const tradeAmount = ethers.BigNumber.from("10");
+        const sellersAmountAfterTrade = ethers.BigNumber.from("90");
+
         const price = ethers.utils.parseEther("0.01");
         const newPrice = ethers.utils.parseEther("1");
         const newContractFactory = await ethers.getContractFactory("CruzoMarket");
+        const Cruzo1155_v2 = await ethers.getContractFactory("Cruzo1155_v2");
+
         expect(
           await token.connect(seller).create(tokenId, supply, seller.address, "", [])
         );
 
-        market = await upgrades.upgradeProxy(market.address, newContractFactory);
 
 
 
@@ -633,6 +639,8 @@ describe("CruzoMarket", () => {
             .connect(seller)
             .openTrade(token.address, tokenId, tradeAmount, price)
         );
+        market = await upgrades.upgradeProxy(market.address, newContractFactory);
+
 
         let trade = await market.trades(token.address, tokenId, seller.address);
         expect(trade.price).eq(price);
@@ -645,6 +653,13 @@ describe("CruzoMarket", () => {
 
         trade = await market.trades(token.address, tokenId, seller.address);
         expect(trade.price).eq(newPrice);
+        let addr = await factory.getToken(1)
+
+
+        await upgrades.upgradeBeacon(beacon, Cruzo1155_v2)
+        token_v2 = await ethers.getContractAt("Cruzo1155_v2", addr)
+        expect(await token_v2.balanceOf(seller.address, tokenId)).to.eq(sellersAmountAfterTrade)
+
       });
     });
   });

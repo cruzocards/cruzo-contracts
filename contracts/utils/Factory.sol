@@ -3,8 +3,9 @@ pragma solidity ^0.8.6;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
+import "@openzeppelin/contracts/utils/Context.sol";
 
-contract Factory is Ownable {
+contract Factory is Context, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
@@ -40,7 +41,8 @@ contract Factory is Ownable {
                 _name,
                 _symbol,
                 baseUri,
-                marketAddress
+                marketAddress,
+                msg.sender
             )
         );
         tokens[_tokenIds.current()] = address(proxy);
