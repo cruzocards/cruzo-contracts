@@ -54,7 +54,9 @@ yarn lint
 ### Deploy
 
 ```sh
-yarn deploy --network <network>
+yarn deployBeacon --network <network>
+yarn deployMarket --network <network>
+yarn deployFactory --network <network>
 ```
 
 ### Export ABI

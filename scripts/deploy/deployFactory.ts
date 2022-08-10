@@ -1,30 +1,40 @@
 import { ethers, network } from "hardhat";
-import { getAddress, setNewFactoryAddress } from "../../utils/addressTracking";
+import {
+  ContractType,
+  getAddress,
+  setAddress,
+} from "../../utils/addressTracking";
 
 async function main() {
-    const chainId = network.config.chainId;
-    if (!chainId) {
-        throw "Chain ID is undefined, terminating";
-    }
-    let beacon = getAddress(chainId)!.beacon
-    let market = getAddress(chainId)!.market
-    console.log("Deploying Factory contract");
-    const factory = await ethers.getContractFactory("Factory");
+  const chainId = network.config.chainId;
+  if (!chainId) {
+    throw "Chain ID is undefined, terminating";
+  }
+  let beacon = getAddress(chainId)!.beacon;
+  let market = getAddress(chainId)!.market;
+  console.log("Deploying Factory contract");
+  const Factory = await ethers.getContractFactory("Factory");
 
-    const Factory = await (factory.deploy(beacon, "initialize(string,string,string,address)", "https://cruzo.market", market))
+  // todo: check contract addresses, may be undefined
+  const factory = await Factory.deploy(
+    beacon,
+    "initialize(string,string,string,address)",
+    "https://cruzo.market",
+    market
+  );
 
-    console.log("Factory Contract Deployed");
-    console.log("Factory Contract Address : ", Factory.address);
-    // TODO: replace with appropriate website depending on the network
-    // console.log(`https://polygonscan.com/token/${token.address}`);
-    // console.log(`https://mumbai.polygonscan.com/token/${token.address}`);
+  console.log("Factory Contract Deployed");
+  console.log("Factory Contract Address : ", factory.address);
+  // TODO: replace with appropriate website depending on the network
+  // console.log(`https://polygonscan.com/token/${token.address}`);
+  // console.log(`https://mumbai.polygonscan.com/token/${token.address}`);
 
-    setNewFactoryAddress(chainId, Factory.address);
+  setAddress(chainId, ContractType.factory, factory.address);
 }
 
 main()
-    .then(() => process.exit(0))
-    .catch((error) => {
-        console.error(error);
-        process.exit(1);
-    });
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });

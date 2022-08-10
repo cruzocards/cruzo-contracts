@@ -1,5 +1,5 @@
 import { ethers, network, upgrades } from "hardhat";
-import { initialize, setNewMarketAddress } from "../../utils/addressTracking";
+import { ContractType, setAddress } from "../../utils/addressTracking";
 
 async function main() {
   const chainId = network.config.chainId;
@@ -22,9 +22,7 @@ async function main() {
   // console.log(`https://polygonscan.com/token/${market.address}`);
   // console.log(`https://mumbai.polygonscan.com/token/${market.address}`);
 
-
-  initialize(chainId)
-  setNewMarketAddress(chainId, market.address);
+  setAddress(chainId, ContractType.market, market.address);
 }
 
 main()
