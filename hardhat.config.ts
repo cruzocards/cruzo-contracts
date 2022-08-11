@@ -109,6 +109,11 @@ const config: HardhatUserConfig = {
       chainId: 51,
       accounts: PKS,
     },
+    l16Testnet: {
+      url: "https://rpc.l16.lukso.network",
+      chainId: 2828,
+      accounts: PKS,
+    },
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,
