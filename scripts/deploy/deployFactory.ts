@@ -10,19 +10,19 @@ async function main() {
   if (!chainId) {
     throw "Chain ID is undefined, terminating";
   }
-  let beacon = getAddress(chainId)!.beacon;
-  let market = getAddress(chainId)!.market;
-  if (!beacon || !market) {
-    throw `Beacon (${beacon}) or Market (${market}) address is undefined, terminating`;
+  let beaconAddress = getAddress(chainId)!.beacon;
+  let marketAddress = getAddress(chainId)!.market;
+  if (!beaconAddress || !marketAddress) {
+    throw `Beacon (${beaconAddress}) or Market (${marketAddress}) address is undefined, terminating`;
   }
 
   console.log("Deploying Factory contract");
   const Factory = await ethers.getContractFactory("Factory");
   const factory = await Factory.deploy(
-    beacon,
+    beaconAddress,
     "initialize(string,string,string,address)",
     "https://cruzo.market",
-    market
+    marketAddress
   );
 
   console.log("Factory Contract Deployed");

@@ -57,6 +57,7 @@ yarn lint
 yarn deployBeacon --network <network>
 yarn deployMarket --network <network>
 yarn deployFactory --network <network>
+yarn deployToken --network <network>
 ```
 
 ### Export ABI
@@ -99,6 +100,5 @@ We use UUPS proxy pattern for CruzoMarket contract and BeaconProxy for instances
 
 ```sh
 yarn upgradeMarket --network <network>
+yarn upgradeBeacon --network <network>
 ```
-
-[comment]: <> (yarn upgradeToken --network <network>)
