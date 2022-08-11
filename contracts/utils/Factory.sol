@@ -5,9 +5,14 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 
-contract Factory is Context, Ownable {
+contract Cruzo1155Factory is Context, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
+
+    event newTokenCreated(
+        address indexed tokenAddress,
+        uint256 indexed newTokenId
+    );
 
     mapping(uint256 => address) private tokens;
 
@@ -45,6 +50,7 @@ contract Factory is Context, Ownable {
                 msg.sender
             )
         );
+        emit newTokenCreated(address(proxy), _tokenIds.current());
         tokens[_tokenIds.current()] = address(proxy);
         return address(proxy);
     }

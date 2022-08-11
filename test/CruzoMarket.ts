@@ -30,7 +30,7 @@ describe("CruzoMarket", () => {
     const CruzoMarket = await ethers.getContractFactory("CruzoMarket");
     const Cruzo1155 = await ethers.getContractFactory("Cruzo1155");
 
-    const Factory = await ethers.getContractFactory("Factory");
+    const Factory = await ethers.getContractFactory("Cruzo1155Factory");
 
 
 

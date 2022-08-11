@@ -36,7 +36,7 @@ describe("Testing Cruzo1155 Contract", () => {
   beforeEach(async () => {
     const CruzoMarket = await ethers.getContractFactory("CruzoMarket");
     const Cruzo1155 = await ethers.getContractFactory("Cruzo1155");
-    const Factory = await ethers.getContractFactory("Factory");
+    const Factory = await ethers.getContractFactory("Cruzo1155Factory");
 
 
 

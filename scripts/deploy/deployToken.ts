@@ -12,7 +12,7 @@ async function main() {
   }
 
   console.log("Deploying Token contract");
-  const Factory = await ethers.getContractFactory("Factory");
+  const Factory = await ethers.getContractFactory("Cruzo1155Factory");
   const factory = await Factory.attach(addressEntry.factory);
   await factory.create("Cruzo", "CRZ");
 

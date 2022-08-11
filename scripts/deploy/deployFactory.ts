@@ -17,10 +17,10 @@ async function main() {
   }
 
   console.log("Deploying Factory contract");
-  const Factory = await ethers.getContractFactory("Factory");
+  const Factory = await ethers.getContractFactory("Cruzo1155Factory");
   const factory = await Factory.deploy(
     beaconAddress,
-    "initialize(string,string,string,address)",
+    "initialize(string,string,string,address,address)",
     "https://cruzo.market",
     marketAddress
   );
