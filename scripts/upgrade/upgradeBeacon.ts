@@ -1,29 +1,36 @@
 import { ethers, network, upgrades } from "hardhat";
-import { getAddress, setNewBeaconAddress } from "../../utils/addressTracking";
+import {
+  ContractType,
+  getAddress,
+  setAddress,
+} from "../../utils/addressTracking";
 
 async function main() {
-    const chainId = network.config.chainId;
-    if (!chainId) {
-        throw "Chain ID is undefined, terminating";
-    }
-    console.log("Upgrading Beacon contract");
-    let beacon = getAddress(chainId)!.beacon
-    const Token = await ethers.getContractFactory("Cruzo1155");
+  const chainId = network.config.chainId;
+  if (!chainId) {
+    throw "Chain ID is undefined, terminating";
+  }
+  const addressEntry = getAddress(chainId);
+  if (!addressEntry || !addressEntry.beacon) {
+    throw "Beacon address is undefined, nothing to update, terminating";
+  }
 
-    const Beacon = await upgrades.upgradeBeacon(beacon, Token)
+  console.log("Upgrading Beacon contract");
+  const Token = await ethers.getContractFactory("Cruzo1155");
+  const beacon = await upgrades.upgradeBeacon(addressEntry.beacon, Token);
 
-    console.log("Beacon Contract upgraded");
-    console.log("New Beacon Contract Address : ", Beacon.address);
-    // TODO: replace with appropriate website depending on the network
-    // console.log(`https://polygonscan.com/token/${token.address}`);
-    // console.log(`https://mumbai.polygonscan.com/token/${token.address}`);
+  console.log("Beacon Contract upgraded");
+  console.log("Beacon Contract Address : ", beacon.address);
+  // TODO: replace with appropriate website depending on the network
+  // console.log(`https://polygonscan.com/token/${token.address}`);
+  // console.log(`https://mumbai.polygonscan.com/token/${token.address}`);
 
-    setNewBeaconAddress(chainId, Beacon.address);
+  setAddress(chainId, ContractType.beacon, beacon.address);
 }
 
 main()
-    .then(() => process.exit(0))
-    .catch((error) => {
-        console.error(error);
-        process.exit(1);
-    });
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });

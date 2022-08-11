@@ -188,9 +188,9 @@
             "label": "trades",
             "offset": 0,
             "slot": "401",
-            "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_struct(Trade)3866_storage)))",
+            "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_struct(Trade)4459_storage)))",
             "contract": "CruzoMarket",
-            "src": "contracts/marketplace/CruzoMarket.sol:49"
+            "src": "contracts/marketplace/CruzoMarket.sol:55"
           },
           {
             "label": "serviceFee",
@@ -198,7 +198,7 @@
             "slot": "402",
             "type": "t_uint16",
             "contract": "CruzoMarket",
-            "src": "contracts/marketplace/CruzoMarket.sol:53"
+            "src": "contracts/marketplace/CruzoMarket.sol:59"
           }
         ],
         "types": {
@@ -218,19 +218,19 @@
             "label": "bool",
             "numberOfBytes": "1"
           },
-          "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_struct(Trade)3866_storage)))": {
+          "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_struct(Trade)4459_storage)))": {
             "label": "mapping(address => mapping(uint256 => mapping(address => struct CruzoMarket.Trade)))",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_address,t_struct(Trade)3866_storage)": {
+          "t_mapping(t_address,t_struct(Trade)4459_storage)": {
             "label": "mapping(address => struct CruzoMarket.Trade)",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_uint256,t_mapping(t_address,t_struct(Trade)3866_storage))": {
+          "t_mapping(t_uint256,t_mapping(t_address,t_struct(Trade)4459_storage))": {
             "label": "mapping(uint256 => mapping(address => struct CruzoMarket.Trade))",
             "numberOfBytes": "32"
           },
-          "t_struct(Trade)3866_storage": {
+          "t_struct(Trade)4459_storage": {
             "label": "struct CruzoMarket.Trade",
             "members": [
               {

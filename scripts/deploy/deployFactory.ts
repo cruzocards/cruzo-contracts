@@ -12,10 +12,12 @@ async function main() {
   }
   let beacon = getAddress(chainId)!.beacon;
   let market = getAddress(chainId)!.market;
+  if (!beacon || !market) {
+    throw `Beacon (${beacon}) or Market (${market}) address is undefined, terminating`;
+  }
+
   console.log("Deploying Factory contract");
   const Factory = await ethers.getContractFactory("Factory");
-
-  // todo: check contract addresses, may be undefined
   const factory = await Factory.deploy(
     beacon,
     "initialize(string,string,string,address)",

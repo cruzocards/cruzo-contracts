@@ -1,7 +1,8 @@
 {
   "4": {
     "market": "0x606e48e705F18d91221d8e1276CA2Ae68a9017d8",
-    "beacon": "0x27ae0f2e7ECb9Fea6354419460462a7c1CCcBD6E"
+    "beacon": "0x27ae0f2e7ECb9Fea6354419460462a7c1CCcBD6E",
+    "factory": "0x7cd3D620b8b4DBDF5287aC7ad97e075c62c840E8"
   },
   "51": {
     "token": "0xB8ee29D50543Ebafaa6eb3233812Db19B2c2F668",

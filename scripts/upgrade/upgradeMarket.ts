@@ -1,5 +1,9 @@
 import { ethers, network, upgrades } from "hardhat";
-import { getAddress, setNewMarketAddress } from "../../utils/addressTracking";
+import {
+  ContractType,
+  getAddress,
+  setAddress,
+} from "../../utils/addressTracking";
 
 async function main() {
   const chainId = network.config.chainId;
@@ -7,8 +11,8 @@ async function main() {
     throw "Chain ID is undefined, terminating";
   }
   const addressEntry = getAddress(chainId);
-  if (!addressEntry) {
-    throw "Address entry not found undefined, not possible to upgrade, terminating";
+  if (!addressEntry || !addressEntry.market) {
+    throw "Market address is undefined, nothing to update, terminating";
   }
 
   console.log("Upgrading market contract");
@@ -21,8 +25,8 @@ async function main() {
   // TODO: replace with appropriate website depending on the network
   // console.log(`https://polygonscan.com/token/${market.address}`);
   // console.log(`https://mumbai.polygonscan.com/token/${market.address}`);
-  setNewMarketAddress(chainId, market.address);
 
+  setAddress(chainId, ContractType.market, market.address);
 }
 
 main()
