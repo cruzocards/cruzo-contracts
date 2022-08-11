@@ -68,11 +68,11 @@ contract Cruzo1155 is Initializable, ERC1155URI {
         string memory _uri,
         bytes memory _data
     ) internal returns (uint256) {
+        creators[_tokenId] = _msgSender();
+
         if (bytes(_uri).length > 0) {
             _setTokenURI(_tokenId, _uri);
         }
-        creators[_tokenId] = _msgSender();
-
         return _mintToken(_tokenId, _amount, _to, _data);
     }
 
