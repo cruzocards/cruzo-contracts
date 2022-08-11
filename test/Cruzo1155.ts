@@ -38,37 +38,28 @@ describe("Testing Cruzo1155 Contract", () => {
     const Cruzo1155 = await ethers.getContractFactory("Cruzo1155");
     const Factory = await ethers.getContractFactory("Cruzo1155Factory");
 
-
-
-    market = await upgrades.deployProxy(
-      CruzoMarket,
-      [
-        serviceFee
-      ],
-      {
-        kind: "uups",
-      }
-    )
+    market = await upgrades.deployProxy(CruzoMarket, [serviceFee], {
+      kind: "uups",
+    });
     await market.deployed();
 
-    beacon = await upgrades.deployBeacon(Cruzo1155)
+    beacon = await upgrades.deployBeacon(Cruzo1155);
 
-    await beacon.deployed()
+    await beacon.deployed();
 
-    factory = await Factory.deploy(beacon.address, "initialize(string,string,string,address,address)", "https://cruzo.market", market.address)
+    factory = await Factory.deploy(
+      beacon.address,
+      "initialize(string,string,string,address,address)",
+      tokenDetails.baseOnlyURI,
+      market.address
+    );
 
-    await factory.deployed()
+    await factory.deployed();
 
+    await factory.connect(admin).create("1", "123");
 
-    await factory.connect(admin).create("1", "123")
-
-
-    let addr = await factory.getToken(1)
-    token = await ethers.getContractAt("Cruzo1155", addr)
-
-
-
-
+    let addr = await factory.getToken(1);
+    token = await ethers.getContractAt("Cruzo1155", addr);
   });
 
   it("Check Contract Data", async () => {
