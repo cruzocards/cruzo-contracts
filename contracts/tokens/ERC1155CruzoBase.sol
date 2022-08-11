@@ -17,7 +17,7 @@ abstract contract ERC1155CruzoBase is
     mapping(uint256 => address) public creators;
 
     /**
-     * @dev Require masg.sender to be the creator of the token id
+     * @dev Require msg.sender to be the creator of the token id
      */
     modifier onlyCreator(uint256 _id) {
         require(

@@ -25,6 +25,7 @@ contract Cruzo1155 is Initializable, ERC1155URI {
         marketAddress = _marketAddress;
         name = _name;
         symbol = _symbol;
+        setURIType(1);
         _transferOwnership(owner);
     }
 
@@ -67,8 +68,6 @@ contract Cruzo1155 is Initializable, ERC1155URI {
         string memory _uri,
         bytes memory _data
     ) internal returns (uint256) {
-        creators[_tokenId] = _msgSender();
-
         if (bytes(_uri).length > 0) {
             _setTokenURI(_tokenId, _uri);
         }

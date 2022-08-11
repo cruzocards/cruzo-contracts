@@ -141,7 +141,7 @@ contract Cruzo1155_v2 is Initializable, ERC1155URI {
         _setBaseURI(_baseURI);
     }
 
-    function check() public returns (string memory) {
+    function check() external pure returns (string memory) {
         return "hello";
     }
 }

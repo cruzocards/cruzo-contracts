@@ -125,20 +125,25 @@ describe("Testing Cruzo1155 Contract", () => {
     expect(await token.creators(4)).equal(signers[1].address);
   });
 
-  // it("Check marketAddress approval", async () => {
-  //   await token.create(1, 1000, admin.address, "", []);
-  //   await expect(
-  //     token
-  //       .connect(signers[1])
-  //       .safeTransferFrom(admin.address, signers[1].address, 1, 1, [])
-  //   ).to.be.reverted;
-  //   await expect(
-  //     token
-  //       .connect(signers[5])
-  //       .safeTransferFrom(admin.address, signers[1].address, 1, 1, [])
-  //   ).not.to.be.reverted;
-  //   expect(await token.balanceOf(signers[1].address, 1)).equal(1);
-  // });
+  it("Check marketAddress approval", async () => {
+    console.log(market.address)
+    console.log(signers[1].address)
+    console.log(signers[5].address)
+
+
+    await token.create(1, 1000, admin.address, "", []);
+    await expect(
+      token
+        .connect(signers[1])
+        .safeTransferFrom(admin.address, signers[1].address, 1, 1, [])
+    ).to.be.reverted;
+    await expect(
+      token
+        .connect(signers[5])
+        .safeTransferFrom(admin.address, signers[1].address, 1, 1, [])
+    ).not.to.be.reverted;
+    expect(await token.balanceOf(signers[1].address, 1)).equal(1);
+  });
 
   it("Should puase and unpause", async () => {
     await token.create(1, 1000, admin.address, "", []);
