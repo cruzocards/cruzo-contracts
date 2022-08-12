@@ -16,5 +16,10 @@
   "1029": {
     "token": "0xB8ee29D50543Ebafaa6eb3233812Db19B2c2F668",
     "market": "0xb9BEd77f80171256768553a4bC4cBceE90ffc904"
+  },
+  "80001": {
+    "beacon": "0x1ba771497dB5328d5A7D831e6648A09206266FA7",
+    "market": "0xc142BE676502cb21f639C7DE2aDd422d290fdf9e",
+    "factory": "0xf38d5A565bb51e8f503943C0f4158B4e27d9c284"
   }
 }
