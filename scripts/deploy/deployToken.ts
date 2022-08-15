@@ -15,17 +15,20 @@ async function main() {
   console.log("Deploying Token contract");
   const Factory = await ethers.getContractFactory("Cruzo1155Factory");
   const factory = await Factory.attach(addressEntry.factory);
-  const tx = await factory.create("Cruzo", "CRZ", "CRUZOURI");
+  const tx = await factory.create(
+    "Cruzo",
+    "CRZ",
+    "https://cruzo.cards/contract-metadata"
+  );
   const receipt: ContractReceipt = await tx.wait();
-  const tokenCreatedEvent = receipt.events?.filter((x) => {
-    return x.event == "newTokenCreated";
-  });
+  const tokenCreatedEvent = receipt.events?.filter(
+    (x) => x.event == "NewTokenCreated"
+  );
   if (!tokenCreatedEvent || !tokenCreatedEvent[0]) {
-    throw "`newTokenCreated` event is missing, terminating";
+    throw "NewTokenCreated event is missing, terminating";
   }
 
   console.log("Token Contract Deployed");
-  console.log("Token ID : ", Number(tokenCreatedEvent[0].args?.newTokenId));
   console.log(
     "Token Contract Address : ",
     tokenCreatedEvent[0].args?.tokenAddress
