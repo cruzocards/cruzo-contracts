@@ -1,5 +1,6 @@
 import { ethers, network } from "hardhat";
 import { getAddress } from "../../utils/addressTracking";
+import { ContractReceipt } from "ethers";
 
 async function main() {
   const chainId = network.config.chainId;
@@ -14,11 +15,21 @@ async function main() {
   console.log("Deploying Token contract");
   const Factory = await ethers.getContractFactory("Cruzo1155Factory");
   const factory = await Factory.attach(addressEntry.factory);
-  await factory.create("Cruzo", "CRZ");
+  const tx = await factory.create("Cruzo", "CRZ");
+  const receipt: ContractReceipt = await tx.wait();
+  const tokenCreatedEvent = receipt.events?.filter((x) => {
+    return x.event == "newTokenCreated";
+  });
+  if (!tokenCreatedEvent || !tokenCreatedEvent[0]) {
+    throw "`newTokenCreated` event is missing, terminating";
+  }
 
-  // todo: get token contract address
   console.log("Token Contract Deployed");
-  console.log("Token Contract Address : ", "0x0");
+  console.log("Token ID : ", Number(tokenCreatedEvent[0].args?.newTokenId));
+  console.log(
+    "Token Contract Address : ",
+    tokenCreatedEvent[0].args?.tokenAddress
+  );
 }
 
 main()
