@@ -1,6 +1,7 @@
 import { ethers, network } from "hardhat";
 import { getAddress } from "../../utils/addressTracking";
 import { ContractReceipt } from "ethers";
+import { getEvent } from "../../utils/getEvent";
 
 async function main() {
   const chainId = network.config.chainId;
@@ -21,18 +22,9 @@ async function main() {
     "https://cruzo.cards/contract-metadata"
   );
   const receipt: ContractReceipt = await tx.wait();
-  const tokenCreatedEvent = receipt.events?.filter(
-    (x) => x.event == "NewTokenCreated"
-  );
-  if (!tokenCreatedEvent || !tokenCreatedEvent[0]) {
-    throw "NewTokenCreated event is missing, terminating";
-  }
-
+  const event = getEvent(receipt, "NewTokenCreated");
   console.log("Token Contract Deployed");
-  console.log(
-    "Token Contract Address : ",
-    tokenCreatedEvent[0].args?.tokenAddress
-  );
+  console.log("Token Contract Address : ", event.args?.tokenAddress);
 }
 
 main()

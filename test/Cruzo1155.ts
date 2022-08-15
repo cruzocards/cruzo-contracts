@@ -5,6 +5,7 @@ import { assert, expect } from "chai";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { Cruzo1155 } from "../typechain/Cruzo1155";
 import { Contract } from "ethers";
+import { getEvent } from "../utils/getEvent";
 
 const tokenDetails = {
   name: "Cruzo",
@@ -56,10 +57,16 @@ describe("Testing Cruzo1155 Contract", () => {
 
     await factory.deployed();
 
-    await factory.connect(admin).create("1", "123", "URITESTTOKEN");
-    let addr = await factory.last()
+    const createTokenTx = await factory
+      .connect(admin)
+      .create("1", "123", "URITESTTOKEN");
+    const createTokenReceipt = await createTokenTx.wait();
+    const createTokenEvent = getEvent(createTokenReceipt, "NewTokenCreated");
 
-    token = await ethers.getContractAt("Cruzo1155", addr);
+    token = await ethers.getContractAt(
+      "Cruzo1155",
+      createTokenEvent.args?.tokenAddress
+    );
   });
 
   it("Check Contract Data", async () => {
