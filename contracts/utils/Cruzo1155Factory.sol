@@ -1,26 +1,21 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.6;
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 
 contract Cruzo1155Factory is Context, Ownable {
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIds;
-
-    event newTokenCreated(
+    event NewTokenCreated(
         address indexed tokenAddress,
-        uint256 indexed newTokenId
+        address indexed creator
     );
-
-    mapping(uint256 => address) private tokens;
 
     address private immutable beacon;
 
     bytes4 public selector;
     string public baseUri;
     address public marketAddress;
+    address public last;
 
     constructor(
         address _beacon,
@@ -34,11 +29,11 @@ contract Cruzo1155Factory is Context, Ownable {
         baseUri = initBaseUri;
     }
 
-    function create(string calldata _name, string calldata _symbol)
-        external
-        returns (address)
-    {
-        _tokenIds.increment();
+    function create(
+        string calldata _name,
+        string calldata _symbol,
+        string calldata _contractURI
+    ) external returns (address) {
         BeaconProxy proxy = new BeaconProxy(
             address(beacon),
             abi.encodeWithSelector(
@@ -46,12 +41,13 @@ contract Cruzo1155Factory is Context, Ownable {
                 _name,
                 _symbol,
                 baseUri,
+                _contractURI,
                 marketAddress,
-                msg.sender
+                _msgSender()
             )
         );
-        emit newTokenCreated(address(proxy), _tokenIds.current());
-        tokens[_tokenIds.current()] = address(proxy);
+        last = address(proxy);
+        emit NewTokenCreated(address(proxy), _msgSender());
         return address(proxy);
     }
 
@@ -61,10 +57,6 @@ contract Cruzo1155Factory is Context, Ownable {
 
     function getImplementation() external view returns (address) {
         return beacon;
-    }
-
-    function getToken(uint256 _id) external view returns (address) {
-        return tokens[_id];
     }
 
     function changeBaseUri(string memory newBaseUri) external onlyOwner {

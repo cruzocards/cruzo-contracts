@@ -8,11 +8,13 @@ contract Cruzo1155 is Initializable, ERC1155URI {
 
     string public name;
     string public symbol;
+    string public contractURI;
 
     function initialize(
         string calldata _name,
         string calldata _symbol,
         string memory _baseMetadataURI,
+        string memory _contractURI,
         address _marketAddress,
         address owner
     ) public initializer {
@@ -25,6 +27,7 @@ contract Cruzo1155 is Initializable, ERC1155URI {
         marketAddress = _marketAddress;
         name = _name;
         symbol = _symbol;
+        contractURI = _contractURI;
         setURIType(1);
         _transferOwnership(owner);
     }
@@ -138,5 +141,9 @@ contract Cruzo1155 is Initializable, ERC1155URI {
 
     function setBaseURI(string memory _baseURI) public onlyOwner {
         _setBaseURI(_baseURI);
+    }
+
+    function setContractURI(string memory _newURI) external onlyOwner {
+        contractURI = _newURI;
     }
 }

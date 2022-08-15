@@ -40,7 +40,7 @@ describe("CruzoMarket", () => {
 
         factory = await Factory.deploy(
             beacon.address,
-            "initialize(string,string,string,address,address)",
+            "initialize(string,string,string,string,address,address)",
             "https://cruzo.market",
             market.address
         );
@@ -48,14 +48,13 @@ describe("CruzoMarket", () => {
         await factory.deployed();
 
 
-        let addr = await factory.getToken(1);
-        token = await ethers.getContractAt("Cruzo1155", addr);
     });
     describe("Simple token creation", () => {
         it("Cretaes new token via factory", async () => {
             const tokenId = ethers.BigNumber.from("1");
-            await factory.connect(seller).create("1", "abc")
-            let Token1 = await ethers.getContractAt("Cruzo1155", await factory.getToken(tokenId));
+            await factory.connect(seller).create("1", "abc", "URITEST")
+            let addr = await factory.last()
+            let Token1 = await ethers.getContractAt("Cruzo1155", addr);
             expect(await Token1.symbol()).to.eq("abc")
 
         });
@@ -65,26 +64,28 @@ describe("CruzoMarket", () => {
         it("Change implementation", async () => {
             const tokenId = ethers.BigNumber.from("1");
             let Token1: Contract;
-            await factory.connect(seller).create("1", "abc")
-            Token1 = await ethers.getContractAt("Cruzo1155", await factory.getToken(tokenId));
+            await factory.connect(seller).create("1", "abc", "URI1111")
+            let addr1 = await factory.last()
+            Token1 = await ethers.getContractAt("Cruzo1155", addr1);
             //await expect(await Token1.check()).to.be.revertedWith("TypeError: Token1.check is not a function")
 
             const Cruzo1155_v2 = await ethers.getContractFactory("Cruzo1155_v2");
 
             await upgrades.upgradeBeacon(beacon, Cruzo1155_v2);
 
-            token_v2 = await ethers.getContractAt("Cruzo1155_v2", await factory.getToken(tokenId));
+            token_v2 = await ethers.getContractAt("Cruzo1155_v2", addr1);
             expect(await token_v2.check()).to.eq(
                 "hello"
             );
             await factory.changeBaseUri("abc")
 
-            await factory.connect(seller).create("2", "bbc")
+            await factory.connect(seller).create("2", "bbc", "URI222")
+            let addr2 = await factory.last()
 
             expect(await token_v2.baseURI()).to.eq(
                 "https://cruzo.market"
             );
-            token_v2 = await ethers.getContractAt("Cruzo1155_v2", await factory.getToken(2));
+            token_v2 = await ethers.getContractAt("Cruzo1155_v2", addr2);
 
             expect(await token_v2.baseURI()).to.eq(
                 "abc"

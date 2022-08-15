@@ -25,7 +25,7 @@ describe("Testing Cruzo1155 Contract", () => {
   let market: Contract;
   let beacon: Contract;
   let factory: Contract;
-  let token: Cruzo1155;
+  let token: Contract;
   const serviceFee = 300;
 
   before(async () => {
@@ -49,20 +49,22 @@ describe("Testing Cruzo1155 Contract", () => {
 
     factory = await Factory.deploy(
       beacon.address,
-      "initialize(string,string,string,address,address)",
+      "initialize(string,string,string,string,address,address)",
       tokenDetails.baseOnlyURI,
       market.address
     );
 
     await factory.deployed();
 
-    await factory.connect(admin).create("1", "123");
+    await factory.connect(admin).create("1", "123", "URITESTTOKEN");
+    let addr = await factory.last()
+    console.log(addr)
 
-    let addr = await factory.getToken(1);
     token = await ethers.getContractAt("Cruzo1155", addr);
   });
 
   it("Check Contract Data", async () => {
+    console.log(token.address)
     //expect(await token.marketAddress()).equal(signers[5].address);
     expect(await token.baseURI()).equal(tokenDetails.baseOnlyURI);
     await token.create(1, 1, admin.address, tokenDetails.ipfsHash, []);
@@ -123,26 +125,6 @@ describe("Testing Cruzo1155 Contract", () => {
     expect(await token.creators(3)).equal(signers[1].address);
     await token.connect(signers[1]).create(4, 1, signers[1].address, "", []);
     expect(await token.creators(4)).equal(signers[1].address);
-  });
-
-  it("Check marketAddress approval", async () => {
-    console.log(market.address)
-    console.log(signers[1].address)
-    console.log(signers[5].address)
-
-
-    await token.create(1, 1000, admin.address, "", []);
-    await expect(
-      token
-        .connect(signers[1])
-        .safeTransferFrom(admin.address, signers[1].address, 1, 1, [])
-    ).to.be.reverted;
-    await expect(
-      token
-        .connect(signers[5])
-        .safeTransferFrom(admin.address, signers[1].address, 1, 1, [])
-    ).not.to.be.reverted;
-    expect(await token.balanceOf(signers[1].address, 1)).equal(1);
   });
 
   it("Should puase and unpause", async () => {
