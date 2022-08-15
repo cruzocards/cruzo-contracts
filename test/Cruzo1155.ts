@@ -58,13 +58,11 @@ describe("Testing Cruzo1155 Contract", () => {
 
     await factory.connect(admin).create("1", "123", "URITESTTOKEN");
     let addr = await factory.last()
-    console.log(addr)
 
     token = await ethers.getContractAt("Cruzo1155", addr);
   });
 
   it("Check Contract Data", async () => {
-    console.log(token.address)
     //expect(await token.marketAddress()).equal(signers[5].address);
     expect(await token.baseURI()).equal(tokenDetails.baseOnlyURI);
     await token.create(1, 1, admin.address, tokenDetails.ipfsHash, []);
