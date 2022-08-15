@@ -15,6 +15,7 @@ const tokenDetails = {
   altBaseOnlyURI: "https://opensea.io/tokens/{id}.json",
   ipfsHash: "Qme3TrFkt28tLgHR2QXjH1ArfamtpkVsgMc9asdw3LXn7y",
   altBaseAndIdURI: "https:opensea.io/tokens/",
+  collectionURI: "https://cruzo.io/collection",
 };
 const real = (inp: string) => inp + "0".repeat(9);
 
@@ -59,7 +60,11 @@ describe("Testing Cruzo1155 Contract", () => {
 
     const createTokenTx = await factory
       .connect(admin)
-      .create("1", "123", "URITESTTOKEN");
+      .create(
+        tokenDetails.name,
+        tokenDetails.symbol,
+        tokenDetails.collectionURI
+      );
     const createTokenReceipt = await createTokenTx.wait();
     const createTokenEvent = getEvent(createTokenReceipt, "NewTokenCreated");
 
