@@ -52,10 +52,12 @@ const config: HardhatUserConfig = {
     },
     polygonMumbai: {
       url: "https://rpc-mumbai.maticvigil.com",
+      chainId: 80001,
       accounts: PKS,
     },
     polygonMainnet: {
       url: "https://rpc-mainnet.matic.network",
+      chainId: 137,
       accounts: PKS,
     },
     cronosMainnetBeta: {
