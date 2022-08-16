@@ -1,9 +1,9 @@
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-waffle";
 import { ethers, upgrades } from "hardhat";
-import { assert, expect } from "chai";
+import { expect } from "chai";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { Cruzo1155 } from "../typechain/Cruzo1155";
+import { Cruzo1155 } from "../typechain";
 import { Contract } from "ethers";
 import { getEvent } from "../utils/getEvent";
 
@@ -46,7 +46,6 @@ describe("Testing Cruzo1155 Contract", () => {
     await market.deployed();
 
     beacon = await upgrades.deployBeacon(Cruzo1155);
-
     await beacon.deployed();
 
     factory = await Factory.deploy(
@@ -55,7 +54,6 @@ describe("Testing Cruzo1155 Contract", () => {
       tokenDetails.baseOnlyURI,
       market.address
     );
-
     await factory.deployed();
 
     const createTokenTx = await factory
@@ -67,7 +65,6 @@ describe("Testing Cruzo1155 Contract", () => {
       );
     const createTokenReceipt = await createTokenTx.wait();
     const createTokenEvent = getEvent(createTokenReceipt, "NewTokenCreated");
-
     token = await ethers.getContractAt(
       "Cruzo1155",
       createTokenEvent.args?.tokenAddress

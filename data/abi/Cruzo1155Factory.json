@@ -8,17 +8,17 @@
       },
       {
         "internalType": "string",
-        "name": "rawFuncInit",
+        "name": "_rawFuncInit",
         "type": "string"
       },
       {
         "internalType": "string",
-        "name": "initBaseUri",
+        "name": "_baseUri",
         "type": "string"
       },
       {
         "internalType": "address",
-        "name": "initMarketAddress",
+        "name": "_marketAddress",
         "type": "address"
       }
     ],

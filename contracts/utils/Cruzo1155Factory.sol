@@ -11,21 +11,20 @@ contract Cruzo1155Factory is Context, Ownable {
     );
 
     address private immutable beacon;
-
     bytes4 public selector;
     string public baseUri;
     address public marketAddress;
 
     constructor(
         address _beacon,
-        string memory rawFuncInit,
-        string memory initBaseUri,
-        address initMarketAddress
+        string memory _rawFuncInit,
+        string memory _baseUri,
+        address _marketAddress
     ) {
         beacon = _beacon;
-        selector = bytes4(keccak256(bytes(rawFuncInit)));
-        marketAddress = initMarketAddress;
-        baseUri = initBaseUri;
+        selector = bytes4(keccak256(bytes(_rawFuncInit)));
+        baseUri = _baseUri;
+        marketAddress = _marketAddress;
     }
 
     function create(

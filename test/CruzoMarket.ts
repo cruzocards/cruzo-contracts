@@ -37,7 +37,6 @@ describe("CruzoMarket", () => {
 
     const CruzoMarket = await ethers.getContractFactory("CruzoMarket");
     const Cruzo1155 = await ethers.getContractFactory("Cruzo1155");
-
     const Factory = await ethers.getContractFactory("Cruzo1155Factory");
 
     market = await upgrades.deployProxy(CruzoMarket, [serviceFee], {
@@ -46,7 +45,6 @@ describe("CruzoMarket", () => {
     await market.deployed();
 
     beacon = await upgrades.deployBeacon(Cruzo1155);
-
     await beacon.deployed();
 
     factory = await Factory.deploy(
@@ -55,7 +53,6 @@ describe("CruzoMarket", () => {
       "https://cruzo.market",
       market.address
     );
-
     await factory.deployed();
 
     const createTokenTx = await factory
@@ -670,7 +667,6 @@ describe("CruzoMarket", () => {
 
         trade = await market.trades(token.address, tokenId, seller.address);
         expect(trade.price).eq(newPrice);
-
       });
     });
   });
