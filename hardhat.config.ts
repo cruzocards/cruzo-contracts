@@ -114,6 +114,11 @@ const config: HardhatUserConfig = {
       chainId: 2828,
       accounts: PKS,
     },
+    evmosTestnet: {
+      url: "https://eth.bd.evmos.dev:8545",
+      chainId: 9000,
+      accounts: PKS,
+    },
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,
