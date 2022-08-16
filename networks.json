@@ -1,10 +1,25 @@
 {
   "4": {
-    "token": "0x68A698EcC305c85392AC4EFa8A12C8aAFE5041E0",
-    "market": "0xA3FB552420990ba25914bE02653bBe4e6490BeFc"
+    "market": "0xe95043CED6F138cb9ACb9e2CC562fb278aEbbC3D",
+    "beacon": "0x528b29b92EA39B0eAD5892De75078f348Fafd18C",
+    "factory": "0x73bb1A93f206F2d21ad9be193d4784087917eeE6"
+  },
+  "51": {
+    "token": "0xB8ee29D50543Ebafaa6eb3233812Db19B2c2F668",
+    "market": "0xb9BEd77f80171256768553a4bC4cBceE90ffc904"
   },
   "97": {
-    "token": "0x4cD75fb787c8Cd07295D7cfFB01729ff842D40FA",
-    "market": "0x9319284850E751ab999D462CF1aF6F503B7c4981"
+    "market": "0xB2a35d70096D12eDA0BE5EE078da78349ad45114",
+    "factory": "0x290Deb428BCBec2E03B4fB2839D6EaD5e20c1F1D",
+    "beacon": "0xa1296e35b13AACc415C1Cd3d4DE517Fd3D2f3D09"
+  },
+  "1029": {
+    "token": "0xB8ee29D50543Ebafaa6eb3233812Db19B2c2F668",
+    "market": "0xb9BEd77f80171256768553a4bC4cBceE90ffc904"
+  },
+  "80001": {
+    "beacon": "0x1ba771497dB5328d5A7D831e6648A09206266FA7",
+    "market": "0xc142BE676502cb21f639C7DE2aDd422d290fdf9e",
+    "factory": "0xf38d5A565bb51e8f503943C0f4158B4e27d9c284"
   }
 }

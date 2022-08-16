@@ -4,7 +4,7 @@ import "@typechain/hardhat";
 import "@nomiclabs/hardhat-etherscan";
 import "hardhat-abi-exporter";
 import "hardhat-gas-reporter";
-import '@openzeppelin/hardhat-upgrades';
+import "@openzeppelin/hardhat-upgrades";
 import { task, HardhatUserConfig } from "hardhat/config";
 import * as dotenv from "dotenv";
 
@@ -16,7 +16,8 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 });
 
 dotenv.config();
-const PKS = process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [];
+const PKS =
+  process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [];
 const config: HardhatUserConfig = {
   solidity: {
     version: "0.8.7",
@@ -51,10 +52,12 @@ const config: HardhatUserConfig = {
     },
     polygonMumbai: {
       url: "https://rpc-mumbai.maticvigil.com",
+      chainId: 80001,
       accounts: PKS,
     },
     polygonMainnet: {
       url: "https://rpc-mainnet.matic.network",
+      chainId: 137,
       accounts: PKS,
     },
     cronosMainnetBeta: {
@@ -80,15 +83,40 @@ const config: HardhatUserConfig = {
       accounts: PKS,
     },
     bobaMainnet: {
-      url: 'https://mainnet.boba.network',
+      url: "https://mainnet.boba.network",
       chainId: 288,
-      accounts: PKS
+      accounts: PKS,
     },
     bobaRinkeby: {
-      url: 'https://rinkeby.boba.network',
+      url: "https://rinkeby.boba.network",
       chainId: 28,
-      accounts: PKS
-    }
+      accounts: PKS,
+    },
+    bitTorrentMainnet: {
+      url: "https://rpc.bt.io",
+      chainId: 199,
+      accounts: PKS,
+    },
+    bitTorrentDonau: {
+      url: "https://pre-rpc.bt.io",
+      chainId: 1029,
+      accounts: PKS,
+    },
+    xdcMainnet: {
+      url: "https://rpc.xinfin.network/",
+      chainId: 50,
+      accounts: PKS,
+    },
+    xdcApothem: {
+      url: "https://rpc.apothem.network",
+      chainId: 51,
+      accounts: PKS,
+    },
+    l16Testnet: {
+      url: "https://rpc.l16.lukso.network",
+      chainId: 2828,
+      accounts: PKS,
+    },
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY,

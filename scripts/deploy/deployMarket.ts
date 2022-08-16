@@ -1,26 +1,28 @@
 import { ethers, network, upgrades } from "hardhat";
-import { getAddress } from "../utils/addressTracking";
+import { ContractType, setAddress } from "../../utils/addressTracking";
 
 async function main() {
   const chainId = network.config.chainId;
   if (!chainId) {
     throw "Chain ID is undefined, terminating";
   }
-  const addressEntry = getAddress(chainId);
-  if (!addressEntry) {
-    throw "Address entry not found undefined, not possible to upgrade, terminating";
-  }
 
-  console.log("Upgrading market contract");
+  console.log("Deploying market contract");
+  const marketServiceFee = parseInt(process.env.MARKET_SERVICE_FEE || "");
   const Market = await ethers.getContractFactory("CruzoMarket");
-  const market = await upgrades.upgradeProxy(addressEntry.market, Market);
+
+  const market = await upgrades.deployProxy(Market, [marketServiceFee], {
+    kind: "uups",
+  });
   await market.deployed();
 
-  console.log("Market Contract upgraded");
+  console.log("Market Contract Deployed");
   console.log("Market Contract Address : ", market.address);
   // TODO: replace with appropriate website depending on the network
   // console.log(`https://polygonscan.com/token/${market.address}`);
   // console.log(`https://mumbai.polygonscan.com/token/${market.address}`);
+
+  setAddress(chainId, ContractType.market, market.address);
 }
 
 main()
