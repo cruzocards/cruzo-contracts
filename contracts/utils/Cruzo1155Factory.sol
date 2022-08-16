@@ -15,7 +15,6 @@ contract Cruzo1155Factory is Context, Ownable {
     bytes4 public selector;
     string public baseUri;
     address public marketAddress;
-    address public last;
 
     constructor(
         address _beacon,
@@ -33,7 +32,7 @@ contract Cruzo1155Factory is Context, Ownable {
         string calldata _name,
         string calldata _symbol,
         string calldata _contractURI
-    ) external returns (address) {
+    ) external {
         BeaconProxy proxy = new BeaconProxy(
             address(beacon),
             abi.encodeWithSelector(
@@ -46,9 +45,7 @@ contract Cruzo1155Factory is Context, Ownable {
                 _msgSender()
             )
         );
-        last = address(proxy);
         emit NewTokenCreated(address(proxy), _msgSender());
-        return address(proxy);
     }
 
     function updateInitSelector(string calldata rowStr) external onlyOwner {

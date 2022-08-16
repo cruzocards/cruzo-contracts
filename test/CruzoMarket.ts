@@ -4,22 +4,33 @@ import { ethers, upgrades } from "hardhat";
 import { Cruzo1155 } from "../typechain/Cruzo1155";
 import { CruzoMarket } from "../typechain/CruzoMarket";
 import { BigNumberish, Contract } from "ethers";
+import { getEvent } from "../utils/getEvent";
+
 //"8da4ef21b864d2cc526dbdb2a120bd2874c36c9d0a1fb7f8c63d7f7a8b41de8f"
 describe("CruzoMarket", () => {
   let market: Contract;
   let beacon: Contract;
   let factory: Contract;
   let token: Contract;
-  let token_v2: Contract;
 
   let owner: SignerWithAddress;
   let seller: SignerWithAddress;
   let buyer: SignerWithAddress;
   let addressee: SignerWithAddress;
-  const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
   const serviceFee = 300;
   const serviceFeeBase = 10000;
+
+  const tokenDetails = {
+    name: "Cruzo",
+    symbol: "CRZ",
+    baseOnlyURI: "https://cruzo.io/tokens/{id}.json",
+    baseAndIdURI: "https://cruzo.io/tokens",
+    altBaseOnlyURI: "https://opensea.io/tokens/{id}.json",
+    ipfsHash: "Qme3TrFkt28tLgHR2QXjH1ArfamtpkVsgMc9asdw3LXn7y",
+    altBaseAndIdURI: "https:opensea.io/tokens/",
+    collectionURI: "https://cruzo.io/collection",
+  };
 
   beforeEach(async () => {
     [owner, seller, buyer, addressee] = await ethers.getSigners();
@@ -47,9 +58,20 @@ describe("CruzoMarket", () => {
 
     await factory.deployed();
 
-    await factory.connect(seller).create("1", "123", "URITESTMARKET");
-    let addr = await factory.last()
-    token = await ethers.getContractAt("Cruzo1155", addr);
+    const createTokenTx = await factory
+      .connect(owner)
+      .create(
+        tokenDetails.name,
+        tokenDetails.symbol,
+        tokenDetails.collectionURI
+      );
+    const createTokenReceipt = await createTokenTx.wait();
+    const createTokenEvent = getEvent(createTokenReceipt, "NewTokenCreated");
+
+    token = await ethers.getContractAt(
+      "Cruzo1155",
+      createTokenEvent.args?.tokenAddress
+    );
   });
 
   describe("openTrade", () => {
