@@ -1,13 +1,19 @@
 import fs from "fs";
 
-interface AddressTrackingEntry {
-  token: string;
-  market: string;
+export enum ContractType {
+  beacon = "beacon",
+  market = "market",
+  factory = "factory",
+  token = "token",
 }
+
+type AddressTrackingEntry = {
+  [key in ContractType]?: string;
+};
 
 type AddressTrackingMap = Map<string, AddressTrackingEntry>;
 
-const addressMappingFileName = "networks.json";
+const addressMappingFileName = "data/networks.json";
 
 export const getAddress = (
   chainId: number
@@ -22,14 +28,23 @@ export const getAddress = (
 
 export const setAddress = (
   chainId: number,
-  entry: AddressTrackingEntry
+  contract: ContractType,
+  address: string
 ): void => {
+  if (!chainId || !contract || !address) {
+    throw new Error(
+      `Missing one of mandatory arguments: [${chainId}, ${contract}, ${address}]`
+    );
+  }
   try {
     const addressMapping = getMapping(addressMappingFileName);
-    addressMapping.set(chainId.toString(), entry);
+    const networkEntry = addressMapping.get(chainId.toString()) || {};
+    networkEntry[contract] = address;
+    addressMapping.set(chainId.toString(), networkEntry);
     setMapping(addressMappingFileName, addressMapping);
   } catch (e) {
     console.warn("Could not update contract address");
+    console.log(e);
   }
 };
 
@@ -41,5 +56,8 @@ const getMapping = (fileName: string): AddressTrackingMap => {
 };
 
 const setMapping = (fileName: string, mapping: AddressTrackingMap) => {
-  fs.writeFileSync(fileName, JSON.stringify(Object.fromEntries(mapping)));
+  fs.writeFileSync(
+    fileName,
+    JSON.stringify(Object.fromEntries(mapping), null, 2)
+  );
 };

@@ -1,9 +1,11 @@
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-waffle";
-import { ethers } from "hardhat";
-import { assert, expect } from "chai";
+import { ethers, upgrades } from "hardhat";
+import { expect } from "chai";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { Cruzo1155 } from "../typechain/Cruzo1155";
+import { Cruzo1155 } from "../typechain";
+import { Contract } from "ethers";
+import { getEvent } from "../utils/getEvent";
 
 const tokenDetails = {
   name: "Cruzo",
@@ -13,6 +15,7 @@ const tokenDetails = {
   altBaseOnlyURI: "https://opensea.io/tokens/{id}.json",
   ipfsHash: "Qme3TrFkt28tLgHR2QXjH1ArfamtpkVsgMc9asdw3LXn7y",
   altBaseAndIdURI: "https:opensea.io/tokens/",
+  collectionURI: "https://cruzo.io/collection",
 };
 const real = (inp: string) => inp + "0".repeat(9);
 
@@ -21,7 +24,11 @@ describe("Testing Cruzo1155 Contract", () => {
 
   let signers: SignerWithAddress[];
 
-  let token: Cruzo1155;
+  let market: Contract;
+  let beacon: Contract;
+  let factory: Contract;
+  let token: Contract;
+  const serviceFee = 300;
 
   before(async () => {
     signers = await ethers.getSigners();
@@ -29,15 +36,43 @@ describe("Testing Cruzo1155 Contract", () => {
   });
 
   beforeEach(async () => {
-    let Token = await ethers.getContractFactory("Cruzo1155");
-    token = (await Token.deploy(
+    const CruzoMarket = await ethers.getContractFactory("CruzoMarket");
+    const Cruzo1155 = await ethers.getContractFactory("Cruzo1155");
+    const Factory = await ethers.getContractFactory("Cruzo1155Factory");
+
+    market = await upgrades.deployProxy(CruzoMarket, [serviceFee], {
+      kind: "uups",
+    });
+    await market.deployed();
+
+    beacon = await upgrades.deployBeacon(Cruzo1155);
+    await beacon.deployed();
+
+    factory = await Factory.deploy(
+      beacon.address,
+      "initialize(string,string,string,string,address,address)",
       tokenDetails.baseOnlyURI,
-      "0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc"
-    )) as Cruzo1155;
+      market.address
+    );
+    await factory.deployed();
+
+    const createTokenTx = await factory
+      .connect(admin)
+      .create(
+        tokenDetails.name,
+        tokenDetails.symbol,
+        tokenDetails.collectionURI
+      );
+    const createTokenReceipt = await createTokenTx.wait();
+    const createTokenEvent = getEvent(createTokenReceipt, "NewTokenCreated");
+    token = await ethers.getContractAt(
+      "Cruzo1155",
+      createTokenEvent.args?.tokenAddress
+    );
   });
 
   it("Check Contract Data", async () => {
-    expect(await token.marketAddress()).equal(signers[5].address);
+    //expect(await token.marketAddress()).equal(signers[5].address);
     expect(await token.baseURI()).equal(tokenDetails.baseOnlyURI);
     await token.create(1, 1, admin.address, tokenDetails.ipfsHash, []);
     expect(await token.uri(1)).equal("ipfs://" + tokenDetails.ipfsHash);
@@ -97,21 +132,6 @@ describe("Testing Cruzo1155 Contract", () => {
     expect(await token.creators(3)).equal(signers[1].address);
     await token.connect(signers[1]).create(4, 1, signers[1].address, "", []);
     expect(await token.creators(4)).equal(signers[1].address);
-  });
-
-  it("Check marketAddress approval", async () => {
-    await token.create(1, 1000, admin.address, "", []);
-    await expect(
-      token
-        .connect(signers[1])
-        .safeTransferFrom(admin.address, signers[1].address, 1, 1, [])
-    ).to.be.reverted;
-    await expect(
-      token
-        .connect(signers[5])
-        .safeTransferFrom(admin.address, signers[1].address, 1, 1, [])
-    ).not.to.be.reverted;
-    expect(await token.balanceOf(signers[1].address, 1)).equal(1);
   });
 
   it("Should puase and unpause", async () => {

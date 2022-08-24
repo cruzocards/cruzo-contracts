@@ -52,10 +52,12 @@ const config: HardhatUserConfig = {
     },
     polygonMumbai: {
       url: "https://rpc-mumbai.maticvigil.com",
+      chainId: 80001,
       accounts: PKS,
     },
     polygonMainnet: {
       url: "https://rpc-mainnet.matic.network",
+      chainId: 137,
       accounts: PKS,
     },
     cronosMainnetBeta: {
@@ -78,6 +80,16 @@ const config: HardhatUserConfig = {
       url: "https://api.avax-test.network/ext/bc/C/rpc",
       gasPrice: 225000000000,
       chainId: 43113,
+      accounts: PKS,
+    },
+    moonbeam: {
+      url: "https://rpc.api.moonbeam.network",
+      chainId: 1284,
+      accounts: PKS,
+    },
+    moonbaseAlpha: {
+      url: "https://rpc.api.moonbase.moonbeam.network",
+      chainId: 1287,
       accounts: PKS,
     },
     bobaMainnet: {
@@ -108,6 +120,16 @@ const config: HardhatUserConfig = {
     xdcApothem: {
       url: "https://rpc.apothem.network",
       chainId: 51,
+      accounts: PKS,
+    },
+    l16Testnet: {
+      url: "https://rpc.l16.lukso.network",
+      chainId: 2828,
+      accounts: PKS,
+    },
+    evmosTestnet: {
+      url: "https://eth.bd.evmos.dev:8545",
+      chainId: 9000,
       accounts: PKS,
     },
   },

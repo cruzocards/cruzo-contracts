@@ -1,31 +1,20 @@
-node_modules
-
-#Hardhat files
-cache
-artifacts
-
+# Node Modules
 node_modules
 
 #Hardhat files
 cache
 artifacts
 typechain
+data/abi
 
+# Environment
 .env
-
-node_modules
-
-#Hardhat files
-cache
-artifacts
-
-typechain
 
 # Notes
 *.notes.md
 
-#
+# Yarn
 yarn-error.log
 
-#Idea
+# Idea
 .idea
