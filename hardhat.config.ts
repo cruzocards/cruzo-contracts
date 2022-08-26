@@ -51,12 +51,12 @@ const config: HardhatUserConfig = {
       accounts: PKS,
     },
     polygonMumbai: {
-      url: "https://rpc-mumbai.maticvigil.com",
+      url: "https://polygon-mumbai.infura.io/v3/2439f263ff0c4b29bfa0cf70da744d46", // https://rpc-mumbai.maticvigil.com
       chainId: 80001,
       accounts: PKS,
     },
     polygonMainnet: {
-      url: "https://rpc-mainnet.matic.network",
+      url: "https://polygon-mainnet.infura.io/v3/2439f263ff0c4b29bfa0cf70da744d46", // https://rpc-mainnet.matic.network
       chainId: 137,
       accounts: PKS,
     },

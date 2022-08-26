@@ -193,4 +193,9 @@ describe("Testing Cruzo1155 Contract", () => {
     expect(batchBal[0]).to.equal(998);
     expect(batchBal[1]).to.equal(998);
   });
+
+  it("Should not create a token twice with the same tokenId", async () => {
+    expect(await token.create(1, 1000, admin.address, "", []));
+    await expect(token.create(1, 1000, admin.address, "", [])).revertedWith('Token is already created');
+  });
 });
