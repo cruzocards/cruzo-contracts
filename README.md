@@ -5,6 +5,7 @@
 -   Cruzo1155
 -   CruzoMarket
 -   Factory
+-   Vault
 
 ## Networks
 
@@ -74,7 +75,7 @@ yarn abi
 
 ## Upgrades, Proxy approach
 
-We use UUPS proxy pattern for CruzoMarket contract and BeaconProxy for instances of Cruzo1155 contracts.
+We use UUPS proxy pattern for CruzoMarket, CruzoVault contracts and BeaconProxy for instances of Cruzo1155 contracts.
 
 **Requires:** openzeppelin/hardhat-upgrades
 
@@ -98,7 +99,7 @@ We use UUPS proxy pattern for CruzoMarket contract and BeaconProxy for instances
 
 `await upgrades.deployBeacon(TokenFactory)`
 
-#### To update UUPS proxy:
+#### To update Beacon proxy:
 
 `await upgrades.upgradeBeacon(beaconAddress, newTokenFactory)`
 

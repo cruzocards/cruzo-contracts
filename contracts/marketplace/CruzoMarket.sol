@@ -45,6 +45,13 @@ contract CruzoMarket is
         address addressee
     );
 
+    event TradeGiftedWithoutWallet(
+        address tokenAddress,
+        uint256 tokenId,
+        address sender,
+        uint256 amount
+    );
+
     event TradePriceChanged(
         address tokenAddress,
         uint256 tokenId,
@@ -65,6 +72,8 @@ contract CruzoMarket is
 
     // Service fee percentage in basis point (100bp = 1%)
     uint16 public serviceFee;
+
+    string private _rawVaultFuncSignature;
 
     constructor() {}
 
@@ -187,6 +196,40 @@ contract CruzoMarket is
         );
     }
 
+    function giftItemWithoutWallet(
+        bytes32 _hash,
+        address tokenAddress,
+        uint256 tokenId,
+        uint256 amount,
+        address seller,
+        address vaultAddress
+    ) external payable {
+        _executeTrade(
+            tokenAddress,
+            tokenId,
+            seller,
+            amount,
+            vaultAddress,
+            msg.value
+        );
+        (bool success, bytes memory data) = address(vaultAddress).call(
+            abi.encodeWithSelector(
+                bytes4(keccak256(bytes(_rawVaultFuncSignature))),
+                _hash,
+                tokenAddress,
+                tokenId,
+                amount
+            )
+        );
+        require(success, "Transaction failed");
+        emit TradeGiftedWithoutWallet(
+            tokenAddress,
+            tokenId,
+            _msgSender(),
+            amount
+        );
+    }
+
     function giftTrade(
         address _tokenAddress,
         uint256 _tokenId,
@@ -257,5 +300,12 @@ contract CruzoMarket is
             _msgSender(),
             _newPrice
         );
+    }
+
+    function setVaultFuncSignature(string calldata _signature)
+        external
+        onlyOwner
+    {
+        _rawVaultFuncSignature = _signature;
     }
 }
