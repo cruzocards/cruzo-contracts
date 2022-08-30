@@ -8,7 +8,7 @@ async function main() {
     }
 
     console.log("Deploying vault contract");
-    const Vault = await ethers.getContractFactory("Cruzo1155TempVault");
+    const Vault = await ethers.getContractFactory("Cruzo1155Vault");
 
     let marketAddress = getAddress(chainId)!.market;
     if (!marketAddress) {

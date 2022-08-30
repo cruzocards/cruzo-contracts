@@ -16,7 +16,7 @@ async function main() {
     }
 
     console.log("Upgrading vault contract");
-    const Vault = await ethers.getContractFactory("Cruzo1155TempVault");
+    const Vault = await ethers.getContractFactory("Cruzo1155Vault");
     const vault = await upgrades.upgradeProxy(addressEntry.vault, Vault);
     await vault.deployed();
 

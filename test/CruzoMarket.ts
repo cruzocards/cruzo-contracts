@@ -20,6 +20,8 @@ describe("CruzoMarket", () => {
 
   const serviceFee = 300;
   const serviceFeeBase = 10000;
+  const rawVaultFuncSignature = "holdGift(bytes32,address,uint256,uint256)"
+
 
   const tokenDetails = {
     name: "Cruzo",
@@ -39,7 +41,7 @@ describe("CruzoMarket", () => {
     const Cruzo1155 = await ethers.getContractFactory("Cruzo1155");
     const Factory = await ethers.getContractFactory("Cruzo1155Factory");
 
-    market = await upgrades.deployProxy(CruzoMarket, [serviceFee], {
+    market = await upgrades.deployProxy(CruzoMarket, [serviceFee, rawVaultFuncSignature], {
       kind: "uups",
     });
     await market.deployed();

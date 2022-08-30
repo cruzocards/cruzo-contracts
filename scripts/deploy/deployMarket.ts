@@ -9,9 +9,11 @@ async function main() {
 
   console.log("Deploying market contract");
   const marketServiceFee = parseInt(process.env.MARKET_SERVICE_FEE || "");
+  const rawVaultFuncSignature = parseInt(process.env.RAW_VAULT_FUNCTION_SIGNATURE || "");
+
   const Market = await ethers.getContractFactory("CruzoMarket");
 
-  const market = await upgrades.deployProxy(Market, [marketServiceFee], {
+  const market = await upgrades.deployProxy(Market, [marketServiceFee, rawVaultFuncSignature], {
     kind: "uups",
   });
   await market.deployed();

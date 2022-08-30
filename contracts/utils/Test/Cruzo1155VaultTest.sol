@@ -8,10 +8,10 @@ import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155HolderUpgradeable.sol";
 
 error Vault__GivenHashIsNotEmpty();
-error Vault__NoGiftByGivenHash();
+error Vault__NoGiftByGivenHash(bytes32);
 error Vault__CallerIsNotMarket();
 
-contract Cruzo1155TempVault_Test is
+contract Cruzo1155Vault_Test is
     Initializable,
     ContextUpgradeable,
     UUPSUpgradeable,
@@ -19,7 +19,7 @@ contract Cruzo1155TempVault_Test is
     OwnableUpgradeable
 {
     modifier isCallerMarket() {
-        if (_msgSender() == marketAddress) {
+        if (_msgSender() != marketAddress) {
             revert Vault__CallerIsNotMarket();
         }
         _;
@@ -27,14 +27,15 @@ contract Cruzo1155TempVault_Test is
 
     modifier isGiftExists(string calldata secretKey) {
         if (
-            hashToToken[keccak256(bytes(secretKey))].tokenAddress == address(0)
+            vaultedTokens[keccak256(bytes(secretKey))].tokenAddress ==
+            address(0)
         ) {
-            revert Vault__NoGiftByGivenHash();
+            revert Vault__NoGiftByGivenHash(keccak256(bytes(secretKey)));
         }
         _;
     }
-    modifier isGivenHashEmpty(string calldata _hash) {
-        if (hashToToken[bytes32(bytes(_hash))].tokenAddress != address(0)) {
+    modifier isGivenHashEmpty(bytes32 _hash) {
+        if (vaultedTokens[_hash].tokenAddress != address(0)) {
             revert Vault__GivenHashIsNotEmpty();
         }
         _;
@@ -42,11 +43,11 @@ contract Cruzo1155TempVault_Test is
 
     constructor() {}
 
-    function initialize(address inittialMarketAddress) public initializer {
+    function initialize(address _marketAddress) public initializer {
         __Ownable_init();
         __UUPSUpgradeable_init();
         __Context_init();
-        marketAddress = inittialMarketAddress;
+        marketAddress = _marketAddress;
     }
 
     function _authorizeUpgrade(address) internal override onlyOwner {}
@@ -63,21 +64,21 @@ contract Cruzo1155TempVault_Test is
         uint256 amount
     );
     struct TokenCredentials {
+        address tokenAddress;
         uint256 tokenId;
         uint256 amount;
-        address tokenAddress;
     }
 
     address public marketAddress;
 
-    mapping(bytes32 => TokenCredentials) hashToToken;
+    mapping(bytes32 => TokenCredentials) vaultedTokens;
 
-    function claimGift(string calldata userSecretKey)
+    function claimGift(string calldata _secretKey)
         external
-        isGiftExists(userSecretKey)
+        isGiftExists(_secretKey)
     {
-        bytes32 _hash = keccak256(bytes(userSecretKey));
-        TokenCredentials memory token = hashToToken[_hash];
+        bytes32 _hash = keccak256(bytes(_secretKey));
+        TokenCredentials memory token = vaultedTokens[_hash];
         IERC1155Upgradeable(token.tokenAddress).safeTransferFrom(
             address(this),
             _msgSender(),
@@ -85,7 +86,7 @@ contract Cruzo1155TempVault_Test is
             token.amount,
             ""
         );
-        delete hashToToken[_hash];
+        delete vaultedTokens[_hash];
         emit GiftClaimed(
             _msgSender(),
             token.tokenAddress,
@@ -95,16 +96,12 @@ contract Cruzo1155TempVault_Test is
     }
 
     function holdGift(
-        string calldata _hash,
+        bytes32 _hash,
         address tokenAddress,
         uint256 tokenId,
         uint256 amount
-    ) external isCallerMarket isGivenHashEmpty(_hash) {
-        hashToToken[bytes32(bytes(_hash))] = TokenCredentials(
-            tokenId,
-            amount,
-            tokenAddress
-        );
+    ) external isGivenHashEmpty(_hash) isCallerMarket {
+        vaultedTokens[_hash] = TokenCredentials(tokenAddress, tokenId, amount);
         emit GiftVaulted(tokenAddress, tokenId, amount);
     }
 

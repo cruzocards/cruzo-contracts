@@ -20,6 +20,8 @@ describe("CruzoMarket", () => {
     let claimer: SignerWithAddress;
 
     const serviceFee = 300;
+    const rawVaultFuncSignature = "holdGift(bytes32,address,uint256,uint256)"
+
 
     const tokenDetails = {
         name: "Cruzo",
@@ -38,12 +40,11 @@ describe("CruzoMarket", () => {
         const CruzoMarket = await ethers.getContractFactory("CruzoMarket");
         const Cruzo1155 = await ethers.getContractFactory("Cruzo1155");
         const Factory = await ethers.getContractFactory("Cruzo1155Factory");
-        const Vault = await ethers.getContractFactory("Cruzo1155TempVault");
-        const VaultV2 = await ethers.getContractFactory("Cruzo1155TempVault_Test");
+        const Vault = await ethers.getContractFactory("Cruzo1155Vault");
 
 
 
-        market = await upgrades.deployProxy(CruzoMarket, [serviceFee], {
+        market = await upgrades.deployProxy(CruzoMarket, [serviceFee, rawVaultFuncSignature], {
             kind: "uups",
         });
         await market.deployed();
@@ -64,7 +65,8 @@ describe("CruzoMarket", () => {
         });
         await vault.deployed();
 
-        await market.connect(owner).setVaultFuncSignature("holdGift(bytes32,address,uint256,uint256)");
+        await market.setVaultAddress(vault.address);
+
     });
 
 
@@ -110,7 +112,7 @@ describe("CruzoMarket", () => {
                 .emit(market, "TradeOpened")
                 .withArgs(token.address, tokenId, seller.address, tradeAmount, price);
 
-            expect(await market.connect(buyer).giftItemWithoutWallet(hash, token.address, tokenId, tradeAmount, seller.address, vault.address, { value: tradeAmount.mul(price) }))
+            expect(await market.connect(buyer).giftItemViaVault(token.address, tokenId, seller.address, tradeAmount, hash, { value: tradeAmount.mul(price) }))
 
             expect(await vault.connect(claimer).claimGift(secretKey))
 
@@ -133,7 +135,7 @@ describe("CruzoMarket", () => {
             const secretKey = "skdjf87ddg9ddfud9d9fu"
             const hash = keccak256(utf8Encode.encode(secretKey))
             const newContractFactory = await ethers.getContractFactory(
-                "Cruzo1155TempVault_Test"
+                "Cruzo1155Vault_Test"
             );
             const createTokenTx = await factory
                 .connect(owner)
@@ -163,7 +165,7 @@ describe("CruzoMarket", () => {
                 .emit(market, "TradeOpened")
                 .withArgs(token.address, tokenId, seller.address, tradeAmount, price);
 
-            expect(await market.connect(buyer).giftItemWithoutWallet(hash, token.address, tokenId, tradeAmount, seller.address, vault.address, { value: tradeAmount.mul(price) }))
+            expect(await market.connect(buyer).giftItemViaVault(token.address, tokenId, seller.address, tradeAmount, hash, { value: tradeAmount.mul(price) }))
 
             vault = await upgrades.upgradeProxy(
                 vault.address,
@@ -215,7 +217,7 @@ describe("CruzoMarket", () => {
                 .emit(market, "TradeOpened")
                 .withArgs(token.address, tokenId, seller.address, tradeAmount, price);
 
-            expect(await market.connect(buyer).giftItemWithoutWallet(hash, token.address, tokenId, tradeAmount, seller.address, vault.address, { value: tradeAmount.mul(price) }))
+            expect(await market.connect(buyer).giftItemViaVault(token.address, tokenId, seller.address, tradeAmount, hash, { value: tradeAmount.mul(price) }))
 
             await upgrades.upgradeBeacon(beacon, Cruzo1155_v2);
 
@@ -240,7 +242,7 @@ describe("CruzoMarket", () => {
             const hash = keccak256(utf8Encode.encode(secretKey))
             const Cruzo1155_v2 = await ethers.getContractFactory("Cruzo1155_v2");
             const newContractFactory = await ethers.getContractFactory(
-                "Cruzo1155TempVault_Test"
+                "Cruzo1155Vault_Test"
             );
 
             const createTokenTx = await factory
@@ -271,7 +273,7 @@ describe("CruzoMarket", () => {
                 .emit(market, "TradeOpened")
                 .withArgs(token.address, tokenId, seller.address, tradeAmount, price);
 
-            expect(await market.connect(buyer).giftItemWithoutWallet(hash, token.address, tokenId, tradeAmount, seller.address, vault.address, { value: tradeAmount.mul(price) }))
+            expect(await market.connect(buyer).giftItemViaVault(token.address, tokenId, seller.address, tradeAmount, hash, { value: tradeAmount.mul(price) }))
 
             await upgrades.upgradeBeacon(beacon, Cruzo1155_v2);
 
