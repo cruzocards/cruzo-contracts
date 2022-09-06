@@ -18,6 +18,14 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
 dotenv.config();
 const PKS =
   process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [];
+const {
+  ETHERSCAN_API_KEY = "",
+  POLYGONSCAN_API_KEY = "",
+  BSC_API_KEY = "",
+  MOONBEAM_API_KEY = "",
+  EVMOS_API_KEY = "",
+} = process.env;
+
 const config: HardhatUserConfig = {
   solidity: {
     version: "0.8.7",
@@ -134,7 +142,27 @@ const config: HardhatUserConfig = {
     },
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: {
+      mainnet: ETHERSCAN_API_KEY,
+      rinkeby: ETHERSCAN_API_KEY,
+      polygon: POLYGONSCAN_API_KEY,
+      polygonMumbai: POLYGONSCAN_API_KEY,
+      bsc: BSC_API_KEY,
+      bscTestnet: BSC_API_KEY,
+      moonbeam: MOONBEAM_API_KEY,
+      moonbaseAlpha: MOONBEAM_API_KEY,
+      evmosTestnet: EVMOS_API_KEY,
+    },
+    customChains: [
+      {
+        network: "evmosTestnet",
+        chainId: 9000,
+        urls: {
+          apiURL: "https://evm.evmos.dev/api",
+          browserURL: "https://evm.evmos.dev",
+        },
+      },
+    ],
   },
   abiExporter: {
     path: "./data/abi",

@@ -73,6 +73,12 @@ yarn deployToken --network <network>
 yarn abi
 ```
 
+### Verify contract
+
+```sh
+yarn verify --network <netowrk> <contract> [<arg1> <arg2> ...]
+```
+
 ## Upgrades, Proxy approach
 
 We use UUPS proxy pattern for CruzoMarket, CruzoVault contracts and BeaconProxy for instances of Cruzo1155 contracts.
