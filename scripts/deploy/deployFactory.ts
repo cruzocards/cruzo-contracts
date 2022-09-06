@@ -4,6 +4,7 @@ import {
   getAddress,
   setAddress,
 } from "../../utils/addressTracking";
+import { RAW_FACTORY_INITIALIZE_SIGNATURE } from "../../constants/signatures"
 
 async function main() {
   const chainId = network.config.chainId;
@@ -20,7 +21,7 @@ async function main() {
   const Factory = await ethers.getContractFactory("Cruzo1155Factory");
   const factory = await Factory.deploy(
     beaconAddress,
-    "initialize(string,string,string,string,address,address)",
+    RAW_FACTORY_INITIALIZE_SIGNATURE,
     "https://cruzo.market",
     marketAddress
   );

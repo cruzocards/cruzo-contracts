@@ -6,6 +6,8 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { Cruzo1155 } from "../typechain";
 import { Contract } from "ethers";
 import { getEvent } from "../utils/getEvent";
+import { RAW_VAULT_FUNCTION_SIGNATURE, RAW_FACTORY_INITIALIZE_SIGNATURE } from "../constants/signatures"
+
 
 const tokenDetails = {
   name: "Cruzo",
@@ -29,7 +31,7 @@ describe("Testing Cruzo1155 Contract", () => {
   let factory: Contract;
   let token: Contract;
   const serviceFee = 300;
-  const rawVaultFuncSignature = "holdGift(bytes32,address,uint256,uint256)"
+  const rawVaultFuncSignature = RAW_VAULT_FUNCTION_SIGNATURE
 
   before(async () => {
     signers = await ethers.getSigners();
@@ -51,7 +53,7 @@ describe("Testing Cruzo1155 Contract", () => {
 
     factory = await Factory.deploy(
       beacon.address,
-      "initialize(string,string,string,string,address,address)",
+      RAW_FACTORY_INITIALIZE_SIGNATURE,
       tokenDetails.baseOnlyURI,
       market.address
     );

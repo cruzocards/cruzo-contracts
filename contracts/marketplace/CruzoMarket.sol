@@ -81,14 +81,14 @@ contract CruzoMarket is
 
     function initialize(
         uint16 _serviceFee,
-        string calldata initialRawVaultFuncSignature
+        string calldata _initialRawVaultFuncSignature
     ) public initializer {
         __Ownable_init();
         __UUPSUpgradeable_init();
         __Context_init();
         __ReentrancyGuard_init();
         setServiceFee(_serviceFee);
-        _rawVaultFuncSignature = initialRawVaultFuncSignature;
+        _rawVaultFuncSignature = _initialRawVaultFuncSignature;
     }
 
     function _authorizeUpgrade(address) internal override onlyOwner {}
