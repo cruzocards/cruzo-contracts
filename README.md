@@ -31,6 +31,8 @@
 | XDC        | testnet | xdcApothem        |
 | Lukso      | testnet | l16Testnet        |
 | Evmos      | testnet | evmosTestnet      |
+| Cube       | mainnet | cubeMainnet       |
+| Cube       | testnet | cubeTestnet       |
 
 ## Scripts
 
@@ -71,6 +73,12 @@ yarn deployToken --network <network>
 
 ```sh
 yarn abi
+```
+
+### Verify contract
+
+```sh
+yarn verify --network <netowrk> <contract> [<arg1> <arg2> ...]
 ```
 
 ## Upgrades, Proxy approach

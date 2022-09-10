@@ -21,7 +21,7 @@
     "husky": "^8.0.0"
   },
   "dependencies": {
-    "@nomiclabs/hardhat-etherscan": "^2.1.6",
+    "@nomiclabs/hardhat-etherscan": "^3.0.3",
     "@openzeppelin/contracts": "^4.3.2",
     "@openzeppelin/contracts-upgradeable": "^4.3.2",
     "@openzeppelin/hardhat-upgrades": "^1.19.0",
@@ -46,6 +46,7 @@
     "deployToken": "npx hardhat run scripts/deploy/deployToken.ts",
     "upgradeBeacon": "npx hardhat run scripts/upgrade/upgradeBeacon.ts",
     "upgradeMarket": "npx hardhat run scripts/upgrade/upgradeMarket.ts",
+    "verify": "npx hardhat verify",
     "abi": "npx hardhat export-abi",
     "test": "npx hardhat test",
     "lint": "npx prettier --write 'contracts/**/*.sol' && npx solhint --fix 'contracts/**/*.sol'",
