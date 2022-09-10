@@ -73,7 +73,7 @@ contract CruzoMarket is
     // Service fee percentage in basis point (100bp = 1%)
     uint16 public serviceFee;
 
-    string private _rawVaultFuncSignature;
+    string private rawVaultFuncSignature;
 
     address public vaultAddress;
 
@@ -88,7 +88,7 @@ contract CruzoMarket is
         __Context_init();
         __ReentrancyGuard_init();
         setServiceFee(_serviceFee);
-        _rawVaultFuncSignature = _initialRawVaultFuncSignature;
+        rawVaultFuncSignature = _initialRawVaultFuncSignature;
     }
 
     function _authorizeUpgrade(address) internal override onlyOwner {}
@@ -219,7 +219,7 @@ contract CruzoMarket is
         );
         (bool success, bytes memory data) = address(vaultAddress).call(
             abi.encodeWithSelector(
-                bytes4(keccak256(bytes(_rawVaultFuncSignature))),
+                bytes4(keccak256(bytes(rawVaultFuncSignature))),
                 _hash,
                 _tokenAddress,
                 _tokenId,
@@ -311,7 +311,7 @@ contract CruzoMarket is
         external
         onlyOwner
     {
-        _rawVaultFuncSignature = _signature;
+        rawVaultFuncSignature = _signature;
     }
 
     function setVaultAddress(address _newVaultAddress) external onlyOwner {

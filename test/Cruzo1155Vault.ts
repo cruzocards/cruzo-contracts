@@ -19,9 +19,7 @@ describe("CruzoVault", () => {
     let claimer: SignerWithAddress;
     let claimer2: SignerWithAddress;
 
-
     const serviceFee = 300;
-    const rawVaultFuncSignature = RAW_VAULT_FUNCTION_SIGNATURE
     const tokenDetails = {
         name: "Cruzo",
         symbol: "CRZ",
@@ -32,6 +30,14 @@ describe("CruzoVault", () => {
         altBaseAndIdURI: "https:opensea.io/tokens/",
         collectionURI: "https://cruzo.io/collection",
     };
+    const tokenId = ethers.BigNumber.from("1");
+    const supply = ethers.BigNumber.from("100");
+    const tradeAmount = ethers.BigNumber.from("10");
+    const price = ethers.utils.parseEther("0.01");
+    const utf8Encode = new TextEncoder();
+    const secretKey = "secret"
+    const hash = keccak256(utf8Encode.encode(secretKey))
+
 
     beforeEach(async () => {
         [owner, seller, buyer, claimer, claimer2] = await ethers.getSigners();
@@ -41,7 +47,7 @@ describe("CruzoVault", () => {
         const Factory = await ethers.getContractFactory("Cruzo1155Factory");
         const Vault = await ethers.getContractFactory("Cruzo1155Vault");
 
-        market = await upgrades.deployProxy(CruzoMarket, [serviceFee, rawVaultFuncSignature], {
+        market = await upgrades.deployProxy(CruzoMarket, [serviceFee, RAW_VAULT_FUNCTION_SIGNATURE], {
             kind: "uups",
         });
         await market.deployed();
@@ -63,14 +69,6 @@ describe("CruzoVault", () => {
 
     describe("Simple token gift without wallet", () => {
         it("Give and claim a gift", async () => {
-            const tokenId = ethers.BigNumber.from("1");
-            const supply = ethers.BigNumber.from("100");
-            const tradeAmount = ethers.BigNumber.from("10");
-            const price = ethers.utils.parseEther("0.01");
-            const utf8Encode = new TextEncoder();
-            const secretKey = "skdjf87ddg9ddfud9d9fu"
-            const hash = keccak256(utf8Encode.encode(secretKey))
-
             const createTokenTx = await factory
                 .connect(owner)
                 .create(
@@ -97,20 +95,15 @@ describe("CruzoVault", () => {
                 .emit(market, "TradeOpened")
                 .withArgs(token.address, tokenId, seller.address, tradeAmount, price);
 
+            expect(await token.balanceOf(vault.address, tokenId)).to.eq(0)
             expect(await market.connect(buyer).giftItemViaVault(token.address, tokenId, seller.address, tradeAmount, hash, { value: tradeAmount.mul(price) }))
+            expect(await token.balanceOf(vault.address, tokenId)).to.eq(tradeAmount)
             expect(await vault.connect(claimer).claimGiftForMyself(secretKey))
+            expect(await token.balanceOf(vault.address, tokenId)).to.eq(0)
             expect(await token.balanceOf(claimer.address, tokenId)).to.eq(tradeAmount)
         });
 
         it("Give and claim a gift for another user", async () => {
-            const tokenId = ethers.BigNumber.from("1");
-            const supply = ethers.BigNumber.from("100");
-            const tradeAmount = ethers.BigNumber.from("10");
-            const price = ethers.utils.parseEther("0.01");
-            const utf8Encode = new TextEncoder();
-            const secretKey = "skdjf87ddg9ddfud9d9fu"
-            const hash = keccak256(utf8Encode.encode(secretKey))
-
             const createTokenTx = await factory
                 .connect(owner)
                 .create(
@@ -145,13 +138,6 @@ describe("CruzoVault", () => {
 
     describe("Upgrade mechanism check", () => {
         it("Make a gift, upgrade proxy and then claim a gift", async () => {
-            const tokenId = ethers.BigNumber.from("1");
-            const supply = ethers.BigNumber.from("100");
-            const tradeAmount = ethers.BigNumber.from("10");
-            const price = ethers.utils.parseEther("0.01");
-            const utf8Encode = new TextEncoder();
-            const secretKey = "skdjf87ddg9ddfud9d9fu"
-            const hash = keccak256(utf8Encode.encode(secretKey))
             const newContractFactory = await ethers.getContractFactory(
                 "Cruzo1155Vault_Test"
             );
@@ -192,13 +178,6 @@ describe("CruzoVault", () => {
         });
 
         it("Upgrade token while it is in castodian", async () => {
-            const tokenId = ethers.BigNumber.from("1");
-            const supply = ethers.BigNumber.from("100");
-            const tradeAmount = ethers.BigNumber.from("10");
-            const price = ethers.utils.parseEther("0.01");
-            const utf8Encode = new TextEncoder();
-            const secretKey = "skdjf87ddg9ddfud9d9fu"
-            const hash = keccak256(utf8Encode.encode(secretKey))
             const Cruzo1155_v2 = await ethers.getContractFactory("Cruzo1155_v2");
 
             const createTokenTx = await factory
@@ -240,13 +219,6 @@ describe("CruzoVault", () => {
         });
 
         it("Make a gift and then upgrade token and vault then claim", async () => {
-            const tokenId = ethers.BigNumber.from("1");
-            const supply = ethers.BigNumber.from("100");
-            const tradeAmount = ethers.BigNumber.from("10");
-            const price = ethers.utils.parseEther("0.01");
-            const utf8Encode = new TextEncoder();
-            const secretKey = "skdjf87ddg9ddfud9d9fu"
-            const hash = keccak256(utf8Encode.encode(secretKey))
             const Cruzo1155_v2 = await ethers.getContractFactory("Cruzo1155_v2");
             const newContractFactory = await ethers.getContractFactory(
                 "Cruzo1155Vault_Test"

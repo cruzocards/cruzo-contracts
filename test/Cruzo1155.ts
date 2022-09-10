@@ -31,7 +31,6 @@ describe("Testing Cruzo1155 Contract", () => {
   let factory: Contract;
   let token: Contract;
   const serviceFee = 300;
-  const rawVaultFuncSignature = RAW_VAULT_FUNCTION_SIGNATURE
 
   before(async () => {
     signers = await ethers.getSigners();
@@ -43,7 +42,7 @@ describe("Testing Cruzo1155 Contract", () => {
     const Cruzo1155 = await ethers.getContractFactory("Cruzo1155");
     const Factory = await ethers.getContractFactory("Cruzo1155Factory");
 
-    market = await upgrades.deployProxy(CruzoMarket, [serviceFee, rawVaultFuncSignature], {
+    market = await upgrades.deployProxy(CruzoMarket, [serviceFee, RAW_VAULT_FUNCTION_SIGNATURE], {
       kind: "uups",
     });
     await market.deployed();
