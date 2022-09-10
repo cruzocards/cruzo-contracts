@@ -24,6 +24,7 @@ const {
   BSC_API_KEY = "",
   MOONBEAM_API_KEY = "",
   EVMOS_API_KEY = "",
+  CUBE_API_KEY = "",
 } = process.env;
 
 const config: HardhatUserConfig = {
@@ -140,6 +141,18 @@ const config: HardhatUserConfig = {
       chainId: 9000,
       accounts: PKS,
     },
+    cubeMainnet: {
+      url: "https://http-mainnet.cube.network",
+      chainId: 1818,
+      accounts: PKS,
+    },
+    cubeTestnet: {
+      url: "https://http-testnet.cube.network",
+      chainId: 1819,
+      accounts: PKS,
+      // gas: 1000000,
+      // gasPrice: 2000000000,
+    },
   },
   etherscan: {
     apiKey: {
@@ -152,6 +165,7 @@ const config: HardhatUserConfig = {
       moonbeam: MOONBEAM_API_KEY,
       moonbaseAlpha: MOONBEAM_API_KEY,
       evmosTestnet: EVMOS_API_KEY,
+      cubeTestnet: CUBE_API_KEY,
     },
     customChains: [
       {
@@ -160,6 +174,14 @@ const config: HardhatUserConfig = {
         urls: {
           apiURL: "https://evm.evmos.dev/api",
           browserURL: "https://evm.evmos.dev",
+        },
+      },
+      {
+        network: "cubeTestnet",
+        chainId: 1819,
+        urls: {
+          apiURL: "https://openapi-testnet.cubescan.network/api",
+          browserURL: "https://testnet.cubescan.network",
         },
       },
     ],

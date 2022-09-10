@@ -31,6 +31,8 @@
 | XDC        | testnet | xdcApothem        |
 | Lukso      | testnet | l16Testnet        |
 | Evmos      | testnet | evmosTestnet      |
+| Cube       | mainnet | cubeMainnet       |
+| Cube       | testnet | cubeTestnet       |
 
 ## Scripts
 
