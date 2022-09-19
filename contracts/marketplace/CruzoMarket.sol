@@ -45,7 +45,7 @@ contract CruzoMarket is
         address addressee
     );
 
-    event TradeGiftedWithoutWallet(
+    event TradeGiftedViaVault(
         address tokenAddress,
         uint256 tokenId,
         address sender,
@@ -73,16 +73,22 @@ contract CruzoMarket is
     // Service fee percentage in basis point (100bp = 1%)
     uint16 public serviceFee;
 
-    string private _rawVaultFuncSignature;
+    string private rawVaultFuncSignature;
+
+    address public vaultAddress;
 
     constructor() {}
 
-    function initialize(uint16 _serviceFee) public initializer {
+    function initialize(
+        uint16 _serviceFee,
+        string calldata _initialRawVaultFuncSignature
+    ) public initializer {
         __Ownable_init();
         __UUPSUpgradeable_init();
         __Context_init();
         __ReentrancyGuard_init();
         setServiceFee(_serviceFee);
+        rawVaultFuncSignature = _initialRawVaultFuncSignature;
     }
 
     function _authorizeUpgrade(address) internal override onlyOwner {}
@@ -196,37 +202,36 @@ contract CruzoMarket is
         );
     }
 
-    function giftItemWithoutWallet(
-        bytes32 _hash,
-        address tokenAddress,
-        uint256 tokenId,
-        uint256 amount,
-        address seller,
-        address vaultAddress
+    function giftItemViaVault(
+        address _tokenAddress,
+        uint256 _tokenId,
+        address _seller,
+        uint256 _amount,
+        bytes32 _hash
     ) external payable {
         _executeTrade(
-            tokenAddress,
-            tokenId,
-            seller,
-            amount,
+            _tokenAddress,
+            _tokenId,
+            _seller,
+            _amount,
             vaultAddress,
             msg.value
         );
         (bool success, bytes memory data) = address(vaultAddress).call(
             abi.encodeWithSelector(
-                bytes4(keccak256(bytes(_rawVaultFuncSignature))),
+                bytes4(keccak256(bytes(rawVaultFuncSignature))),
                 _hash,
-                tokenAddress,
-                tokenId,
-                amount
+                _tokenAddress,
+                _tokenId,
+                _amount
             )
         );
         require(success, "Transaction failed");
-        emit TradeGiftedWithoutWallet(
-            tokenAddress,
-            tokenId,
+        emit TradeGiftedViaVault(
+            _tokenAddress,
+            _tokenId,
             _msgSender(),
-            amount
+            _amount
         );
     }
 
@@ -306,6 +311,10 @@ contract CruzoMarket is
         external
         onlyOwner
     {
-        _rawVaultFuncSignature = _signature;
+        rawVaultFuncSignature = _signature;
+    }
+
+    function setVaultAddress(address _newVaultAddress) external onlyOwner {
+        vaultAddress = _newVaultAddress;
     }
 }

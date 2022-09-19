@@ -1,5 +1,6 @@
 import { ethers, network, upgrades } from "hardhat";
 import { ContractType, setAddress } from "../../utils/addressTracking";
+import { RAW_VAULT_FUNCTION_SIGNATURE } from "../../constants/signatures"
 
 async function main() {
   const chainId = network.config.chainId;
@@ -9,9 +10,11 @@ async function main() {
 
   console.log("Deploying market contract");
   const marketServiceFee = parseInt(process.env.MARKET_SERVICE_FEE || "");
+  const rawVaultFuncSignature = RAW_VAULT_FUNCTION_SIGNATURE;
+
   const Market = await ethers.getContractFactory("CruzoMarket");
 
-  const market = await upgrades.deployProxy(Market, [marketServiceFee], {
+  const market = await upgrades.deployProxy(Market, [marketServiceFee, rawVaultFuncSignature], {
     kind: "uups",
   });
   await market.deployed();

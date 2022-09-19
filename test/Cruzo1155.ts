@@ -6,6 +6,8 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { Cruzo1155 } from "../typechain";
 import { Contract } from "ethers";
 import { getEvent } from "../utils/getEvent";
+import { RAW_VAULT_FUNCTION_SIGNATURE, RAW_FACTORY_INITIALIZE_SIGNATURE } from "../constants/signatures"
+
 
 const tokenDetails = {
   name: "Cruzo",
@@ -40,7 +42,7 @@ describe("Testing Cruzo1155 Contract", () => {
     const Cruzo1155 = await ethers.getContractFactory("Cruzo1155");
     const Factory = await ethers.getContractFactory("Cruzo1155Factory");
 
-    market = await upgrades.deployProxy(CruzoMarket, [serviceFee], {
+    market = await upgrades.deployProxy(CruzoMarket, [serviceFee, RAW_VAULT_FUNCTION_SIGNATURE], {
       kind: "uups",
     });
     await market.deployed();
@@ -50,7 +52,7 @@ describe("Testing Cruzo1155 Contract", () => {
 
     factory = await Factory.deploy(
       beacon.address,
-      "initialize(string,string,string,string,address,address)",
+      RAW_FACTORY_INITIALIZE_SIGNATURE,
       tokenDetails.baseOnlyURI,
       market.address
     );

@@ -5,6 +5,8 @@ import { Cruzo1155 } from "../typechain/Cruzo1155";
 import { CruzoMarket } from "../typechain/CruzoMarket";
 import { BigNumberish, Contract } from "ethers";
 import { getEvent } from "../utils/getEvent";
+import { RAW_VAULT_FUNCTION_SIGNATURE, RAW_FACTORY_INITIALIZE_SIGNATURE } from "../constants/signatures"
+
 
 //"8da4ef21b864d2cc526dbdb2a120bd2874c36c9d0a1fb7f8c63d7f7a8b41de8f"
 describe("CruzoMarket", () => {
@@ -39,7 +41,7 @@ describe("CruzoMarket", () => {
     const Cruzo1155 = await ethers.getContractFactory("Cruzo1155");
     const Factory = await ethers.getContractFactory("Cruzo1155Factory");
 
-    market = await upgrades.deployProxy(CruzoMarket, [serviceFee], {
+    market = await upgrades.deployProxy(CruzoMarket, [serviceFee, RAW_VAULT_FUNCTION_SIGNATURE], {
       kind: "uups",
     });
     await market.deployed();
@@ -49,7 +51,7 @@ describe("CruzoMarket", () => {
 
     factory = await Factory.deploy(
       beacon.address,
-      "initialize(string,string,string,string,address,address)",
+      RAW_FACTORY_INITIALIZE_SIGNATURE,
       "https://cruzo.market",
       market.address
     );

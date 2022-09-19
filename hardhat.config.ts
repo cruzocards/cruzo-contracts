@@ -154,38 +154,38 @@ const config: HardhatUserConfig = {
       // gasPrice: 2000000000,
     },
   },
-  etherscan: {
-    apiKey: {
-      mainnet: ETHERSCAN_API_KEY,
-      rinkeby: ETHERSCAN_API_KEY,
-      polygon: POLYGONSCAN_API_KEY,
-      polygonMumbai: POLYGONSCAN_API_KEY,
-      bsc: BSC_API_KEY,
-      bscTestnet: BSC_API_KEY,
-      moonbeam: MOONBEAM_API_KEY,
-      moonbaseAlpha: MOONBEAM_API_KEY,
-      evmosTestnet: EVMOS_API_KEY,
-      cubeTestnet: CUBE_API_KEY,
-    },
-    customChains: [
-      {
-        network: "evmosTestnet",
-        chainId: 9000,
-        urls: {
-          apiURL: "https://evm.evmos.dev/api",
-          browserURL: "https://evm.evmos.dev",
-        },
-      },
-      {
-        network: "cubeTestnet",
-        chainId: 1819,
-        urls: {
-          apiURL: "https://openapi-testnet.cubescan.network/api",
-          browserURL: "https://testnet.cubescan.network",
-        },
-      },
-    ],
-  },
+  // etherscan: {
+  //   apiKey: {
+  //     mainnet: ETHERSCAN_API_KEY,
+  //     rinkeby: ETHERSCAN_API_KEY,
+  //     polygon: POLYGONSCAN_API_KEY,
+  //     polygonMumbai: POLYGONSCAN_API_KEY,
+  //     bsc: BSC_API_KEY,
+  //     bscTestnet: BSC_API_KEY,
+  //     moonbeam: MOONBEAM_API_KEY,
+  //     moonbaseAlpha: MOONBEAM_API_KEY,
+  //     evmosTestnet: EVMOS_API_KEY,
+  //     cubeTestnet: CUBE_API_KEY,
+  //   },
+  //   customChains: [
+  //     {
+  //       network: "evmosTestnet",
+  //       chainId: 9000,
+  //       urls: {
+  //         apiURL: "https://evm.evmos.dev/api",
+  //         browserURL: "https://evm.evmos.dev",
+  //       },
+  //     },
+  //     {
+  //       network: "cubeTestnet",
+  //       chainId: 1819,
+  //       urls: {
+  //         apiURL: "https://openapi-testnet.cubescan.network/api",
+  //         browserURL: "https://testnet.cubescan.network",
+  //       },
+  //     },
+  //   ],
+  // },
   abiExporter: {
     path: "./data/abi",
     runOnCompile: true,
