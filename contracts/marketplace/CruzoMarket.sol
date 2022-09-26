@@ -10,6 +10,16 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 
+error Market__GivenAmountIsZeroOrBelow(uint256);
+error Market__TradeIsAlreadyOpen(address, uint256, address);
+error Market__TradeCanNotBeExecutedBySeller();
+error Market__AskedAmountIsBiggerThanTradeAmount(uint256, uint256);
+error Market__IncorrectSentEtherValue(uint256, uint256);
+error Market__WrongReceiver(address);
+error Market__GivenTradeIsNotOpen();
+error Market__ServiceFeeCanNotBeHigherThan10kPoints(uint256);
+error Market__GiftViaVaultFailed(bytes);
+
 contract CruzoMarket is
     Initializable,
     ContextUpgradeable,
@@ -18,6 +28,90 @@ contract CruzoMarket is
     OwnableUpgradeable,
     ReentrancyGuardUpgradeable
 {
+    modifier isAmountCorrect(uint256 _amount) {
+        if (_amount == 0) {
+            revert Market__GivenAmountIsZeroOrBelow(_amount);
+        }
+        _;
+    }
+
+    modifier isNotTradeOpened(address _tokenAddress, uint256 _tokenId) {
+        if (trades[_tokenAddress][_tokenId][_msgSender()].amount != 0) {
+            revert Market__TradeIsAlreadyOpen(
+                _tokenAddress,
+                _tokenId,
+                _msgSender()
+            );
+        }
+        _;
+    }
+
+    modifier isBuyerNotASeller(address _seller) {
+        if (_msgSender() == _seller) {
+            revert Market__TradeCanNotBeExecutedBySeller();
+        }
+        _;
+    }
+
+    modifier isEnoughItemsInTrade(
+        address _tokenAddress,
+        uint256 _tokenId,
+        address _seller,
+        uint256 _givenAmount
+    ) {
+        uint256 tradeAmount = trades[_tokenAddress][_tokenId][_seller].amount;
+        if (_givenAmount > tradeAmount) {
+            revert Market__AskedAmountIsBiggerThanTradeAmount(
+                tradeAmount,
+                _givenAmount
+            );
+        }
+        _;
+    }
+
+    modifier isEtherValueCorrect(
+        uint256 _value,
+        address _tokenAddress,
+        uint256 _tokenId,
+        address _seller,
+        uint256 _amount
+    ) {
+        uint256 tradePrice = trades[_tokenAddress][_tokenId][_seller].price;
+
+        if (_value != tradePrice * _amount) {
+            revert Market__IncorrectSentEtherValue(
+                _value,
+                tradePrice * _amount
+            );
+        }
+        _;
+    }
+
+    modifier isReceiveeCorrect(address _receiver) {
+        if (
+            _receiver == address(0) ||
+            _receiver == address(this) ||
+            _receiver == _msgSender()
+        ) {
+            revert Market__WrongReceiver(_receiver);
+        }
+        _;
+    }
+
+    modifier isTradeOpened(address _tokenAddress, uint256 _tokenId) {
+        if (trades[_tokenAddress][_tokenId][_msgSender()].amount == 0) {
+            revert Market__GivenTradeIsNotOpen();
+        }
+        _;
+    }
+
+    modifier isServiceFeeCorrect(uint256 _newFee) {
+        if (_newFee > 10000) {
+            revert Market__ServiceFeeCanNotBeHigherThan10kPoints(_newFee);
+        }
+        _;
+    }
+
     event TradeOpened(
         address tokenAddress,
         uint256 tokenId,
@@ -98,12 +192,12 @@ contract CruzoMarket is
         uint256 _tokenId,
         uint256 _amount,
         uint256 _price
-    ) external nonReentrant {
-        require(_amount > 0, "Amount must be greater than 0");
-        require(
-            trades[_tokenAddress][_tokenId][_msgSender()].amount == 0,
-            "Trade is already open"
-        );
+    )
+        external
+        nonReentrant
+        isAmountCorrect(_amount)
+        isNotTradeOpened(_tokenAddress, _tokenId)
+    {
         IERC1155Upgradeable(_tokenAddress).safeTransferFrom(
             _msgSender(),
             address(this),
@@ -130,20 +224,15 @@ contract CruzoMarket is
         address _seller,
         uint256 _amount,
         address _to,
-        uint256 value
-    ) internal nonReentrant {
-        require(
-            _msgSender() != _seller,
-            "Trade cannot be executed by the seller"
-        );
-        Trade storage trade = trades[_tokenAddress][_tokenId][_seller];
-        require(_amount > 0, "Amount must be greater than 0");
-        require(trade.amount >= _amount, "Not enough items in trade");
-        require(
-            value == trade.price * _amount,
-            "Ether value sent is incorrect"
-        );
-        trade.amount -= _amount;
+        uint256 _value
+    )
+        internal
+        nonReentrant
+        isBuyerNotASeller(_seller)
+        isEnoughItemsInTrade(_tokenAddress, _tokenId, _seller, _amount)
+        isEtherValueCorrect(_value, _tokenAddress, _tokenId, _seller, _amount)
+        isAmountCorrect(_amount)
+    {
         IERC1155Upgradeable(_tokenAddress).safeTransferFrom(
             address(this),
             _to,
@@ -153,8 +242,9 @@ contract CruzoMarket is
         );
         AddressUpgradeable.sendValue(
             payable(_seller),
-            (value * (10000 - uint256(serviceFee))) / 10000
+            (_value * (10000 - uint256(serviceFee))) / 10000
         );
+        trades[_tokenAddress][_tokenId][_seller].amount -= _amount;
         emit TradeExecuted(
             _tokenAddress,
             _tokenId,
@@ -187,11 +277,7 @@ contract CruzoMarket is
         address _seller,
         uint256 _amount,
         address _to
-    ) external payable {
-        require(_msgSender() != _to, "Useless operation");
-        require(_to != address(0), "Trying to send gift to 0 address");
-        require(_to != address(this), "Trying to send gift to market");
-
+    ) external payable isReceiveeCorrect(_to) {
         _executeTrade(
             _tokenAddress,
             _tokenId,
@@ -226,7 +312,9 @@ contract CruzoMarket is
                 _amount
             )
         );
-        require(success, "Transaction failed");
+        if (!success) {
+            revert Market__GiftViaVaultFailed(data);
+        }
         emit TradeGiftedViaVault(
             _tokenAddress,
             _tokenId,
@@ -240,14 +328,14 @@ contract CruzoMarket is
         uint256 _tokenId,
         uint256 _amount,
         address _to
-    ) external nonReentrant {
-        require(_msgSender() != _to, "Useless operation");
-        require(_to != address(0), "Trying to send gift to 0 address");
-        require(_to != address(this), "Trying to send gift to market");
+    )
+        external
+        nonReentrant
+        isReceiveeCorrect(_to)
+        isAmountCorrect(_amount)
+        isEnoughItemsInTrade(_tokenAddress, _tokenId, _msgSender(), _amount)
+    {
         Trade storage trade = trades[_tokenAddress][_tokenId][_msgSender()];
-        require(_amount > 0, "Amount must be greater than 0");
-        require(trade.amount >= _amount, "Not enough items in trade");
-        trade.amount -= _amount;
         IERC1155Upgradeable(_tokenAddress).safeTransferFrom(
             address(this),
             _to,
@@ -255,15 +343,16 @@ contract CruzoMarket is
             _amount,
             ""
         );
+        trade.amount -= _amount;
         emit TradeGifted(_tokenAddress, _tokenId, _msgSender(), _amount, _to);
     }
 
     function closeTrade(address _tokenAddress, uint256 _tokenId)
         external
         nonReentrant
+        isTradeOpened(_tokenAddress, _tokenId)
     {
         Trade memory trade = trades[_tokenAddress][_tokenId][_msgSender()];
-        require(trade.amount > 0, "Trade is not open");
         IERC1155Upgradeable(_tokenAddress).safeTransferFrom(
             address(this),
             _msgSender(),
@@ -275,11 +364,11 @@ contract CruzoMarket is
         emit TradeClosed(_tokenAddress, _tokenId, _msgSender());
     }
 
-    function setServiceFee(uint16 _serviceFee) public onlyOwner {
-        require(
-            _serviceFee <= 10000,
-            "Service fee can not exceed 10,000 basis points"
-        );
+    function setServiceFee(uint16 _serviceFee)
+        public
+        onlyOwner
+        isServiceFeeCorrect(_serviceFee)
+    {
         serviceFee = _serviceFee;
     }
 
@@ -295,9 +384,8 @@ contract CruzoMarket is
         address _tokenAddress,
         uint256 _tokenId,
         uint256 _newPrice
-    ) external nonReentrant {
+    ) external nonReentrant isTradeOpened(_tokenAddress, _tokenId) {
         Trade storage trade = trades[_tokenAddress][_tokenId][_msgSender()];
-        require(trade.amount > 0, "Trade is not open");
         trade.price = _newPrice;
         emit TradePriceChanged(
             _tokenAddress,

@@ -106,7 +106,7 @@ describe("CruzoMarket", () => {
       expect(trade.amount).eq(tradeAmount);
     });
 
-    it("Amount must be greater than 0", async () => {
+    it("Market__GivenAmountIsZeroOrBelow(0)", async () => {
       const tokenId = ethers.BigNumber.from("1");
       const supply = ethers.BigNumber.from("100");
       const tradeAmount = ethers.BigNumber.from("0");
@@ -122,7 +122,7 @@ describe("CruzoMarket", () => {
         market
           .connect(seller)
           .openTrade(token.address, tokenId, tradeAmount, price)
-      ).revertedWith("Amount must be greater than 0");
+      ).revertedWith("GivenAmountIsZeroOrBelow(0)");
     });
 
     it("Trade is already open", async () => {
@@ -142,14 +142,12 @@ describe("CruzoMarket", () => {
           .connect(seller)
           .openTrade(token.address, tokenId, tradeAmount, price)
       );
-
       await expect(
         market
           .connect(seller)
           .openTrade(token.address, tokenId, tradeAmount, price)
-      ).revertedWith("Trade is already open");
+      ).revertedWith(`Market__TradeIsAlreadyOpen("${token.address}", ${tokenId}, "${seller.address}")`);
     });
-
     it("Not approved", async () => {
       const tokenId = ethers.BigNumber.from("1");
       const supply = ethers.BigNumber.from("100");
@@ -338,7 +336,7 @@ describe("CruzoMarket", () => {
         market
           .connect(seller)
           .buyItem(token.address, tokenId, seller.address, tradeAmount)
-      ).revertedWith("Trade cannot be executed by the seller");
+      ).revertedWith("Market__TradeCanNotBeExecutedBySeller()");
     });
 
     it("Amount must be greater than 0", async () => {
@@ -363,7 +361,7 @@ describe("CruzoMarket", () => {
         market
           .connect(buyer)
           .buyItem(token.address, tokenId, seller.address, "0")
-      ).revertedWith("Amount must be greater than 0");
+      ).revertedWith("Market__GivenAmountIsZeroOrBelow(0)");
     });
 
     it("Not enough items in trade", async () => {
@@ -388,7 +386,7 @@ describe("CruzoMarket", () => {
         market
           .connect(buyer)
           .buyItem(token.address, tokenId, seller.address, tradeAmount.add("1"))
-      ).revertedWith("Not enough items in trade");
+      ).revertedWith(`Market__AskedAmountIsBiggerThanTradeAmount(${tradeAmount}, ${tradeAmount.add("1")})`);
     });
 
     it("Ether value sent is incorrect", async () => {
@@ -415,7 +413,7 @@ describe("CruzoMarket", () => {
           .buyItem(token.address, tokenId, seller.address, tradeAmount, {
             value: 0,
           })
-      ).revertedWith("Ether value sent is incorrect");
+      ).revertedWith(`Market__IncorrectSentEtherValue(${0}, ${tradeAmount.mul(price)})`);
     });
 
     it("ContractSeller (reentrant call)", async () => {
@@ -522,7 +520,7 @@ describe("CruzoMarket", () => {
         market
           .connect(seller)
           .giftTrade(token.address, tokenId, giftAmount, seller.address)
-      ).revertedWith("Useless operation");
+      ).revertedWith(`Market__WrongReceiver("${seller.address}")`);
 
       expect(await token.balanceOf(addressee.address, tokenId)).eq(0);
       expect(await token.balanceOf(market.address, tokenId)).eq(10);
@@ -555,7 +553,7 @@ describe("CruzoMarket", () => {
             tradeAmount.add("1"),
             addressee.address
           )
-      ).revertedWith("Not enough items in trade");
+      ).revertedWith(`Market__AskedAmountIsBiggerThanTradeAmount(${tradeAmount}, ${tradeAmount.add(1)})`);
 
       expect(await token.balanceOf(addressee.address, tokenId)).eq(0);
       expect(await token.balanceOf(market.address, tokenId)).eq(10);
@@ -585,7 +583,7 @@ describe("CruzoMarket", () => {
         market
           .connect(buyer)
           .giftTrade(token.address, tokenId, giftAmount, seller.address)
-      ).revertedWith("Not enough items in trade");
+      ).revertedWith(`Market__AskedAmountIsBiggerThanTradeAmount(${0}, ${giftAmount})`);
 
       expect(await token.balanceOf(addressee.address, tokenId)).eq(0);
       expect(await token.balanceOf(market.address, tokenId)).eq(10);
@@ -633,7 +631,7 @@ describe("CruzoMarket", () => {
     it("Trade is not open", async () => {
       await expect(
         market.connect(seller).closeTrade(token.address, "1")
-      ).revertedWith("Trade is not open");
+      ).revertedWith("Market__GivenTradeIsNotOpen()");
     });
 
     describe("setServiceFee", () => {
@@ -652,13 +650,9 @@ describe("CruzoMarket", () => {
 
       it("Should not set service fee < 0% or > 100%", async () => {
         await expect(market.setServiceFee(10001)).to.be.revertedWith(
-          "Service fee can not exceed 10,000 basis points"
-        );
-        await expect(market.setServiceFee(50000)).to.be.revertedWith(
-          "Service fee can not exceed 10,000 basis points"
+          "Market__ServiceFeeCanNotBeHigherThan10kPoints(10001)"
         );
         await expect(market.setServiceFee(-1)).to.be.reverted;
-        await expect(market.setServiceFee(-5000)).to.be.reverted;
         expect(await market.serviceFee()).eq(serviceFee);
       });
     });
@@ -761,7 +755,7 @@ describe("CruzoMarket", () => {
           market
             .connect(seller)
             .changePrice(token.address, "1", ethers.utils.parseEther("1"))
-        ).revertedWith("Trade is not open");
+        ).revertedWith("Market__GivenTradeIsNotOpen()");
       });
     });
 
