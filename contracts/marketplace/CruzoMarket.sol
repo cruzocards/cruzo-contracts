@@ -87,7 +87,7 @@ contract CruzoMarket is
         _;
     }
 
-    modifier isReceiveeCorrect(address _receiver) {
+    modifier isReceiverCorrect(address _receiver) {
         if (
             _receiver == address(0) ||
             _receiver == address(this) ||
@@ -277,7 +277,7 @@ contract CruzoMarket is
         address _seller,
         uint256 _amount,
         address _to
-    ) external payable isReceiveeCorrect(_to) {
+    ) external payable isReceiverCorrect(_to) {
         _executeTrade(
             _tokenAddress,
             _tokenId,
@@ -331,7 +331,7 @@ contract CruzoMarket is
     )
         external
         nonReentrant
-        isReceiveeCorrect(_to)
+        isReceiverCorrect(_to)
         isAmountCorrect(_amount)
         isEnoughItemsInTrade(_tokenAddress, _tokenId, _msgSender(), _amount)
     {
