@@ -2,36 +2,47 @@
 pragma solidity ^0.8.6;
 
 import "./ERC1155URI.sol";
-import "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol"; 
+import "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/interfaces/IERC2981Upgradeable.sol";
 
-contract Cruzo1155 is Initializable, ERC1155URI, ERC2981Upgradeable{
+contract Cruzo1155 is Initializable, IERC2981Upgradeable, ERC1155URI {
     address public marketAddress;
 
     string public name;
     string public symbol;
     string public contractURI;
 
+    struct RoyaltyInfo {
+        address receiver;
+        uint96 royaltyFraction;
+    }
+
+    RoyaltyInfo private _defaultRoyaltyInfo;
+    mapping(uint256 => RoyaltyInfo) private _tokenRoyaltyInfo;
+
+    bool public publiclyMintable;
+
     function initialize(
-        string calldata _name,
-        string calldata _symbol,
-        string memory _baseMetadataURI,
-        string memory _contractURI,
+        string[2] calldata _nameAndShortName,
+        string calldata _baseMetadataURI,
+        string calldata _contractURI,
         address _marketAddress,
-        address owner
+        address owner,
+        bool _publiclyMintable
     ) public initializer {
         __Ownable_init();
         __Context_init();
         __Pausable_init();
         __ERC1155Supply_init();
         __ERC1155_init(_baseMetadataURI);
-        __ERC2981_init();
         setBaseURI(_baseMetadataURI);
         marketAddress = _marketAddress;
-        name = _name;
-        symbol = _symbol;
+        name = _nameAndShortName[0];
+        symbol = _nameAndShortName[1];
         contractURI = _contractURI;
         setURIType(1);
         _transferOwnership(owner);
+        publiclyMintable = _publiclyMintable;
     }
 
     function setMarketAddress(address _new) public onlyOwner {
@@ -99,14 +110,18 @@ contract Cruzo1155 is Initializable, ERC1155URI, ERC2981Upgradeable{
         address _royaltyReceiver,
         uint96 _royaltyFee
     ) public returns (uint256 tokenId) {
+        require(
+            publiclyMintable || _msgSender() == owner(),
+            "Cruzo1155: not publicly mintable"
+        );
         tokenId = _createToken(_tokenId, _amount, _to, _uri, _data);
-        setTokenRoyalty(_royaltyReceiver,_royaltyFee,_tokenId);
+        _setTokenRoyalty(_tokenId, _royaltyReceiver, _royaltyFee);
         return _tokenId;
     }
 
     /**
      *
-     * @notice Mint a specific token to `_to` address in `_amount` quantiy
+     * @notice Mint a specific token to `_to` address in `_amount` quantity
      * @param _tokenId The token ID to be minted
      * @param _amount - The amount of tokens to be minted
      * @param _to - The to address to which the token is to be minted
@@ -153,25 +168,44 @@ contract Cruzo1155 is Initializable, ERC1155URI, ERC2981Upgradeable{
     function setContractURI(string memory _newURI) external onlyOwner {
         contractURI = _newURI;
     }
-    function supportsInterface(bytes4 interfaceId)
-        public
+
+    function royaltyInfo(uint256 _tokenId, uint256 _salePrice)
+        external
         view
-        override(ERC2981Upgradeable, ERC1155Upgradeable)
-        returns (bool)
+        virtual
+        override
+        returns (address, uint256)
     {
-        return super.supportsInterface(interfaceId);
+        RoyaltyInfo memory royalty = _tokenRoyaltyInfo[_tokenId];
+        if (royalty.receiver == address(0)) {
+            royalty = _defaultRoyaltyInfo;
+        }
+
+        uint256 royaltyAmount = (_salePrice * royalty.royaltyFraction) /
+            _feeDenominator();
+
+        return (royalty.receiver, royaltyAmount);
     }
 
-    function setTokenRoyalty(
+    function _setTokenRoyalty(
+        uint256 _tokenId,
         address _receiver,
-        uint96 _royaltyFeesInBips,
-        uint256 _tokenId
-    ) internal {
+        uint96 _feeNumerator
+    ) internal virtual {
         require(
-            _royaltyFeesInBips <= 5000,
+            _feeNumerator <= 5000,
             "Royalty value must be between 0% and 50%"
         );
+        require(
+            _feeNumerator <= _feeDenominator(),
+            "ERC2981: royalty fee will exceed salePrice"
+        );
+        require(_receiver != address(0), "ERC2981: Invalid parameters");
 
-        _setTokenRoyalty(_tokenId, _receiver, _royaltyFeesInBips);
+        _tokenRoyaltyInfo[_tokenId] = RoyaltyInfo(_receiver, _feeNumerator);
+    }
+
+    function _feeDenominator() internal pure virtual returns (uint96) {
+        return 10000;
     }
 }

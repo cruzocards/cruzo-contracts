@@ -30,18 +30,19 @@ contract Cruzo1155Factory is Context, Ownable {
     function create(
         string calldata _name,
         string calldata _symbol,
-        string calldata _contractURI
+        string calldata _contractURI,
+        bool _publiclyMintable
     ) external {
         BeaconProxy proxy = new BeaconProxy(
             address(beacon),
             abi.encodeWithSelector(
                 selector,
-                _name,
-                _symbol,
+                [_name, _symbol],
                 baseUri,
                 _contractURI,
                 marketAddress,
-                _msgSender()
+                _msgSender(),
+                _publiclyMintable
             )
         );
         emit NewTokenCreated(address(proxy), _msgSender());

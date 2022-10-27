@@ -65,7 +65,8 @@ describe("CruzoFactory", () => {
         .create(
           tokenDetails.name,
           tokenDetails.symbol,
-          tokenDetails.collectionURI
+          tokenDetails.collectionURI,
+          true
         );
       const createTokenReceipt = await createTokenTx.wait();
       const createTokenEvent = getEvent(createTokenReceipt, "NewTokenCreated");
@@ -87,7 +88,8 @@ describe("CruzoFactory", () => {
         .create(
           tokenDetails.name,
           tokenDetails.symbol,
-          tokenDetails.collectionURI
+          tokenDetails.collectionURI,
+          true
         );
       const createTokenReceipt = await createTokenTx.wait();
       const createTokenEvent = getEvent(createTokenReceipt, "NewTokenCreated");
@@ -110,7 +112,8 @@ describe("CruzoFactory", () => {
         .create(
           token2Details.name,
           token2Details.symbol,
-          token2Details.collectionURI
+          token2Details.collectionURI,
+          true
         );
       const createToken2Receipt = await createToken2Tx.wait();
       const createToken2Event = getEvent(
