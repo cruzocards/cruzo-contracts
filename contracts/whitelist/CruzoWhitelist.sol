@@ -10,7 +10,7 @@ import "../tokens/Cruzo1155.sol";
 
 import "../utils/Cruzo1155Factory.sol";
 
-contract CruzoPassWl is Ownable {
+contract CruzoWhitelist is Ownable {
     uint256 public constant MAX_PER_ACCOUNT = 3;
     uint256 public constant REWARDS = 20;
     uint256 public constant ALLOCATION = 180;

@@ -1,45 +1,50 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
-import { ethers, upgrades } from "hardhat";
-import { Contract } from "ethers";
-import { getEvent } from "../utils/getEvent";
-import { RAW_FACTORY_INITIALIZE_SIGNATURE } from "../constants/signatures";
-import { MerkleTree } from "merkletreejs";
 import { parseEther } from "ethers/lib/utils";
+import { ethers, upgrades } from "hardhat";
+import { RAW_FACTORY_INITIALIZE_SIGNATURE } from "../constants/signatures";
+import { Cruzo1155, CruzoWhitelist } from "../typechain";
 
-describe("Whitelist", () => {
-  let beacon: Contract;
-  let factory: Contract;
-  let token: Contract;
-  let whitelist: Contract;
+describe("CruzoWhitelist", () => {
+  const MAX_PER_ACCOUNT = 3;
+  const REWARDS = 20;
+  const ALLOCATION = 180;
+  const MAX_SUPPLY = REWARDS + ALLOCATION;
+  const uris = [...Array(MAX_SUPPLY)].map((_, i) => `uri_${i + 1}`);
+  const price = ethers.utils.parseEther("0.5");
 
-  let creator: SignerWithAddress;
-  let in1: SignerWithAddress;
-  let in2: SignerWithAddress;
-  let in3: SignerWithAddress;
-  let out1: SignerWithAddress;
+  let owner: SignerWithAddress;
+  let signer: SignerWithAddress;
+  let rewardsAccount: SignerWithAddress;
 
-  const tokenDetails = {
-    name: "Cruzo",
-    symbol: "CRZ",
-    baseOnlyURI: "https://cruzo.io/tokens/{id}.json",
-    baseAndIdURI: "https://cruzo.io/tokens",
-    altBaseOnlyURI: "https://opensea.io/tokens/{id}.json",
-    ipfsHash: "Qme3TrFkt28tLgHR2QXjH1ArfamtpkVsgMc9asdw3LXn7y",
-    altBaseAndIdURI: "https:opensea.io/tokens/",
-    collectionURI: "https://cruzo.io/collection",
-  };
+  let whitelist: CruzoWhitelist;
+  let token: Cruzo1155;
+
+  async function sign(address: string): Promise<string> {
+    return await signer.signMessage(
+      ethers.utils.arrayify(ethers.utils.hexZeroPad(address, 32))
+    );
+  }
+
+  async function createMember() {
+    const member = ethers.Wallet.createRandom().connect(ethers.provider);
+    await ethers.provider.send("hardhat_setBalance", [
+      member.address,
+      "0x" + parseEther("10000").toBigInt().toString(16),
+    ]);
+    return member;
+  }
 
   beforeEach(async () => {
-    [creator, in1, in2, in3, out1] = await ethers.getSigners();
+    [owner, signer, rewardsAccount] = await ethers.getSigners();
 
     const Cruzo1155 = await ethers.getContractFactory("Cruzo1155");
     const Factory = await ethers.getContractFactory("Cruzo1155Factory");
 
-    beacon = await upgrades.deployBeacon(Cruzo1155);
+    const beacon = await upgrades.deployBeacon(Cruzo1155);
     await beacon.deployed();
 
-    factory = await Factory.deploy(
+    const factory = await Factory.deploy(
       beacon.address,
       RAW_FACTORY_INITIALIZE_SIGNATURE,
       "https://cruzo.market",
@@ -47,111 +52,192 @@ describe("Whitelist", () => {
     );
     await factory.deployed();
 
-    const createTokenTx = await factory
-      .connect(creator)
-      .create(
-        tokenDetails.name,
-        tokenDetails.symbol,
-        tokenDetails.collectionURI,
-        true
-      );
-    const createTokenReceipt = await createTokenTx.wait();
-    const createTokenEvent = getEvent(createTokenReceipt, "NewTokenCreated");
+    const CruzoWhitelist = await ethers.getContractFactory("CruzoWhitelist");
 
-    token = await ethers.getContractAt(
-      "Cruzo1155",
-      createTokenEvent.args?.tokenAddress
+    whitelist = await CruzoWhitelist.deploy(
+      factory.address,
+      signer.address,
+      rewardsAccount.address,
+      uris as any,
+      price
+    );
+
+    await whitelist.deployed();
+    token = Cruzo1155.attach(await whitelist.tokenAddress());
+  });
+
+  it("Should create a new Cruzo1155", async () => {
+    expect(await whitelist.tokenAddress()).eq(token.address);
+    expect(await token.owner()).eq(whitelist.address);
+  });
+
+  it("Should get MAX_PER_ACCOUNT", async () => {
+    expect(await whitelist.MAX_PER_ACCOUNT()).eq(MAX_PER_ACCOUNT);
+  });
+
+  it("Should get REWARDS", async () => {
+    expect(await whitelist.REWARDS()).eq(REWARDS);
+  });
+
+  it("Should get ALLOCATION", async () => {
+    expect(await whitelist.ALLOCATION()).eq(ALLOCATION);
+  });
+
+  it("Should get MAX_SUPPLY", async () => {
+    expect(await whitelist.MAX_SUPPLY()).eq(MAX_SUPPLY);
+  });
+
+  it("Should get signerAddress", async () => {
+    expect(await whitelist.signerAddress()).eq(signer.address);
+  });
+
+  it("Should get price", async () => {
+    expect(await whitelist.price()).eq(price);
+  });
+
+  it("Should get owner", async () => {
+    expect(await whitelist.owner()).eq(owner.address);
+  });
+
+  it("Should mint 20 tokens to rewards account", async () => {
+    for (let i = 0; i < REWARDS; i++) {
+      const tokenId = i + 1;
+      expect(await token.balanceOf(rewardsAccount.address, tokenId)).eq(1);
+      expect(await token.uri(tokenId)).eq("ipfs://" + uris[i]);
+    }
+    expect(await whitelist.tokenId()).eq(REWARDS);
+  });
+
+  it("Should buy 1 token", async () => {
+    const member = await createMember();
+    const tokenId = REWARDS + 1;
+    const signature = await sign(member.address);
+
+    expect(await ethers.provider.getBalance(whitelist.address)).eq(0);
+    expect(await token.balanceOf(member.address, tokenId)).eq(0);
+
+    await expect(
+      whitelist.connect(member).buy(1, signature, {
+        value: price,
+      })
+    )
+      .emit(whitelist, "Mint")
+      .withArgs(member.address, tokenId);
+
+    expect(await whitelist.tokenId()).eq(tokenId);
+    expect(await ethers.provider.getBalance(whitelist.address)).eq(price);
+    expect(await token.balanceOf(member.address, tokenId)).eq(1);
+  });
+
+  it("Should buy all allocated tokens", async () => {
+    const MAX_SUPPLY = await whitelist.MAX_SUPPLY();
+    const MAX_PER_ACCOUNT = await whitelist.MAX_PER_ACCOUNT();
+    let tokenId = await whitelist.tokenId();
+
+    expect(await ethers.provider.getBalance(whitelist.address)).eq(0);
+
+    while (tokenId.lt(MAX_SUPPLY)) {
+      const member = await createMember();
+
+      const amount = Math.min(
+        MAX_PER_ACCOUNT.toNumber(),
+        MAX_SUPPLY.sub(tokenId).toNumber()
+      );
+
+      expect(
+        await whitelist
+          .connect(member)
+          .buy(amount, await sign(member.address), {
+            value: price.mul(amount),
+          })
+      );
+
+      for (let i = 0; i < amount; i++) {
+        tokenId = tokenId.add(1);
+        expect(await token.balanceOf(member.address, tokenId)).eq(1);
+        expect(await token.uri(tokenId)).eq(
+          "ipfs://" + uris[tokenId.sub(1).toNumber()]
+        );
+      }
+    }
+
+    expect(await whitelist.tokenId()).eq(MAX_SUPPLY);
+
+    expect(await ethers.provider.getBalance(whitelist.address)).eq(
+      price.mul(ALLOCATION)
+    );
+
+    // reverts here
+    const member = await createMember();
+    await expect(
+      whitelist.connect(member).buy(1, await sign(member.address), {
+        value: price,
+      })
+    ).revertedWith("Whitelist: not enough supply");
+  });
+
+  it("Should revert when the signature is invalid", async () => {
+    const member = await createMember();
+    const signature = await signer.signMessage("invalid message");
+
+    await expect(
+      whitelist.connect(member).buy(1, signature, {
+        value: price,
+      })
+    ).revertedWith("Whitelist: invalid signature");
+  });
+
+  it("Should revert when the value is incorrect", async () => {
+    const member = await createMember();
+    const signature = await sign(member.address);
+
+    await expect(whitelist.connect(member).buy(1, signature)).revertedWith(
+      "Whitelist: incorrect value sent"
     );
   });
 
-  describe("whitelist full process", () => {
-    it("Should create merkle root and deploy whitelist", async () => {
-      const WhiteList = await ethers.getContractFactory("CruzoWhitelist");
-      const supply = ethers.BigNumber.from("1");
-      const startId = ethers.BigNumber.from("1");
-      const endId = ethers.BigNumber.from("6");
-      const allowence = ethers.BigNumber.from("3");
-      const price = ethers.utils.parseEther("0.5");
-      const ids = [1, 2, 3, 4, 5, 6];
-      const amounts = [1, 1, 1, 1, 1, 1];
-      const wl = [in1.address, in2.address, in3.address];
-      const { keccak256 } = ethers.utils;
-      let leaves = wl.map((addr) => keccak256(addr));
-      const merkleTree = new MerkleTree(leaves, keccak256, { sortPairs: true });
-      const merkleRootHash = merkleTree.getHexRoot();
-      for (let index = 1; index < 10; index++) {
-        expect(
-          await token
-            .connect(creator)
-            .create(index, supply, creator.address, "", [], creator.address, 0)
-        );
-      }
+  it("Should revert when the amount exceeds MAX_PER_ACCOUNT", async () => {
+    const member = await createMember();
+    const signature = await sign(member.address);
 
-      whitelist = await WhiteList.deploy(
-        merkleRootHash,
-        startId,
-        endId,
-        token.address,
-        price,
-        allowence
-      );
-      await whitelist.deployed();
+    const MAX_PER_ACCOUNT = await whitelist.MAX_PER_ACCOUNT();
 
-      expect(
-        await token
-          .connect(creator)
-          .safeBatchTransferFrom(
-            creator.address,
-            whitelist.address,
-            ids,
-            amounts,
-            "0x"
-          )
-      );
+    expect(
+      await whitelist.connect(member).buy(MAX_PER_ACCOUNT, signature, {
+        value: MAX_PER_ACCOUNT.mul(price),
+      })
+    );
 
-      expect(await token.balanceOf(whitelist.address, startId)).eq(1);
-      expect(await token.balanceOf(whitelist.address, endId)).eq(1);
+    expect(await whitelist.allocation(member.address)).eq(MAX_PER_ACCOUNT);
 
-      const proof_in1 = merkleTree.getHexProof(keccak256(in1.address));
-      const proof_in2 = merkleTree.getHexProof(keccak256(in2.address));
-      const proof_in3 = merkleTree.getHexProof(keccak256(in3.address));
-      const proof_out1 = merkleTree.getHexProof(keccak256(out1.address));
+    await expect(
+      whitelist.connect(member).buy(1, signature, {
+        value: price,
+      })
+    ).revertedWith("Whitelist: too many NFT passes in one hand");
+  });
 
-      await whitelist
-        .connect(in1)
-        .buy(proof_in1, 1, { value: parseEther("0.5") });
+  it("Should withdraw", async () => {
+    expect(await ethers.provider.getBalance(whitelist.address)).eq(0);
 
-      expect(await token.balanceOf(in1.address, 1)).eq(1);
-      await whitelist
-        .connect(in1)
-        .buy(proof_in1, 2, { value: parseEther("1") });
-      expect(await token.balanceOf(in1.address, 2)).eq(1);
-      expect(await token.balanceOf(in1.address, 3)).eq(1);
-      await whitelist
-        .connect(in2)
-        .buy(proof_in2, 2, { value: parseEther("1") });
-      expect(await token.balanceOf(in2.address, 4)).eq(1);
-      expect(await token.balanceOf(in2.address, 5)).eq(1);
+    const wei = "10000000000000";
+    await ethers.provider.send("hardhat_setBalance", [
+      whitelist.address,
+      "0x" + BigInt(wei).toString(16),
+    ]);
 
-      await expect(
-        whitelist.connect(out1).buy(proof_out1, 1, { value: parseEther("0.5") })
-      ).to.be.revertedWith("Whitelist: invalid proof");
-      await expect(
-        whitelist.connect(in1).buy(proof_in1, 1, { value: parseEther("0.5") })
-      ).to.be.revertedWith("Whitelist: too many NFT passes in one hand");
-      await expect(
-        whitelist.connect(in2).buy(proof_in2, 1, { value: parseEther("0.4") })
-      ).to.be.revertedWith("Whitelist: incorrect value sent");
-      await expect(
-        whitelist.connect(in3).buy(proof_in3, 2, { value: parseEther("1") })
-      ).to.be.revertedWith("Whitelist: not enough supply");
+    expect(await ethers.provider.getBalance(whitelist.address)).eq(wei);
 
-      await expect(
-        whitelist.connect(in2).withdraw(in2.address)
-      ).to.be.revertedWith("Ownable: caller is not the owner");
-      const balanceBefore = await creator.getBalance();
-      await whitelist.connect(creator).withdraw(creator.address);
-      expect(await creator.getBalance()).gt(balanceBefore);
-    });
+    const to = ethers.Wallet.createRandom();
+    expect(await ethers.provider.getBalance(to.address)).eq(0);
+    expect(await whitelist.withdraw(to.address));
+    expect(await ethers.provider.getBalance(whitelist.address)).eq(0);
+    expect(await ethers.provider.getBalance(to.address)).eq(wei);
+
+    // reverts here
+    const member = await createMember();
+    await expect(
+      whitelist.connect(member).withdraw(member.address)
+    ).revertedWith("Ownable: caller is not the owner");
   });
 });
