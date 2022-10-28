@@ -6,8 +6,7 @@ export enum ContractType {
   factory = "factory",
   token = "token",
   vault = "vault",
-  whitelist = "whitelist",
-  whitelistToken = "whitelistToken",
+  passSale = "passSale",
 }
 
 type AddressTrackingEntry = {
