@@ -25,6 +25,9 @@ contract CruzoWhitelist is Ownable {
 
     mapping(address => uint256) public allocation;
 
+    bool public saleActive;
+    bool public publicSale;
+
     event Mint(address to, uint256 tokenId);
 
     constructor(
@@ -67,13 +70,17 @@ contract CruzoWhitelist is Ownable {
     }
 
     function buy(uint256 _amount, bytes calldata _signature) external payable {
+        require(saleActive, "Whitelist: sale is not active");
+
         require(
-            ECDSA.recover(
-                ECDSA.toEthSignedMessageHash(
-                    bytes32(uint256(uint160(msg.sender)))
-                ),
-                _signature
-            ) == signerAddress,
+            publicSale ||
+                ECDSA.recover(
+                    ECDSA.toEthSignedMessageHash(
+                        bytes32(uint256(uint160(msg.sender)))
+                    ),
+                    _signature
+                ) ==
+                signerAddress,
             "Whitelist: invalid signature"
         );
 
@@ -101,5 +108,13 @@ contract CruzoWhitelist is Ownable {
 
     function transferTokenOwnership(address _to) external onlyOwner {
         Ownable(tokenAddress).transferOwnership(_to);
+    }
+
+    function setSaleActive(bool _saleActive) external onlyOwner {
+        saleActive = _saleActive;
+    }
+
+    function setPublicSale(bool _publicSale) external onlyOwner {
+        publicSale = _publicSale;
     }
 }

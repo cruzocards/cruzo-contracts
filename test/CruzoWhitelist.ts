@@ -69,6 +69,8 @@ describe("CruzoWhitelist", () => {
     );
 
     await whitelist.deployed();
+    await whitelist.setSaleActive(true).then((tx) => tx.wait());
+
     token = Cruzo1155.attach(await whitelist.tokenAddress());
   });
 
@@ -105,6 +107,14 @@ describe("CruzoWhitelist", () => {
     expect(await whitelist.owner()).eq(owner.address);
   });
 
+  it("Should get saleActive", async () => {
+    expect(await whitelist.saleActive()).eq(true);
+  });
+
+  it("Should get publicSale", async () => {
+    expect(await whitelist.publicSale()).eq(false);
+  });
+
   it("Should mint 20 tokens to rewards account", async () => {
     for (let i = 0; i < REWARDS; i++) {
       const tokenId = i + 1;
@@ -133,6 +143,17 @@ describe("CruzoWhitelist", () => {
     expect(await whitelist.tokenId()).eq(tokenId);
     expect(await ethers.provider.getBalance(whitelist.address)).eq(price);
     expect(await token.balanceOf(member.address, tokenId)).eq(1);
+  });
+
+  it("Should deactivate sale", async () => {
+    expect(await whitelist.setSaleActive(false));
+
+    const member = await createMember();
+    await expect(
+      whitelist.connect(member).buy(1, await sign(member.address), {
+        value: price,
+      })
+    ).revertedWith("Whitelist: sale is not active");
   });
 
   it("Should buy all allocated tokens", async () => {
@@ -182,7 +203,7 @@ describe("CruzoWhitelist", () => {
     ).revertedWith("Whitelist: not enough supply");
   });
 
-  it("Should revert when the signature is invalid", async () => {
+  it("Should revert if the signature is invalid", async () => {
     const member = await createMember();
     const signature = await signer.signMessage("invalid message");
 
@@ -193,7 +214,7 @@ describe("CruzoWhitelist", () => {
     ).revertedWith("Whitelist: invalid signature");
   });
 
-  it("Should revert when the value is incorrect", async () => {
+  it("Should revert if the value is incorrect", async () => {
     const member = await createMember();
     const signature = await sign(member.address);
 
@@ -202,7 +223,7 @@ describe("CruzoWhitelist", () => {
     );
   });
 
-  it("Should revert when the amount is invalid", async () => {
+  it("Should revert if the amount is invalid", async () => {
     const member = await createMember();
     const signature = await sign(member.address);
     await expect(whitelist.connect(member).buy(0, signature)).revertedWith(
@@ -210,7 +231,7 @@ describe("CruzoWhitelist", () => {
     );
   });
 
-  it("Should revert when the amount exceeds MAX_PER_ACCOUNT", async () => {
+  it("Should revert if the amount exceeds MAX_PER_ACCOUNT", async () => {
     const member = await createMember();
     const signature = await sign(member.address);
 
@@ -260,5 +281,15 @@ describe("CruzoWhitelist", () => {
     const to = ethers.Wallet.createRandom();
     expect(await whitelist.transferTokenOwnership(to.address));
     expect(await token.owner()).eq(to.address);
+  });
+
+  it("Should buy without a signature (public sale)", async () => {
+    expect(await whitelist.setPublicSale(true));
+    const member = await createMember();
+    expect(
+      await whitelist.connect(member).buy(1, [], {
+        value: price,
+      })
+    );
   });
 });
