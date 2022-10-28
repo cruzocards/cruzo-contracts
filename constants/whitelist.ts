@@ -1,4 +1,5 @@
-export const START_ID = 21;
-export const END_ID = 200;
 export const PRICE = "0.5";
-export const ALLOWED_PER_PERSON = 3;
+export const MAX_PER_ACCOUNT = 3;
+export const REWARDS = 20;
+export const ALLOCATION = 180;
+export const MAX_SUPPLY = REWARDS + ALLOCATION;

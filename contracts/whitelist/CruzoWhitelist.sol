@@ -35,9 +35,10 @@ contract CruzoWhitelist is Ownable {
         uint256 _price
     ) {
         tokenAddress = Cruzo1155Factory(_factoryAddress).create(
-            "NFT Pass",
-            "PASS",
-            "",
+            "CRUZO Collectors NFT Pass - OFFICIAL",
+            "CCP",
+            // contractURI
+            "ipfs://bafkreic7g3c57uef4sw7yxn7exx6eeugv4ynuoxle5yalorxkzqw5kz7xq",
             false
         );
         price = _price;
@@ -59,7 +60,8 @@ contract CruzoWhitelist is Ownable {
             uris[tokenId - 1],
             "",
             _to,
-            0
+            // royalty = 10%
+            1000
         );
         emit Mint(_to, tokenId);
     }
@@ -74,6 +76,8 @@ contract CruzoWhitelist is Ownable {
             ) == signerAddress,
             "Whitelist: invalid signature"
         );
+
+        require(_amount > 0, "Whitelist: invalid amount");
 
         require(
             _amount + allocation[msg.sender] <= MAX_PER_ACCOUNT,
@@ -93,5 +97,9 @@ contract CruzoWhitelist is Ownable {
 
     function withdraw(address payable _to) external onlyOwner {
         Address.sendValue(_to, address(this).balance);
+    }
+
+    function transferTokenOwnership(address _to) external onlyOwner {
+        Ownable(tokenAddress).transferOwnership(_to);
     }
 }

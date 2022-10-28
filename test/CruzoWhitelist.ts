@@ -3,15 +3,21 @@ import { expect } from "chai";
 import { parseEther } from "ethers/lib/utils";
 import { ethers, upgrades } from "hardhat";
 import { RAW_FACTORY_INITIALIZE_SIGNATURE } from "../constants/signatures";
+import {
+  ALLOCATION,
+  MAX_PER_ACCOUNT,
+  MAX_SUPPLY,
+  PRICE,
+  REWARDS,
+} from "../constants/whitelist";
 import { Cruzo1155, CruzoWhitelist } from "../typechain";
 
 describe("CruzoWhitelist", () => {
-  const MAX_PER_ACCOUNT = 3;
-  const REWARDS = 20;
-  const ALLOCATION = 180;
-  const MAX_SUPPLY = REWARDS + ALLOCATION;
-  const uris = [...Array(MAX_SUPPLY)].map((_, i) => `uri_${i + 1}`);
-  const price = ethers.utils.parseEther("0.5");
+  const uris = [...Array(MAX_SUPPLY)].map(
+    (_, i) =>
+      `bafkreif3mmhmw254sjxt3d6ezkiyqcwcxgedqqct24kgnghwxe3me2u2qu_${i + 1}`
+  );
+  const price = ethers.utils.parseEther(PRICE);
 
   let owner: SignerWithAddress;
   let signer: SignerWithAddress;
@@ -196,6 +202,14 @@ describe("CruzoWhitelist", () => {
     );
   });
 
+  it("Should revert when the amount is invalid", async () => {
+    const member = await createMember();
+    const signature = await sign(member.address);
+    await expect(whitelist.connect(member).buy(0, signature)).revertedWith(
+      "Whitelist: invalid amount"
+    );
+  });
+
   it("Should revert when the amount exceeds MAX_PER_ACCOUNT", async () => {
     const member = await createMember();
     const signature = await sign(member.address);
@@ -239,5 +253,12 @@ describe("CruzoWhitelist", () => {
     await expect(
       whitelist.connect(member).withdraw(member.address)
     ).revertedWith("Ownable: caller is not the owner");
+  });
+
+  it("Should transfer Cruzo1155 ownership", async () => {
+    expect(await token.owner()).eq(whitelist.address);
+    const to = ethers.Wallet.createRandom();
+    expect(await whitelist.transferTokenOwnership(to.address));
+    expect(await token.owner()).eq(to.address);
   });
 });
