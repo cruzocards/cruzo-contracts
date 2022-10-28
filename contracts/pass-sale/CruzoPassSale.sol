@@ -10,7 +10,7 @@ import "../tokens/Cruzo1155.sol";
 
 import "../utils/Cruzo1155Factory.sol";
 
-contract CruzoWhitelist is Ownable {
+contract CruzoPassSale is Ownable {
     uint256 public constant MAX_PER_ACCOUNT = 3;
     uint256 public constant REWARDS = 20;
     uint256 public constant ALLOCATION = 180;
@@ -55,7 +55,7 @@ contract CruzoWhitelist is Ownable {
     }
 
     function _mint(address _to) internal {
-        require(++tokenId <= MAX_SUPPLY, "Whitelist: not enough supply");
+        require(++tokenId <= MAX_SUPPLY, "CruzoPassSale: not enough supply");
         Cruzo1155(tokenAddress).create(
             tokenId,
             1,
@@ -70,7 +70,7 @@ contract CruzoWhitelist is Ownable {
     }
 
     function buy(uint256 _amount, bytes calldata _signature) external payable {
-        require(saleActive, "Whitelist: sale is not active");
+        require(saleActive, "CruzoPassSale: sale is not active");
 
         require(
             publicSale ||
@@ -81,19 +81,19 @@ contract CruzoWhitelist is Ownable {
                     _signature
                 ) ==
                 signerAddress,
-            "Whitelist: invalid signature"
+            "CruzoPassSale: invalid signature"
         );
 
-        require(_amount > 0, "Whitelist: invalid amount");
+        require(_amount > 0, "CruzoPassSale: invalid amount");
 
         require(
             _amount + allocation[msg.sender] <= MAX_PER_ACCOUNT,
-            "Whitelist: too many NFT passes in one hand"
+            "CruzoPassSale: too many NFT passes in one hand"
         );
 
         require(
             msg.value == _amount * price,
-            "Whitelist: incorrect value sent"
+            "CruzoPassSale: incorrect value sent"
         );
 
         allocation[msg.sender] += _amount;

@@ -5,18 +5,18 @@ import {
   getAddress,
 } from "../../utils/addressTracking";
 
-import { PRICE } from "../../constants/whitelist";
+import { PRICE } from "../../constants/pass-sale";
 import { parseEther } from "ethers/lib/utils";
 
-import uris from "../../data/whitelist/uris.json";
+import uris from "../../data/pass-sale/uris.json";
 
 async function main() {
   const chainId = network.config.chainId;
   if (!chainId) {
     throw "Chain ID is undefined, terminating";
   }
-  console.log("Deploying Whitelist contract");
-  const Whitelist = await ethers.getContractFactory("CruzoWhitelist");
+  console.log("Deploying CruzoPassSale contract");
+  const CruzoPassSale = await ethers.getContractFactory("CruzoPassSale");
 
   const factoryAddress = getAddress(chainId)!.factory;
   if (!factoryAddress) {
@@ -35,7 +35,7 @@ async function main() {
 
   console.log("Price in ethers : ", parseEther(PRICE));
 
-  const whitelist = await Whitelist.deploy(
+  const passSale = await CruzoPassSale.deploy(
     factoryAddress,
     signerAddress,
     rewardsAddress,
@@ -43,12 +43,12 @@ async function main() {
     parseEther(PRICE)
   );
 
-  await whitelist.deployed();
+  await passSale.deployed();
 
-  console.log("Whitelist Contract Deployed");
-  console.log("Whitelist Contract Address : ", whitelist.address);
+  console.log("CruzoPassSale Contract Deployed");
+  console.log("CruzoPassSale Contract Address : ", passSale.address);
 
-  setAddress(chainId, ContractType.whitelist, whitelist.address);
+  setAddress(chainId, ContractType.passSale, passSale.address);
 }
 
 main()

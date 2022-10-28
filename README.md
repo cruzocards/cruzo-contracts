@@ -6,7 +6,7 @@
 - CruzoMarket
 - Factory
 - Vault
-- CruzoWhitelist
+- CruzoPassSale
 
 ## Networks
 
@@ -147,25 +147,25 @@ yarn upgradeBeacon --network <network>
 yarn upgradeVault --network <network>
 ```
 
-## NFT Pass (Whitelist)
+## NFT Pass
 
 ### Generate URIs
 
-[data/whitelist/uris.json](data/whitelist/uris.json)
+[data/pass-sale/uris.json](data/pass-sale/uris.json)
 
 ```sh
 # open https://nft.storage/manage/ to get a token
-$ NFTSTORAGE_TOKEN=<token> yarn run ts-node scripts/whitelist/generate-uris.ts
+$ NFTSTORAGE_TOKEN=<token> yarn run ts-node scripts/pass-sale/generate-uris.ts
 ```
 
 ### Generate Signatures
 
-[data/whitelist/addresses.json](data/whitelist/addresses.json)
+[data/pass-sale/addresses.json](data/pass-sale/addresses.json)
 
-[data/whitelist/signatures.json](data/whitelist/signatures.json)
+[data/pass-sale/signatures.json](data/pass-sale/signatures.json)
 
 ```sh
-$ SIGNER_KEY=<key> yarn run ts-node scripts/whitelist/sign.ts
+$ SIGNER_KEY=<key> yarn run ts-node scripts/pass-sale/sign.ts
 ```
 
 ### Deploy
@@ -176,5 +176,5 @@ $ SIGNER_KEY=<key> yarn run ts-node scripts/whitelist/sign.ts
 # yarn deployMarket --network <network>
 # yarn deployFactory --network <network>
 
-$ SIGNER_ADDRESS=<address> REWARDS_ADDRESS=<address> yarn deployWhitelist --network <network>
+$ SIGNER_ADDRESS=<address> REWARDS_ADDRESS=<address> yarn deployPassSale --network <network>
 ```

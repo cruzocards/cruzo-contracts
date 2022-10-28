@@ -2,13 +2,13 @@ import axios, { Axios } from "axios";
 import fs from "fs";
 import FormData from "form-data";
 import path from "path";
-import { MAX_SUPPLY } from "../../constants/whitelist";
+import { MAX_SUPPLY } from "../../constants/pass-sale";
 
 // 5 sec
 const SLEEP = 1000 * 5;
 
 export const PASS_IMAGE_PATH = path.join(__dirname, "pass-image.png");
-export const URIS_PATH = path.join(__dirname, "../../data/whitelist/uris.json");
+export const URIS_PATH = path.join(__dirname, "../../data/pass-sale/uris.json");
 
 function parseEnv() {
   const NFTSTORAGE_TOKEN = process.env.NFTSTORAGE_TOKEN;

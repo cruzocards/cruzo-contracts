@@ -9,10 +9,10 @@ import {
   MAX_SUPPLY,
   PRICE,
   REWARDS,
-} from "../constants/whitelist";
-import { Cruzo1155, CruzoWhitelist } from "../typechain";
+} from "../constants/pass-sale";
+import { Cruzo1155, CruzoPassSale } from "../typechain";
 
-describe("CruzoWhitelist", () => {
+describe("CruzoPassSale", () => {
   const uris = [...Array(MAX_SUPPLY)].map(
     (_, i) =>
       `bafkreif3mmhmw254sjxt3d6ezkiyqcwcxgedqqct24kgnghwxe3me2u2qu_${i + 1}`
@@ -23,7 +23,7 @@ describe("CruzoWhitelist", () => {
   let signer: SignerWithAddress;
   let rewardsAccount: SignerWithAddress;
 
-  let whitelist: CruzoWhitelist;
+  let passSale: CruzoPassSale;
   let token: Cruzo1155;
 
   async function sign(address: string): Promise<string> {
@@ -58,9 +58,9 @@ describe("CruzoWhitelist", () => {
     );
     await factory.deployed();
 
-    const CruzoWhitelist = await ethers.getContractFactory("CruzoWhitelist");
+    const CruzoPassSale = await ethers.getContractFactory("CruzoPassSale");
 
-    whitelist = await CruzoWhitelist.deploy(
+    passSale = await CruzoPassSale.deploy(
       factory.address,
       signer.address,
       rewardsAccount.address,
@@ -68,51 +68,51 @@ describe("CruzoWhitelist", () => {
       price
     );
 
-    await whitelist.deployed();
-    await whitelist.setSaleActive(true).then((tx) => tx.wait());
+    await passSale.deployed();
+    await passSale.setSaleActive(true).then((tx) => tx.wait());
 
-    token = Cruzo1155.attach(await whitelist.tokenAddress());
+    token = Cruzo1155.attach(await passSale.tokenAddress());
   });
 
   it("Should create a new Cruzo1155", async () => {
-    expect(await whitelist.tokenAddress()).eq(token.address);
-    expect(await token.owner()).eq(whitelist.address);
+    expect(await passSale.tokenAddress()).eq(token.address);
+    expect(await token.owner()).eq(passSale.address);
   });
 
   it("Should get MAX_PER_ACCOUNT", async () => {
-    expect(await whitelist.MAX_PER_ACCOUNT()).eq(MAX_PER_ACCOUNT);
+    expect(await passSale.MAX_PER_ACCOUNT()).eq(MAX_PER_ACCOUNT);
   });
 
   it("Should get REWARDS", async () => {
-    expect(await whitelist.REWARDS()).eq(REWARDS);
+    expect(await passSale.REWARDS()).eq(REWARDS);
   });
 
   it("Should get ALLOCATION", async () => {
-    expect(await whitelist.ALLOCATION()).eq(ALLOCATION);
+    expect(await passSale.ALLOCATION()).eq(ALLOCATION);
   });
 
   it("Should get MAX_SUPPLY", async () => {
-    expect(await whitelist.MAX_SUPPLY()).eq(MAX_SUPPLY);
+    expect(await passSale.MAX_SUPPLY()).eq(MAX_SUPPLY);
   });
 
   it("Should get signerAddress", async () => {
-    expect(await whitelist.signerAddress()).eq(signer.address);
+    expect(await passSale.signerAddress()).eq(signer.address);
   });
 
   it("Should get price", async () => {
-    expect(await whitelist.price()).eq(price);
+    expect(await passSale.price()).eq(price);
   });
 
   it("Should get owner", async () => {
-    expect(await whitelist.owner()).eq(owner.address);
+    expect(await passSale.owner()).eq(owner.address);
   });
 
   it("Should get saleActive", async () => {
-    expect(await whitelist.saleActive()).eq(true);
+    expect(await passSale.saleActive()).eq(true);
   });
 
   it("Should get publicSale", async () => {
-    expect(await whitelist.publicSale()).eq(false);
+    expect(await passSale.publicSale()).eq(false);
   });
 
   it("Should mint 20 tokens to rewards account", async () => {
@@ -121,7 +121,7 @@ describe("CruzoWhitelist", () => {
       expect(await token.balanceOf(rewardsAccount.address, tokenId)).eq(1);
       expect(await token.uri(tokenId)).eq("ipfs://" + uris[i]);
     }
-    expect(await whitelist.tokenId()).eq(REWARDS);
+    expect(await passSale.tokenId()).eq(REWARDS);
   });
 
   it("Should buy 1 token", async () => {
@@ -129,39 +129,39 @@ describe("CruzoWhitelist", () => {
     const tokenId = REWARDS + 1;
     const signature = await sign(member.address);
 
-    expect(await ethers.provider.getBalance(whitelist.address)).eq(0);
+    expect(await ethers.provider.getBalance(passSale.address)).eq(0);
     expect(await token.balanceOf(member.address, tokenId)).eq(0);
 
     await expect(
-      whitelist.connect(member).buy(1, signature, {
+      passSale.connect(member).buy(1, signature, {
         value: price,
       })
     )
-      .emit(whitelist, "Mint")
+      .emit(passSale, "Mint")
       .withArgs(member.address, tokenId);
 
-    expect(await whitelist.tokenId()).eq(tokenId);
-    expect(await ethers.provider.getBalance(whitelist.address)).eq(price);
+    expect(await passSale.tokenId()).eq(tokenId);
+    expect(await ethers.provider.getBalance(passSale.address)).eq(price);
     expect(await token.balanceOf(member.address, tokenId)).eq(1);
   });
 
   it("Should deactivate sale", async () => {
-    expect(await whitelist.setSaleActive(false));
+    expect(await passSale.setSaleActive(false));
 
     const member = await createMember();
     await expect(
-      whitelist.connect(member).buy(1, await sign(member.address), {
+      passSale.connect(member).buy(1, await sign(member.address), {
         value: price,
       })
-    ).revertedWith("Whitelist: sale is not active");
+    ).revertedWith("CruzoPassSale: sale is not active");
   });
 
   it("Should buy all allocated tokens", async () => {
-    const MAX_SUPPLY = await whitelist.MAX_SUPPLY();
-    const MAX_PER_ACCOUNT = await whitelist.MAX_PER_ACCOUNT();
-    let tokenId = await whitelist.tokenId();
+    const MAX_SUPPLY = await passSale.MAX_SUPPLY();
+    const MAX_PER_ACCOUNT = await passSale.MAX_PER_ACCOUNT();
+    let tokenId = await passSale.tokenId();
 
-    expect(await ethers.provider.getBalance(whitelist.address)).eq(0);
+    expect(await ethers.provider.getBalance(passSale.address)).eq(0);
 
     while (tokenId.lt(MAX_SUPPLY)) {
       const member = await createMember();
@@ -172,7 +172,7 @@ describe("CruzoWhitelist", () => {
       );
 
       expect(
-        await whitelist
+        await passSale
           .connect(member)
           .buy(amount, await sign(member.address), {
             value: price.mul(amount),
@@ -188,19 +188,19 @@ describe("CruzoWhitelist", () => {
       }
     }
 
-    expect(await whitelist.tokenId()).eq(MAX_SUPPLY);
+    expect(await passSale.tokenId()).eq(MAX_SUPPLY);
 
-    expect(await ethers.provider.getBalance(whitelist.address)).eq(
+    expect(await ethers.provider.getBalance(passSale.address)).eq(
       price.mul(ALLOCATION)
     );
 
     // reverts here
     const member = await createMember();
     await expect(
-      whitelist.connect(member).buy(1, await sign(member.address), {
+      passSale.connect(member).buy(1, await sign(member.address), {
         value: price,
       })
-    ).revertedWith("Whitelist: not enough supply");
+    ).revertedWith("CruzoPassSale: not enough supply");
   });
 
   it("Should revert if the signature is invalid", async () => {
@@ -208,26 +208,26 @@ describe("CruzoWhitelist", () => {
     const signature = await signer.signMessage("invalid message");
 
     await expect(
-      whitelist.connect(member).buy(1, signature, {
+      passSale.connect(member).buy(1, signature, {
         value: price,
       })
-    ).revertedWith("Whitelist: invalid signature");
+    ).revertedWith("CruzoPassSale: invalid signature");
   });
 
   it("Should revert if the value is incorrect", async () => {
     const member = await createMember();
     const signature = await sign(member.address);
 
-    await expect(whitelist.connect(member).buy(1, signature)).revertedWith(
-      "Whitelist: incorrect value sent"
+    await expect(passSale.connect(member).buy(1, signature)).revertedWith(
+      "CruzoPassSale: incorrect value sent"
     );
   });
 
   it("Should revert if the amount is invalid", async () => {
     const member = await createMember();
     const signature = await sign(member.address);
-    await expect(whitelist.connect(member).buy(0, signature)).revertedWith(
-      "Whitelist: invalid amount"
+    await expect(passSale.connect(member).buy(0, signature)).revertedWith(
+      "CruzoPassSale: invalid amount"
     );
   });
 
@@ -235,59 +235,59 @@ describe("CruzoWhitelist", () => {
     const member = await createMember();
     const signature = await sign(member.address);
 
-    const MAX_PER_ACCOUNT = await whitelist.MAX_PER_ACCOUNT();
+    const MAX_PER_ACCOUNT = await passSale.MAX_PER_ACCOUNT();
 
     expect(
-      await whitelist.connect(member).buy(MAX_PER_ACCOUNT, signature, {
+      await passSale.connect(member).buy(MAX_PER_ACCOUNT, signature, {
         value: MAX_PER_ACCOUNT.mul(price),
       })
     );
 
-    expect(await whitelist.allocation(member.address)).eq(MAX_PER_ACCOUNT);
+    expect(await passSale.allocation(member.address)).eq(MAX_PER_ACCOUNT);
 
     await expect(
-      whitelist.connect(member).buy(1, signature, {
+      passSale.connect(member).buy(1, signature, {
         value: price,
       })
-    ).revertedWith("Whitelist: too many NFT passes in one hand");
+    ).revertedWith("CruzoPassSale: too many NFT passes in one hand");
   });
 
   it("Should withdraw", async () => {
-    expect(await ethers.provider.getBalance(whitelist.address)).eq(0);
+    expect(await ethers.provider.getBalance(passSale.address)).eq(0);
 
     const wei = "10000000000000";
     await ethers.provider.send("hardhat_setBalance", [
-      whitelist.address,
+      passSale.address,
       "0x" + BigInt(wei).toString(16),
     ]);
 
-    expect(await ethers.provider.getBalance(whitelist.address)).eq(wei);
+    expect(await ethers.provider.getBalance(passSale.address)).eq(wei);
 
     const to = ethers.Wallet.createRandom();
     expect(await ethers.provider.getBalance(to.address)).eq(0);
-    expect(await whitelist.withdraw(to.address));
-    expect(await ethers.provider.getBalance(whitelist.address)).eq(0);
+    expect(await passSale.withdraw(to.address));
+    expect(await ethers.provider.getBalance(passSale.address)).eq(0);
     expect(await ethers.provider.getBalance(to.address)).eq(wei);
 
     // reverts here
     const member = await createMember();
     await expect(
-      whitelist.connect(member).withdraw(member.address)
+      passSale.connect(member).withdraw(member.address)
     ).revertedWith("Ownable: caller is not the owner");
   });
 
   it("Should transfer Cruzo1155 ownership", async () => {
-    expect(await token.owner()).eq(whitelist.address);
+    expect(await token.owner()).eq(passSale.address);
     const to = ethers.Wallet.createRandom();
-    expect(await whitelist.transferTokenOwnership(to.address));
+    expect(await passSale.transferTokenOwnership(to.address));
     expect(await token.owner()).eq(to.address);
   });
 
   it("Should buy without a signature (public sale)", async () => {
-    expect(await whitelist.setPublicSale(true));
+    expect(await passSale.setPublicSale(true));
     const member = await createMember();
     expect(
-      await whitelist.connect(member).buy(1, [], {
+      await passSale.connect(member).buy(1, [], {
         value: price,
       })
     );

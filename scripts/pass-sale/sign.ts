@@ -4,12 +4,12 @@ import path from "path";
 
 const ADDRESSES_PATH = path.join(
   __dirname,
-  "../../data/whitelist/addresses.json"
+  "../../data/pass-sale/addresses.json"
 );
 
 const SIGNATURES_PATH = path.join(
   __dirname,
-  "../../data/whitelist/signatures.json"
+  "../../data/pass-sale/signatures.json"
 );
 
 function parseEnv() {
