@@ -112,7 +112,7 @@ yarn verify --network ethGoerli --contract contracts/utils/Cruzo1155Vault.sol:Cr
 #### Verify Pass Sale
 
 ```sh
-yarn verify --network ethGoerli --contract contracts/pass-sale/CruzoPassSale.sol:CruzoPassSale <address>
+yarn verify --network ethGoerli --contract contracts/pass-sale/CruzoPassSale.sol:CruzoPassSale --constructor-args data/pass-sale/verify-args.js <address>
 ```
 
 ## Upgrades, Proxy approach
