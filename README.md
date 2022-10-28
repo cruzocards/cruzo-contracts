@@ -109,6 +109,12 @@ TBD
 yarn verify --network ethGoerli --contract contracts/utils/Cruzo1155Vault.sol:Cruzo1155Vault <address>
 ```
 
+#### Verify Pass Sale
+
+```sh
+yarn verify --network ethGoerli --contract contracts/pass-sale/CruzoPassSale.sol:CruzoPassSale <address>
+```
+
 ## Upgrades, Proxy approach
 
 We use UUPS proxy pattern for CruzoMarket, CruzoVault contracts and BeaconProxy for instances of Cruzo1155 contracts.
