@@ -11,12 +11,21 @@ import {
   REWARDS,
 } from "../constants/pass-sale";
 import { Cruzo1155, CruzoPassSale } from "../typechain";
+import { toURI, sign } from "../utils/pass-sale";
+
+const cids = [
+  "bafkreihfdlvzii7famwufwck56bcoensom4ohfjdysxd4nmwg6zm6hro7m",
+  "bafkreiapxjn55n7jsdmdpofc5q7xx5j26utmtr2x2wxn7n4hyvatpcbgle",
+  "bafkreib4lf53dejx2s3pu4qx653cges7azaxcr3tzr3v47ko57hy36d2ci",
+  "bafkreibgsstc22skiev722wg6h4e2q4hbzsbocpts4qxbreq7fl4jwjrdm",
+  "bafkreibebpvgixmffjnhep25r3wz6675q7iz5zy34fe5fw4knrhrkg3tne",
+  "bafkreiejqozzluxg6x2so3tmfbr3e7sztielhi7spvjkr5i2d3v6bz5nza",
+  "bafkreifsgfgj356pen6earj73cqxnqtpgczkpt5wlpss6ku4rns2yeyp4u",
+  "bafkreiclxfsjnroqqpqxdq5etec5kfhjusy6msagx5gtik5jfe2xkeunje",
+];
 
 describe("CruzoPassSale", () => {
-  const uris = [...Array(MAX_SUPPLY)].map(
-    (_, i) =>
-      `bafkreif3mmhmw254sjxt3d6ezkiyqcwcxgedqqct24kgnghwxe3me2u2qu_${i + 1}`
-  );
+  const uris = [...Array(MAX_SUPPLY)].map((_, i) => cids[i % cids.length]);
   const price = ethers.utils.parseEther(PRICE);
 
   let owner: SignerWithAddress;
@@ -25,12 +34,6 @@ describe("CruzoPassSale", () => {
 
   let passSale: CruzoPassSale;
   let token: Cruzo1155;
-
-  async function sign(address: string): Promise<string> {
-    return await signer.signMessage(
-      ethers.utils.arrayify(ethers.utils.hexZeroPad(address, 32))
-    );
-  }
 
   async function createMember() {
     const member = ethers.Wallet.createRandom().connect(ethers.provider);
@@ -64,7 +67,7 @@ describe("CruzoPassSale", () => {
       factory.address,
       signer.address,
       rewardsAccount.address,
-      uris as any,
+      uris.map(toURI) as any,
       price
     );
 
@@ -127,7 +130,7 @@ describe("CruzoPassSale", () => {
   it("Should buy 1 token", async () => {
     const member = await createMember();
     const tokenId = REWARDS + 1;
-    const signature = await sign(member.address);
+    const signature = await sign(signer, member.address);
 
     expect(await ethers.provider.getBalance(passSale.address)).eq(0);
     expect(await token.balanceOf(member.address, tokenId)).eq(0);
@@ -150,7 +153,7 @@ describe("CruzoPassSale", () => {
 
     const member = await createMember();
     await expect(
-      passSale.connect(member).buy(1, await sign(member.address), {
+      passSale.connect(member).buy(1, await sign(signer, member.address), {
         value: price,
       })
     ).revertedWith("CruzoPassSale: sale is not active");
@@ -174,7 +177,7 @@ describe("CruzoPassSale", () => {
       expect(
         await passSale
           .connect(member)
-          .buy(amount, await sign(member.address), {
+          .buy(amount, await sign(signer, member.address), {
             value: price.mul(amount),
           })
       );
@@ -197,7 +200,7 @@ describe("CruzoPassSale", () => {
     // reverts here
     const member = await createMember();
     await expect(
-      passSale.connect(member).buy(1, await sign(member.address), {
+      passSale.connect(member).buy(1, await sign(signer, member.address), {
         value: price,
       })
     ).revertedWith("CruzoPassSale: not enough supply");
@@ -216,7 +219,7 @@ describe("CruzoPassSale", () => {
 
   it("Should revert if the value is incorrect", async () => {
     const member = await createMember();
-    const signature = await sign(member.address);
+    const signature = await sign(signer, member.address);
 
     await expect(passSale.connect(member).buy(1, signature)).revertedWith(
       "CruzoPassSale: incorrect value sent"
@@ -225,7 +228,7 @@ describe("CruzoPassSale", () => {
 
   it("Should revert if the amount is invalid", async () => {
     const member = await createMember();
-    const signature = await sign(member.address);
+    const signature = await sign(signer, member.address);
     await expect(passSale.connect(member).buy(0, signature)).revertedWith(
       "CruzoPassSale: invalid amount"
     );
@@ -233,7 +236,7 @@ describe("CruzoPassSale", () => {
 
   it("Should revert if the amount exceeds MAX_PER_ACCOUNT", async () => {
     const member = await createMember();
-    const signature = await sign(member.address);
+    const signature = await sign(signer, member.address);
 
     const MAX_PER_ACCOUNT = await passSale.MAX_PER_ACCOUNT();
 

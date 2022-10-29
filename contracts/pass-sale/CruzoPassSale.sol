@@ -18,7 +18,7 @@ contract CruzoPassSale is Ownable {
 
     address public tokenAddress;
     address public signerAddress;
-    string[MAX_SUPPLY] private uris;
+    URI[MAX_SUPPLY] private uris;
     uint256 public price;
 
     uint256 public tokenId;
@@ -30,11 +30,17 @@ contract CruzoPassSale is Ownable {
 
     event Mint(address to, uint256 tokenId);
 
+    struct URI {
+        // Example: [bafkreihfdlvzii7famwufwck56bcoen][som4ohfjdysxd4nmwg6zm6hro7m]
+        bytes32 left;
+        bytes27 right;
+    }
+
     constructor(
         address _factoryAddress,
         address _signerAddress,
         address _rewardsAddress,
-        string[MAX_SUPPLY] memory _uris,
+        URI[MAX_SUPPLY] memory _uris,
         uint256 _price
     ) {
         tokenAddress = Cruzo1155Factory(_factoryAddress).create(
@@ -60,7 +66,12 @@ contract CruzoPassSale is Ownable {
             tokenId,
             1,
             _to,
-            uris[tokenId - 1],
+            string(
+                abi.encodePacked(
+                    uris[tokenId - 1].left,
+                    uris[tokenId - 1].right
+                )
+            ),
             "",
             _to,
             // royalty = 10%

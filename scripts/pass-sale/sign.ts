@@ -1,6 +1,7 @@
 import fs from "fs";
 import { ethers } from "ethers";
 import path from "path";
+import { sign } from "../../utils/pass-sale";
 
 const ADDRESSES_PATH = path.join(
   __dirname,
@@ -34,9 +35,7 @@ async function main() {
   const signatures: Record<string, string> = {};
   await Promise.all(
     addresses.map(async (address) => {
-      signatures[address] = await signer.signMessage(
-        ethers.utils.arrayify(ethers.utils.hexZeroPad(address, 32))
-      );
+      signatures[address] = await sign(signer, address);
     })
   );
   console.log(`Save signatures to ${SIGNATURES_PATH}`);
