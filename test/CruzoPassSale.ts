@@ -11,21 +11,14 @@ import {
   REWARDS,
 } from "../constants/pass-sale";
 import { Cruzo1155, CruzoPassSale } from "../typechain";
-import { toURI, sign } from "../utils/pass-sale";
-
-const cids = [
-  "bafkreihfdlvzii7famwufwck56bcoensom4ohfjdysxd4nmwg6zm6hro7m",
-  "bafkreiapxjn55n7jsdmdpofc5q7xx5j26utmtr2x2wxn7n4hyvatpcbgle",
-  "bafkreib4lf53dejx2s3pu4qx653cges7azaxcr3tzr3v47ko57hy36d2ci",
-  "bafkreibgsstc22skiev722wg6h4e2q4hbzsbocpts4qxbreq7fl4jwjrdm",
-  "bafkreibebpvgixmffjnhep25r3wz6675q7iz5zy34fe5fw4knrhrkg3tne",
-  "bafkreiejqozzluxg6x2so3tmfbr3e7sztielhi7spvjkr5i2d3v6bz5nza",
-  "bafkreifsgfgj356pen6earj73cqxnqtpgczkpt5wlpss6ku4rns2yeyp4u",
-  "bafkreiclxfsjnroqqpqxdq5etec5kfhjusy6msagx5gtik5jfe2xkeunje",
-];
+import { sign } from "../utils/pass-sale";
 
 describe("CruzoPassSale", () => {
-  const uris = [...Array(MAX_SUPPLY)].map((_, i) => cids[i % cids.length]);
+  const contractURI =
+    "ipfs://bafkreic7g3c57uef4sw7yxn7exx6eeugv4ynuoxle5yalorxkzqw5kz7xq";
+  const baseURI =
+    "ipfs://bafybeicajjv7xymvm57xygq35edjagq7x2lq7giwg67wvdb3klscrunyve";
+
   const price = ethers.utils.parseEther(PRICE);
 
   let owner: SignerWithAddress;
@@ -67,18 +60,19 @@ describe("CruzoPassSale", () => {
       factory.address,
       signer.address,
       rewardsAccount.address,
-      uris.map(toURI) as any,
+      contractURI,
+      baseURI,
       price
     );
 
     await passSale.deployed();
     await passSale.setSaleActive(true).then((tx) => tx.wait());
 
-    token = Cruzo1155.attach(await passSale.tokenAddress());
+    token = Cruzo1155.attach(await passSale.token());
   });
 
   it("Should create a new Cruzo1155", async () => {
-    expect(await passSale.tokenAddress()).eq(token.address);
+    expect(await passSale.token()).eq(token.address);
     expect(await token.owner()).eq(passSale.address);
   });
 
@@ -122,7 +116,7 @@ describe("CruzoPassSale", () => {
     for (let i = 0; i < REWARDS; i++) {
       const tokenId = i + 1;
       expect(await token.balanceOf(rewardsAccount.address, tokenId)).eq(1);
-      expect(await token.uri(tokenId)).eq("ipfs://" + uris[i]);
+      expect(await token.uri(tokenId)).eq(baseURI + `/${tokenId}.json`);
     }
     expect(await passSale.tokenId()).eq(REWARDS);
   });
@@ -185,9 +179,7 @@ describe("CruzoPassSale", () => {
       for (let i = 0; i < amount; i++) {
         tokenId = tokenId.add(1);
         expect(await token.balanceOf(member.address, tokenId)).eq(1);
-        expect(await token.uri(tokenId)).eq(
-          "ipfs://" + uris[tokenId.sub(1).toNumber()]
-        );
+        expect(await token.uri(tokenId)).eq(baseURI + `/${tokenId}.json`);
       }
     }
 
@@ -207,11 +199,12 @@ describe("CruzoPassSale", () => {
   });
 
   it("Should revert if the signature is invalid", async () => {
-    const member = await createMember();
-    const signature = await signer.signMessage("invalid message");
+    const member1 = await createMember();
+    const signature1 = await sign(signer, member1.address);
+    const member2 = await createMember();
 
     await expect(
-      passSale.connect(member).buy(1, signature, {
+      passSale.connect(member2).buy(1, signature1, {
         value: price,
       })
     ).revertedWith("CruzoPassSale: invalid signature");
