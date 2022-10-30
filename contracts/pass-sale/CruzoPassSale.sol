@@ -100,7 +100,7 @@ contract CruzoPassSale is Ownable {
             _to,
             "",
             "",
-            _to,
+            address(this),
             // royalty = 10%
             1000
         );
