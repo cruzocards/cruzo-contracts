@@ -1538,7 +1538,7 @@
             "label": "vaultedTokens",
             "offset": 0,
             "slot": "352",
-            "type": "t_mapping(t_bytes32,t_struct(TokenCredentials)7653_storage)",
+            "type": "t_mapping(t_bytes32,t_struct(TokenCredentials)7656_storage)",
             "contract": "Cruzo1155Vault",
             "src": "contracts/utils/Cruzo1155Vault.sol:74"
           }
@@ -1564,11 +1564,11 @@
             "label": "bytes32",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_bytes32,t_struct(TokenCredentials)7653_storage)": {
+          "t_mapping(t_bytes32,t_struct(TokenCredentials)7656_storage)": {
             "label": "mapping(bytes32 => struct Cruzo1155Vault.TokenCredentials)",
             "numberOfBytes": "32"
           },
-          "t_struct(TokenCredentials)7653_storage": {
+          "t_struct(TokenCredentials)7656_storage": {
             "label": "struct Cruzo1155Vault.TokenCredentials",
             "members": [
               {
@@ -2006,7 +2006,7 @@
             "label": "vaultedTokens",
             "offset": 0,
             "slot": "352",
-            "type": "t_mapping(t_bytes32,t_struct(TokenCredentials)7978_storage)",
+            "type": "t_mapping(t_bytes32,t_struct(TokenCredentials)7981_storage)",
             "contract": "Cruzo1155Vault_Test",
             "src": "contracts/utils/Test/Cruzo1155VaultTest.sol:74"
           }
@@ -2032,11 +2032,11 @@
             "label": "bytes32",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_bytes32,t_struct(TokenCredentials)7978_storage)": {
+          "t_mapping(t_bytes32,t_struct(TokenCredentials)7981_storage)": {
             "label": "mapping(bytes32 => struct Cruzo1155Vault_Test.TokenCredentials)",
             "numberOfBytes": "32"
           },
-          "t_struct(TokenCredentials)7978_storage": {
+          "t_struct(TokenCredentials)7981_storage": {
             "label": "struct Cruzo1155Vault_Test.TokenCredentials",
             "members": [
               {
@@ -2196,7 +2196,7 @@
             "label": "_uriType",
             "offset": 0,
             "slot": "302",
-            "type": "t_enum(URIType)6685",
+            "type": "t_enum(URIType)6688",
             "contract": "ERC1155URI",
             "src": "contracts/tokens/ERC1155URI.sol:18"
           },
@@ -2260,7 +2260,7 @@
             "label": "_defaultRoyaltyInfo",
             "offset": 0,
             "slot": "359",
-            "type": "t_struct(RoyaltyInfo)6930_storage",
+            "type": "t_struct(RoyaltyInfo)6933_storage",
             "contract": "Cruzo1155_v2",
             "src": "contracts/tokens/Test/Cruzo1155_Test.sol:20"
           },
@@ -2268,7 +2268,7 @@
             "label": "_tokenRoyaltyInfo",
             "offset": 0,
             "slot": "360",
-            "type": "t_mapping(t_uint256,t_struct(RoyaltyInfo)6930_storage)",
+            "type": "t_mapping(t_uint256,t_struct(RoyaltyInfo)6933_storage)",
             "contract": "Cruzo1155_v2",
             "src": "contracts/tokens/Test/Cruzo1155_Test.sol:21"
           },
@@ -2302,7 +2302,7 @@
             "label": "bool",
             "numberOfBytes": "1"
           },
-          "t_enum(URIType)6685": {
+          "t_enum(URIType)6688": {
             "label": "enum ERC1155URI.URIType",
             "members": [
               "DEFAULT",
@@ -2336,7 +2336,7 @@
             "label": "mapping(uint256 => string)",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_uint256,t_struct(RoyaltyInfo)6930_storage)": {
+          "t_mapping(t_uint256,t_struct(RoyaltyInfo)6933_storage)": {
             "label": "mapping(uint256 => struct Cruzo1155_v2.RoyaltyInfo)",
             "numberOfBytes": "32"
           },
@@ -2348,7 +2348,7 @@
             "label": "string",
             "numberOfBytes": "32"
           },
-          "t_struct(RoyaltyInfo)6930_storage": {
+          "t_struct(RoyaltyInfo)6933_storage": {
             "label": "struct Cruzo1155_v2.RoyaltyInfo",
             "members": [
               {
@@ -2702,7 +2702,7 @@
             "label": "_uriType",
             "offset": 0,
             "slot": "302",
-            "type": "t_enum(URIType)6685",
+            "type": "t_enum(URIType)6688",
             "contract": "ERC1155URI",
             "src": "contracts/tokens/ERC1155URI.sol:18"
           },
@@ -2766,7 +2766,7 @@
             "label": "_defaultRoyaltyInfo",
             "offset": 0,
             "slot": "359",
-            "type": "t_struct(RoyaltyInfo)6084_storage",
+            "type": "t_struct(RoyaltyInfo)6087_storage",
             "contract": "Cruzo1155",
             "src": "contracts/tokens/Cruzo1155.sol:20"
           },
@@ -2774,7 +2774,7 @@
             "label": "_tokenRoyaltyInfo",
             "offset": 0,
             "slot": "360",
-            "type": "t_mapping(t_uint256,t_struct(RoyaltyInfo)6084_storage)",
+            "type": "t_mapping(t_uint256,t_struct(RoyaltyInfo)6087_storage)",
             "contract": "Cruzo1155",
             "src": "contracts/tokens/Cruzo1155.sol:21"
           },
@@ -2808,7 +2808,7 @@
             "label": "bool",
             "numberOfBytes": "1"
           },
-          "t_enum(URIType)6685": {
+          "t_enum(URIType)6688": {
             "label": "enum ERC1155URI.URIType",
             "members": [
               "DEFAULT",
@@ -2842,7 +2842,7 @@
             "label": "mapping(uint256 => string)",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_uint256,t_struct(RoyaltyInfo)6084_storage)": {
+          "t_mapping(t_uint256,t_struct(RoyaltyInfo)6087_storage)": {
             "label": "mapping(uint256 => struct Cruzo1155.RoyaltyInfo)",
             "numberOfBytes": "32"
           },
@@ -2854,7 +2854,7 @@
             "label": "string",
             "numberOfBytes": "32"
           },
-          "t_struct(RoyaltyInfo)6084_storage": {
+          "t_struct(RoyaltyInfo)6087_storage": {
             "label": "struct Cruzo1155.RoyaltyInfo",
             "members": [
               {
