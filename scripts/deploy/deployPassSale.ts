@@ -1,4 +1,4 @@
-import { ethers, network } from "hardhat";
+import { ethers, network, run } from "hardhat";
 import {
   ContractType,
   setAddress,
@@ -33,12 +33,17 @@ async function main() {
 
   console.log("Price in ethers : ", parseEther(PRICE));
 
+  const contractURI =
+    "ipfs://bafkreic7g3c57uef4sw7yxn7exx6eeugv4ynuoxle5yalorxkzqw5kz7xq";
+  const baseURI =
+    "ipfs://bafybeicajjv7xymvm57xygq35edjagq7x2lq7giwg67wvdb3klscrunyve";
+
   const passSale = await CruzoPassSale.deploy(
     factoryAddress,
     signerAddress,
     rewardsAddress,
-    "ipfs://bafkreic7g3c57uef4sw7yxn7exx6eeugv4ynuoxle5yalorxkzqw5kz7xq",
-    "ipfs://bafybeicajjv7xymvm57xygq35edjagq7x2lq7giwg67wvdb3klscrunyve",
+    contractURI,
+    baseURI,
     parseEther(PRICE)
   );
 
@@ -48,6 +53,22 @@ async function main() {
   console.log("CruzoPassSale Contract Address : ", passSale.address);
 
   setAddress(chainId, ContractType.passSale, passSale.address);
+
+  try {
+    await run("verify:verify", {
+      address: passSale.address,
+      constructorArguments: [
+        factoryAddress,
+        signerAddress,
+        rewardsAddress,
+        contractURI,
+        baseURI,
+        parseEther(PRICE),
+      ],
+    });
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 main()
