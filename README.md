@@ -155,9 +155,7 @@ yarn upgradeVault --network <network>
 
 ## NFT Pass
 
-### Generate URIs
-
-[data/pass-sale/uris.json](data/pass-sale/uris.json)
+### Generate contractURI and baseURI
 
 ```sh
 # open https://nft.storage/manage/ to get a token
