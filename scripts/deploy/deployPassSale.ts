@@ -8,8 +8,6 @@ import {
 import { PRICE } from "../../constants/pass-sale";
 import { parseEther } from "ethers/lib/utils";
 
-import uris from "../../data/pass-sale/uris.json";
-
 async function main() {
   const chainId = network.config.chainId;
   if (!chainId) {
@@ -39,7 +37,8 @@ async function main() {
     factoryAddress,
     signerAddress,
     rewardsAddress,
-    uris as any,
+    "ipfs://bafkreic7g3c57uef4sw7yxn7exx6eeugv4ynuoxle5yalorxkzqw5kz7xq",
+    "ipfs://bafybeicajjv7xymvm57xygq35edjagq7x2lq7giwg67wvdb3klscrunyve",
     parseEther(PRICE)
   );
 
