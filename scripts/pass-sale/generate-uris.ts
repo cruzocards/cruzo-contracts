@@ -4,7 +4,10 @@ import FormData from "form-data";
 import path from "path";
 import { MAX_SUPPLY } from "../../constants/pass-sale";
 
+const COLLECTION_IMAGE_PATH = path.join(__dirname, "collection-image.jpg");
+
 const IMAGE_PATH = path.join(__dirname, "image.png");
+const VIDEO_PATH = path.join(__dirname, "video.mp4");
 
 function parseEnv() {
   const NFTSTORAGE_TOKEN = process.env.NFTSTORAGE_TOKEN;
@@ -60,6 +63,23 @@ async function main() {
   const { NFTSTORAGE_TOKEN } = parseEnv();
   const nftStorage = new NftStorage(NFTSTORAGE_TOKEN);
 
+  // Upload collection image
+  const collectionImageBuffer = await fs.promises.readFile(
+    COLLECTION_IMAGE_PATH
+  );
+  const collectionImageName = path.basename(COLLECTION_IMAGE_PATH);
+  const {
+    data: {
+      value: { cid: collectionImageCid },
+    },
+  } = await nftStorage.files([
+    {
+      name: collectionImageName,
+      data: collectionImageBuffer,
+    },
+  ]);
+  const collectionImage = `ipfs://${collectionImageCid}/${collectionImageName}`;
+
   // Upload contractURI
   const {
     data: {
@@ -69,8 +89,7 @@ async function main() {
     name: "CRUZO Collectors NFT Pass - OFFICIAL",
     description:
       "A collection of 500 utility-enabled NFT Passes gives you member access to the Cruzo Collectors Club and exclusive benefits for its holder. For more info visit https://cruzo.io/nft-pass/",
-    // TODO: set image?
-    image: undefined,
+    image: collectionImage,
   });
 
   const contractURI = `ipfs://${contractUriCid}`;
@@ -78,19 +97,34 @@ async function main() {
   console.log("contractURI:", contractURI);
 
   // Upload image
-  const passImageBuffer = await fs.promises.readFile(IMAGE_PATH);
-  const passImageFilename = path.basename(IMAGE_PATH);
+  const imageBuffer = await fs.promises.readFile(IMAGE_PATH);
+  const imageFilename = path.basename(IMAGE_PATH);
   const {
     data: {
-      value: { cid: passImageCid },
+      value: { cid: imageCid },
     },
   } = await nftStorage.files([
     {
-      name: passImageFilename,
-      data: passImageBuffer,
+      name: imageFilename,
+      data: imageBuffer,
     },
   ]);
-  const passImage = `ipfs://${passImageCid}/${passImageFilename}`;
+  const image = `ipfs://${imageCid}/${imageFilename}`;
+
+  // Upload video
+  const videoBuffer = await fs.promises.readFile(VIDEO_PATH);
+  const videoFilename = path.basename(VIDEO_PATH);
+  const {
+    data: {
+      value: { cid: videoCid },
+    },
+  } = await nftStorage.files([
+    {
+      name: videoFilename,
+      data: videoBuffer,
+    },
+  ]);
+  const animation_url = `ipfs://${videoCid}/${videoFilename}`;
 
   const files = [...Array(MAX_SUPPLY)].map((_, i) => {
     const tokenId = i + 1;
@@ -100,8 +134,8 @@ async function main() {
         JSON.stringify({
           name: `NFT Pass #${tokenId}`,
           description: `Exclusive membership in Cruzo Collectors Club`,
-          image: passImage,
-          // TODO: animation_url
+          image,
+          animation_url,
         }),
         "utf8"
       ),

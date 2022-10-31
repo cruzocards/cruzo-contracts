@@ -43,7 +43,7 @@ contract CruzoPassSale is Ownable {
         token = Cruzo1155(
             Cruzo1155Factory(_factoryAddress).create(
                 "CRUZO Collectors NFT Pass - OFFICIAL",
-                "CCP",
+                "CNP",
                 _contractURI,
                 false
             )
