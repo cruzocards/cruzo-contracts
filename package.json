@@ -1,5 +1,6 @@
 {
   "name": "cruzo-contracts",
+  "version": "0.1.1",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
@@ -11,26 +12,50 @@
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.4.7",
     "hardhat-abi-exporter": "^2.8.0",
+    "lint-staged": "^13.0.2",
+    "prettier": "^2.6.2",
+    "prettier-plugin-solidity": "^1.0.0-beta.19",
+    "solhint": "^3.3.7",
     "ts-node": "^10.2.1",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.3",
+    "husky": "^8.0.0"
   },
   "dependencies": {
-    "@nomiclabs/hardhat-etherscan": "^2.1.6",
+    "@nomiclabs/hardhat-etherscan": "^3.0.3",
     "@openzeppelin/contracts": "^4.3.2",
     "@openzeppelin/contracts-upgradeable": "^4.3.2",
+    "@openzeppelin/hardhat-upgrades": "^1.19.0",
     "@typechain/ethers-v5": "^7.1.2",
     "@typechain/hardhat": "^2.3.0",
     "@typechain/truffle-v5": "^5.1.0",
     "@typechain/web3-v1": "^3.1.0",
     "dotenv": "^10.0.0",
     "hardhat": "^2.6.5",
+    "hardhat-gas-reporter": "^1.0.8",
     "hardhat-typechain": "^0.3.5",
     "ts-generator": "^0.1.1",
     "typechain": "^5.1.2"
   },
   "scripts": {
+    "setup": "cp automation/hooks/pre-commit .git/hooks",
     "compile": "npx hardhat compile",
-    "deploy": "npx hardhat run scripts/deploy.ts",
-    "abi": "npx hardhat export-abi"
+    "typegen": "npx hardhat typechain",
+    "deployBeacon": "npx hardhat run scripts/deploy/deployBeacon.ts",
+    "deployMarket": "npx hardhat run scripts/deploy/deployMarket.ts",
+    "deployFactory": "npx hardhat run scripts/deploy/deployFactory.ts",
+    "deployToken": "npx hardhat run scripts/deploy/deployToken.ts",
+    "deployVault": "npx hardhat run scripts/deploy/deployVault.ts",
+    "upgradeBeacon": "npx hardhat run scripts/upgrade/upgradeBeacon.ts",
+    "upgradeMarket": "npx hardhat run scripts/upgrade/upgradeMarket.ts",
+    "upgradeVault": "npx hardhat run scripts/upgrade/upgradeVault.ts",
+    "verify": "npx hardhat verify",
+    "abi": "npx hardhat export-abi",
+    "test": "npx hardhat test",
+    "lint": "npx prettier --write 'contracts/**/*.sol' && npx solhint --fix 'contracts/**/*.sol'",
+    "prepare": "husky install",
+    "console": "npx hardhat console"
+  },
+  "lint-staged": {
+    "contracts/**/*.sol": "yarn lint"
   }
 }

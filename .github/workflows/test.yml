@@ -1,0 +1,20 @@
+name: Test
+
+on:
+  workflow_call:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+      MARKET_SERVICE_FEE: ${{ secrets.MARKET_SERVICE_FEE }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install modules
+        run: yarn
+      - name: Generate typings
+        run: yarn typegen
+      - name: Run tests
+        run: yarn test

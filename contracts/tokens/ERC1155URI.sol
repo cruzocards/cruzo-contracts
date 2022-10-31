@@ -4,8 +4,9 @@ pragma solidity ^0.8.6;
 
 import "./ERC1155CruzoBase.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-abstract contract ERC1155URI is ERC1155CruzoBase {
+abstract contract ERC1155URI is Initializable, ERC1155CruzoBase {
     using Strings for uint256;
     enum URIType {
         DEFAULT,
@@ -14,7 +15,11 @@ abstract contract ERC1155URI is ERC1155CruzoBase {
         URI
     }
 
-    URIType private _uriType = URIType.IPFS;
+    URIType private _uriType;
+
+    function initialize() public initializer {
+        _uriType = URIType.IPFS;
+    }
 
     // Optional mapping for token URIs
     mapping(uint256 => string) private _tokenURIs;
