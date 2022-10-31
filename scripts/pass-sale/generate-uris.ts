@@ -63,7 +63,7 @@ async function main() {
   const { NFTSTORAGE_TOKEN } = parseEnv();
   const nftStorage = new NftStorage(NFTSTORAGE_TOKEN);
 
-  // Upload image
+  // Upload collection image
   const collectionImageBuffer = await fs.promises.readFile(
     COLLECTION_IMAGE_PATH
   );
