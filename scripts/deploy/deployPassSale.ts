@@ -37,8 +37,8 @@ async function main() {
     factoryAddress,
     signerAddress,
     rewardsAddress,
-    "ipfs://bafkreic7g3c57uef4sw7yxn7exx6eeugv4ynuoxle5yalorxkzqw5kz7xq",
-    "ipfs://bafybeicajjv7xymvm57xygq35edjagq7x2lq7giwg67wvdb3klscrunyve",
+    "ipfs://bafkreia7zth4nvalkblscoebzctl4r6om7wneawovsmol5ybp7eldbvrr4",
+    "ipfs://bafybeiejbli2hodvgptw3omxox7celejjhwnbarfhwwgixz6mafdq6tify",
     parseEther(PRICE)
   );
 
