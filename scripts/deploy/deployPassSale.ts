@@ -54,6 +54,9 @@ async function main() {
 
   setAddress(chainId, ContractType.passSale, passSale.address);
 
+  // todo: replace with proper implementation: wait until contract is indexed
+  await new Promise((r) => setTimeout(r, 30000));
+
   try {
     await run("verify:verify", {
       address: passSale.address,
