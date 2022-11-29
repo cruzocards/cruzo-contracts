@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.7;
+pragma solidity ^0.8.13;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155HolderUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/IERC1155Upgradeable.sol";
@@ -383,10 +383,10 @@ contract CruzoMarket is
     ) internal {
         uint256 valueWithoutMarketplaceCommission = (_value *
             (10000 - uint256(serviceFee))) / 10000;
-        (address royaltyReciever, uint256 royaltyAmount) = IERC2981Upgradeable(
+        (address royaltyReceiver, uint256 royaltyAmount) = IERC2981Upgradeable(
             _tokenAddress
         ).royaltyInfo(_tokenId, valueWithoutMarketplaceCommission);
-        AddressUpgradeable.sendValue(payable(royaltyReciever), royaltyAmount);
+        AddressUpgradeable.sendValue(payable(royaltyReceiver), royaltyAmount);
         AddressUpgradeable.sendValue(
             payable(_seller),
             valueWithoutMarketplaceCommission - royaltyAmount

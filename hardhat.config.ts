@@ -29,7 +29,7 @@ const {
 
 const config: HardhatUserConfig = {
   solidity: {
-    version: "0.8.7",
+    version: "0.8.13",
     settings: {
       viaIR: true,
       optimizer: {
@@ -162,6 +162,11 @@ const config: HardhatUserConfig = {
     klaytnTestnet: {
       url: "https://public-node-api.klaytnapi.com/v1/baobab",
       chainId: 1001,
+      accounts: PKS,
+    },
+    localhost: {
+      url: "http://127.0.0.1:8545/",
+      chainId: 31337,
       accounts: PKS,
     },
   },

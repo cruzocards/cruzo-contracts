@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.6;
+pragma solidity ^0.8.13;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
@@ -41,10 +41,10 @@ contract Cruzo1155Factory is Context, Ownable {
                 baseUri,
                 _contractURI,
                 marketAddress,
-                _msgSender(),
                 _publiclyMintable
             )
         );
+        Ownable(address(proxy)).transferOwnership(_msgSender());
         emit NewTokenCreated(address(proxy), _msgSender());
         return address(proxy);
     }

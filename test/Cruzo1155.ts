@@ -3,13 +3,8 @@ import "@nomiclabs/hardhat-waffle";
 import { ethers, upgrades } from "hardhat";
 import { expect } from "chai";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { Cruzo1155 } from "../typechain";
+import { Cruzo1155, TransferProxy } from "../typechain";
 import { Contract } from "ethers";
-import { getEvent } from "../utils/getEvent";
-import {
-  RAW_VAULT_FUNCTION_SIGNATURE,
-  RAW_FACTORY_INITIALIZE_SIGNATURE,
-} from "../constants/signatures";
 
 const tokenDetails = {
   name: "Cruzo",
@@ -21,7 +16,24 @@ const tokenDetails = {
   altBaseAndIdURI: "https:opensea.io/tokens/",
   collectionURI: "https://cruzo.io/collection",
 };
-const real = (inp: string) => inp + "0".repeat(9);
+
+async function deployToken(
+  beaconAddress: string,
+  transferProxyAddress: string,
+  _publiclyMintable: boolean
+): Promise<Cruzo1155> {
+  const Cruzo1155 = await ethers.getContractFactory("Cruzo1155");
+  const token = (await upgrades.deployBeaconProxy(beaconAddress, Cruzo1155, [
+    tokenDetails.name,
+    tokenDetails.symbol,
+    tokenDetails.baseOnlyURI,
+    tokenDetails.collectionURI,
+    transferProxyAddress,
+    _publiclyMintable,
+  ])) as Cruzo1155;
+  await token.deployed();
+  return token;
+}
 
 describe("Testing Cruzo1155 Contract", () => {
   let admin: SignerWithAddress;
@@ -29,13 +41,9 @@ describe("Testing Cruzo1155 Contract", () => {
 
   let signers: SignerWithAddress[];
 
-  let market: Contract;
+  let transferProxy: TransferProxy;
   let beacon: Contract;
-  let factory: Contract;
-  let token: Contract;
-  let token2: Contract;
-  const serviceFee = 300;
-  const royaltyFee = 500;
+  let token: Cruzo1155;
 
   before(async () => {
     signers = await ethers.getSigners();
@@ -44,48 +52,20 @@ describe("Testing Cruzo1155 Contract", () => {
   });
 
   beforeEach(async () => {
-    const CruzoMarket = await ethers.getContractFactory("CruzoMarket");
+    const TransferProxy = await ethers.getContractFactory("TransferProxy");
+    transferProxy = (await upgrades.deployProxy(TransferProxy, [], {
+      kind: "uups",
+    })) as TransferProxy;
+    await transferProxy.deployed();
+
     const Cruzo1155 = await ethers.getContractFactory("Cruzo1155");
-    const Factory = await ethers.getContractFactory("Cruzo1155Factory");
-
-    market = await upgrades.deployProxy(
-      CruzoMarket,
-      [serviceFee, RAW_VAULT_FUNCTION_SIGNATURE],
-      {
-        kind: "uups",
-      }
-    );
-    await market.deployed();
-
     beacon = await upgrades.deployBeacon(Cruzo1155);
     await beacon.deployed();
 
-    factory = await Factory.deploy(
-      beacon.address,
-      RAW_FACTORY_INITIALIZE_SIGNATURE,
-      tokenDetails.baseOnlyURI,
-      market.address
-    );
-    await factory.deployed();
-
-    const createTokenTx = await factory
-      .connect(admin)
-      .create(
-        tokenDetails.name,
-        tokenDetails.symbol,
-        tokenDetails.collectionURI,
-        true
-      );
-    const createTokenReceipt = await createTokenTx.wait();
-    const createTokenEvent = getEvent(createTokenReceipt, "NewTokenCreated");
-    token = await ethers.getContractAt(
-      "Cruzo1155",
-      createTokenEvent.args?.tokenAddress
-    );
+    token = await deployToken(beacon.address, transferProxy.address, true);
   });
 
   it("Check Contract Data", async () => {
-    //expect(await token.marketAddress()).equal(signers[5].address);
     expect(await token.baseURI()).equal(tokenDetails.baseOnlyURI);
     await token.create(
       1,
@@ -118,8 +98,8 @@ describe("Testing Cruzo1155 Contract", () => {
 
   it("Should change URI Type", async () => {
     expect(await token.uriType()).eq(1);
-    await token.setURIType(1);
-    expect(await token.uriType()).eq(1);
+    await token.setURIType(2);
+    expect(await token.uriType()).eq(2);
   });
 
   it("Should return baseURI when URIType is Default", async () => {
@@ -247,19 +227,10 @@ describe("Testing Cruzo1155 Contract", () => {
   });
 
   it("Should create unmintable token", async () => {
-    const createToken2Tx = await factory
-      .connect(admin)
-      .create(
-        tokenDetails.name,
-        tokenDetails.symbol,
-        tokenDetails.collectionURI,
-        false
-      );
-    const createToken2Receipt = await createToken2Tx.wait();
-    const createToken2Event = getEvent(createToken2Receipt, "NewTokenCreated");
-    token2 = await ethers.getContractAt(
-      "Cruzo1155",
-      createToken2Event.args?.tokenAddress
+    const token2 = await deployToken(
+      beacon.address,
+      transferProxy.address,
+      false
     );
     await token2.create(1, 1000, admin.address, "", [], admin.address, 0);
     await expect(
@@ -267,5 +238,11 @@ describe("Testing Cruzo1155 Contract", () => {
         .connect(user1)
         .create(2, 1000, admin.address, "", [], admin.address, 0)
     ).to.be.revertedWith("Cruzo1155: not publicly mintable");
+  });
+
+  it("Should approve TransferProxy by default", async () => {
+    expect(
+      await token.isApprovedForAll(user1.address, transferProxy.address)
+    ).eq(true);
   });
 });

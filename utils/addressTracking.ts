@@ -1,12 +1,14 @@
 import fs from "fs";
 
 export enum ContractType {
+  transferProxy = "transferProxy",
   beacon = "beacon",
   market = "market",
   factory = "factory",
   token = "token",
   vault = "vault",
   passSale = "passSale",
+  gift = "gift",
 }
 
 type AddressTrackingEntry = {

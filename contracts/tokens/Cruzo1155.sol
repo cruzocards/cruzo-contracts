@@ -1,13 +1,11 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.6;
+pragma solidity ^0.8.13;
 
 import "./ERC1155URI.sol";
 import "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/interfaces/IERC2981Upgradeable.sol";
 
 contract Cruzo1155 is Initializable, IERC2981Upgradeable, ERC1155URI {
-    address public marketAddress;
-
     string public name;
     string public symbol;
     string public contractURI;
@@ -23,30 +21,25 @@ contract Cruzo1155 is Initializable, IERC2981Upgradeable, ERC1155URI {
     bool public publiclyMintable;
 
     function initialize(
-        string[2] calldata _nameAndShortName,
-        string calldata _baseMetadataURI,
-        string calldata _contractURI,
-        address _marketAddress,
-        address owner,
+        string memory _name,
+        string memory _symbol,
+        string memory _baseURI,
+        string memory _contractURI,
+        address _transferProxy,
         bool _publiclyMintable
     ) public initializer {
         __Ownable_init();
         __Context_init();
         __Pausable_init();
         __ERC1155Supply_init();
-        __ERC1155_init(_baseMetadataURI);
-        setBaseURI(_baseMetadataURI);
-        marketAddress = _marketAddress;
-        name = _nameAndShortName[0];
-        symbol = _nameAndShortName[1];
+        __ERC1155_init(_baseURI);
+        __ERC1155URI_init_unchained();
+        setBaseURI(_baseURI);
+        name = _name;
+        symbol = _symbol;
         contractURI = _contractURI;
-        setURIType(1);
-        _transferOwnership(owner);
         publiclyMintable = _publiclyMintable;
-    }
-
-    function setMarketAddress(address _new) public onlyOwner {
-        marketAddress = _new;
+        _setDefaultApproval(_transferProxy, true);
     }
 
     /**
@@ -65,7 +58,6 @@ contract Cruzo1155 is Initializable, IERC2981Upgradeable, ERC1155URI {
         bytes memory _data
     ) internal returns (uint256) {
         _mint(_to, _tokenId, _amount, _data);
-        setApprovalForAll(marketAddress, true);
         return _tokenId;
     }
 

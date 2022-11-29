@@ -18,6 +18,7 @@ async function main() {
     kind: "uups",
   });
   await market.deployed();
+  
 
   console.log("Market Contract Deployed");
   console.log("Market Contract Address : ", market.address);
