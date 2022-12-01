@@ -96,4 +96,197 @@ describe("CruzoGift", () => {
       ).revertedWith("ERC1155: insufficient balance for transfer");
     });
   });
+
+  describe("createLink", () => {
+    it("Should create a new link", async () => {
+      const {
+        gift,
+        token,
+        signers: [from],
+      } = await loadFixture(fixture);
+
+      const tokenId = 1;
+      const amount = 123;
+      const hash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes("secret"));
+
+      await token
+        .connect(from)
+        .create(tokenId, amount, from.address, "", [], from.address, 0);
+
+      await expect(
+        gift.connect(from).createLink(token.address, tokenId, amount, hash)
+      )
+        .emit(gift, "LinkCreated")
+        .withArgs(1, token.address, tokenId, from.address, amount, hash);
+
+      const link = await gift.links(1);
+
+      expect(link.tokenAddress).eq(token.address);
+      expect(link.tokenId).eq(tokenId);
+      expect(link.amount).eq(amount);
+      expect(link.hash).eq(hash);
+    });
+
+    it("Should create multiple links with the same hash", async () => {
+      const {
+        gift,
+        token,
+        signers: [from],
+      } = await loadFixture(fixture);
+
+      const tokenId = 1;
+      const hash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes("secret"));
+
+      const amount1 = 30;
+      const amount2 = 70;
+
+      await token
+        .connect(from)
+        .create(
+          tokenId,
+          amount1 + amount2,
+          from.address,
+          "",
+          [],
+          from.address,
+          0
+        );
+
+      await gift
+        .connect(from)
+        .createLink(token.address, tokenId, amount1, hash);
+
+      await gift
+        .connect(from)
+        .createLink(token.address, tokenId, amount2, hash);
+
+      const link1 = await gift.links(1);
+      expect(link1.amount).eq(amount1);
+      expect(link1.hash).eq(hash);
+
+      const link2 = await gift.links(2);
+      expect(link2.amount).eq(amount2);
+      expect(link2.hash).eq(hash);
+    });
+
+    it("Should validate amount", async () => {
+      const {
+        signers: [from],
+        token,
+        gift,
+      } = await loadFixture(fixture);
+      const tokenId = 1;
+      const amount = 0;
+      const hash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes("secret"));
+
+      await expect(
+        gift.connect(from).createLink(token.address, tokenId, amount, hash)
+      ).revertedWith("Gift: amount must be greater than 0");
+    });
+
+    it("Should revert if the sender doesn't have enough tokens", async () => {
+      const {
+        signers: [from],
+        token,
+        gift,
+      } = await loadFixture(fixture);
+      const tokenId = 1;
+      const amount = 123;
+      const hash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes("secret"));
+      await expect(
+        gift.connect(from).createLink(token.address, tokenId, amount, hash)
+      ).revertedWith("ERC1155: insufficient balance for transfer");
+    });
+  });
+
+  describe("claimLink", () => {
+    it("Should claim links", async () => {
+      const {
+        gift,
+        token,
+        signers: [from, claimer],
+      } = await loadFixture(fixture);
+
+      const secret = "secret";
+
+      const tokenId = 1;
+      const hash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(secret));
+
+      const amount1 = 30;
+      const amount2 = 70;
+
+      await token
+        .connect(from)
+        .create(
+          tokenId,
+          amount1 + amount2,
+          from.address,
+          "",
+          [],
+          from.address,
+          0
+        );
+
+      await gift
+        .connect(from)
+        .createLink(token.address, tokenId, amount1, hash);
+
+      await gift
+        .connect(from)
+        .createLink(token.address, tokenId, amount2, hash);
+
+      expect(await token.balanceOf(claimer.address, tokenId)).eq(0);
+
+      await expect(gift.connect(claimer).claimLink(1, secret))
+        .emit(gift, "LinkClaimed")
+        .withArgs(1, claimer.address);
+
+      const link1 = await gift.links(1);
+      expect(link1.amount).eq(0);
+
+      expect(await token.balanceOf(claimer.address, tokenId)).eq(amount1);
+
+      await expect(gift.connect(claimer).claimLink(2, secret))
+        .emit(gift, "LinkClaimed")
+        .withArgs(2, claimer.address);
+
+      expect(await token.balanceOf(claimer.address, tokenId)).eq(
+        amount1 + amount2
+      );
+    });
+
+    it("Gift: link not found", async () => {
+      const {
+        gift,
+        signers: [claimer],
+      } = await loadFixture(fixture);
+
+      await expect(gift.connect(claimer).claimLink(123, "")).revertedWith(
+        "Gift: link not found"
+      );
+    });
+
+    it("Gift: invalid secret key", async () => {
+      const {
+        gift,
+        token,
+        signers: [from, claimer],
+      } = await loadFixture(fixture);
+
+      const secret = "secret";
+
+      const tokenId = 1;
+      const amount = 100;
+      const hash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(secret));
+
+      await token
+        .connect(from)
+        .create(tokenId, amount, from.address, "", [], from.address, 0);
+
+      await gift.connect(from).createLink(token.address, tokenId, amount, hash);
+      await expect(gift.connect(claimer).claimLink(1, "")).revertedWith(
+        "Gift: invalid secret key"
+      );
+    });
+  });
 });
