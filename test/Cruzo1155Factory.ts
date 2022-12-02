@@ -4,14 +4,14 @@ import { ethers, upgrades } from "hardhat";
 
 import { Contract } from "ethers";
 import { getEvent } from "../utils/getEvent";
-import { Cruzo1155, Cruzo1155FactoryV2, TransferProxy } from "../typechain";
+import { Cruzo1155, Cruzo1155Factory, TransferProxy } from "../typechain";
 import { Cruzo1155TestUpgrade } from "../typechain/Cruzo1155TestUpgrade";
 
 describe("CruzoFactory", () => {
   let transferProxy: TransferProxy;
 
   let beacon: Contract;
-  let factory: Cruzo1155FactoryV2;
+  let factory: Cruzo1155Factory;
   let token: Cruzo1155;
   let tokenV2: Cruzo1155TestUpgrade;
 
@@ -37,7 +37,7 @@ describe("CruzoFactory", () => {
     beacon = await upgrades.deployBeacon(Cruzo1155);
     await beacon.deployed();
 
-    const Factory = await ethers.getContractFactory("Cruzo1155FactoryV2");
+    const Factory = await ethers.getContractFactory("Cruzo1155Factory");
     beacon = await upgrades.deployBeacon(Cruzo1155);
     await beacon.deployed();
 

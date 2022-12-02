@@ -18,7 +18,7 @@ async function main() {
 
   console.log("Deploying market contract");
   const marketServiceFee = parseInt(process.env.MARKET_SERVICE_FEE || "");
-  const Market = await ethers.getContractFactory("CruzoMarketV2");
+  const Market = await ethers.getContractFactory("CruzoMarket");
 
   const market = await upgrades.deployProxy(
     Market,

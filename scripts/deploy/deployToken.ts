@@ -1,6 +1,6 @@
 import { ContractReceipt } from "ethers";
 import { ethers, network } from "hardhat";
-import { NewTokenCreatedEvent } from "../../typechain/Cruzo1155FactoryV2";
+import { NewTokenCreatedEvent } from "../../typechain/Cruzo1155Factory";
 import {
   ContractType,
   getAddress,
@@ -27,7 +27,7 @@ async function main() {
   }
 
   console.log("Deploying Token contract");
-  const Factory = await ethers.getContractFactory("Cruzo1155FactoryV2");
+  const Factory = await ethers.getContractFactory("Cruzo1155Factory");
   const factory = await Factory.attach(factoryAddress);
   const tx = await factory.create(
     params.name,

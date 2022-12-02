@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/Context.sol";
 
 import "../tokens/Cruzo1155.sol";
 
-contract Cruzo1155FactoryV2 is Context, Ownable {
+contract Cruzo1155Factory is Context, Ownable {
     event NewTokenCreated(
         address indexed tokenAddress,
         address indexed creator,

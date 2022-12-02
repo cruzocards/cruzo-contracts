@@ -21,7 +21,7 @@ async function main() {
   }
 
   console.log("Deploying Factory contract");
-  const Factory = await ethers.getContractFactory("Cruzo1155FactoryV2");
+  const Factory = await ethers.getContractFactory("Cruzo1155Factory");
   const factory = await Factory.deploy(beaconAddress, transferProxyAddress);
 
   console.log("Factory Contract Deployed");

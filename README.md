@@ -70,21 +70,14 @@ yarn lint
 ### Deploy
 
 ```sh
-npx hardhat run scripts/deploy/deployTransferProxy.ts --network <network>
-npx hardhat run scripts/deploy/deployMarketV2.ts --network <network>
-npx hardhat run scripts/deploy/deployGift.ts --network <network>
-npx hardhat run scripts/deploy/setOperators.ts --network <network>
+yarn deployTransferProxy --network <network>
+yarn deployMarket --network <network>
+yarn deployGift --network <network>
+yarn setTransferProxyOperators --network <network>
 
-npx hardhat run scripts/deploy/deployBeacon.ts --network <network>
-npx hardhat run scripts/deploy/deployFactoryV2.ts --network <network>
-npx hardhat run scripts/deploy/deployToken.ts --network <network>
-
-# yarn deployBeacon --network <network>
-# yarn deployBeacon --network <network>
-# yarn deployMarket --network <network>
-# yarn deployFactory --network <network>
-# yarn deployToken --network <network>
-# yarn deployVault --network <network>
+yarn deployBeacon --network <network>
+yarn deployFactory --network <network>
+yarn deployToken --network <network>
 ```
 
 ### Export ABI

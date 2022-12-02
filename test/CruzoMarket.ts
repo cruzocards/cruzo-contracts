@@ -1,7 +1,7 @@
 import { loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { expect } from "chai";
 import { ethers, upgrades } from "hardhat";
-import { CruzoMarketV2, TransferProxy } from "../typechain";
+import { CruzoMarket, TransferProxy } from "../typechain";
 
 describe("CruzoMarket", () => {
   async function fixture() {
@@ -19,14 +19,14 @@ describe("CruzoMarket", () => {
     const royaltyFee = 1000;
     const royaltyFeeBase = 10000;
 
-    const CruzoMarket = await ethers.getContractFactory("CruzoMarketV2");
+    const CruzoMarket = await ethers.getContractFactory("CruzoMarket");
     const market = (await upgrades.deployProxy(
       CruzoMarket,
       [transferProxy.address, serviceFee],
       {
         kind: "uups",
       }
-    )) as CruzoMarketV2;
+    )) as CruzoMarket;
     await market.deployed();
 
     await transferProxy.setOperator(market.address, true);

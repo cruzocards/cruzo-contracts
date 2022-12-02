@@ -10,7 +10,7 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 import "../transfer-proxy/ITransferProxy.sol";
 
-contract CruzoMarketV2 is Initializable, UUPSUpgradeable, OwnableUpgradeable {
+contract CruzoMarket is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     struct Trade {
         uint256 amount;
         uint256 price;
