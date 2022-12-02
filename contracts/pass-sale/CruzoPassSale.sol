@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 import "../tokens/Cruzo1155.sol";
 
-import "../utils/Cruzo1155Factory.sol";
+import "./ICruzo1155FactoryDeprecated.sol";
 
 contract CruzoPassSale is Ownable {
     uint256 public constant MAX_PER_ACCOUNT = 3;
@@ -41,7 +41,7 @@ contract CruzoPassSale is Ownable {
         signerAddress = _signerAddress;
 
         token = Cruzo1155(
-            Cruzo1155Factory(_factoryAddress).create(
+            ICruzo1155FactoryDeprecated(_factoryAddress).create(
                 "CRUZO Collectors NFT Pass - OFFICIAL",
                 "CNP",
                 _contractURI,
