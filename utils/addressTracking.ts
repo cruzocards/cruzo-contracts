@@ -6,7 +6,6 @@ export enum ContractType {
   market = "market",
   factory = "factory",
   token = "token",
-  vault = "vault",
   passSale = "passSale",
   gift = "gift",
 }

@@ -54,6 +54,7 @@
     "upgradeBeacon": "npx hardhat run scripts/upgrade/upgradeBeacon.ts",
     "upgradeMarket": "npx hardhat run scripts/upgrade/upgradeMarket.ts",
     "upgradeGift": "npx hardhat run scripts/upgrade/upgradeGift.ts",
+    "upgradeTransferProxy": "npx hardhat run scripts/upgrade/upgradeTransferProxy.ts",
     "verify": "npx hardhat verify",
     "abi": "npx hardhat export-abi",
     "test": "npx hardhat test",

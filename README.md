@@ -5,7 +5,7 @@
 - Cruzo1155
 - CruzoMarket
 - Factory
-- Vault
+- CruzoGift
 - CruzoPassSale
 
 ## Networks
@@ -92,6 +92,12 @@ yarn abi
 yarn verify --contract <contract source:contract name> --network <netowrk> <contract> [<arg1> <arg2> ...]
 ```
 
+### Verify TransferProxy
+
+```sh
+yarn verify --network ethGoerli --contract contracts/transfer-proxy/TransferProxy.sol:TransferProxy <address>
+```
+
 #### Verify Market
 
 ```sh
@@ -100,16 +106,18 @@ yarn verify --network ethGoerli --contract contracts/marketplace/CruzoMarket.sol
 
 #### Verify Factory
 
-TBD
+```sh
+yarn verify --network ethGoerli --contract contracts/factory/CruzoFactory.sol:CruzoFactory <address> <beaconAddress> <transferProxyAddress>
+```
 
 #### Verify Token
 
 TBD
 
-#### Verify Vault
+#### Verify Gift
 
 ```sh
-yarn verify --network ethGoerli --contract contracts/utils/Cruzo1155Vault.sol:Cruzo1155Vault <address>
+yarn verify --network ethGoerli --contract contracts/gift/CruzoGift.sol:CruzoGift <address>
 ```
 
 #### Verify Pass Sale
@@ -120,7 +128,7 @@ yarn verify --network ethGoerli --contract contracts/pass-sale/CruzoPassSale.sol
 
 ## Upgrades, Proxy approach
 
-We use UUPS proxy pattern for CruzoMarket, CruzoVault contracts and BeaconProxy for instances of Cruzo1155 contracts.
+We use UUPS proxy pattern for TransferProxy, CruzoMarket, CruzoGift contracts and BeaconProxy for instances of Cruzo1155 contracts.
 
 **Requires:** openzeppelin/hardhat-upgrades
 
@@ -153,7 +161,8 @@ We use UUPS proxy pattern for CruzoMarket, CruzoVault contracts and BeaconProxy 
 ```sh
 yarn upgradeMarket --network <network>
 yarn upgradeBeacon --network <network>
-yarn upgradeVault --network <network>
+yarn upgradeGift --network <network>
+yarn upgradeTransferProxy --network <network>
 ```
 
 ## NFT Pass
