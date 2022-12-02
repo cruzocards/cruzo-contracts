@@ -73,6 +73,7 @@ yarn lint
 npx hardhat run scripts/deploy/deployTransferProxy.ts --network <network>
 npx hardhat run scripts/deploy/deployMarketV2.ts --network <network>
 npx hardhat run scripts/deploy/deployGift.ts --network <network>
+npx hardhat run scripts/deploy/setOperators.ts --network <network>
 
 npx hardhat run scripts/deploy/deployBeacon.ts --network <network>
 npx hardhat run scripts/deploy/deployFactoryV2.ts --network <network>

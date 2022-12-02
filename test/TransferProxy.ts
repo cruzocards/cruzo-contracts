@@ -23,18 +23,50 @@ describe("TransferProxy", () => {
   });
 
   it("Should set operators", async () => {
-    const { transferProxy } = await loadFixture(fixture);
-    const operator = ethers.Wallet.createRandom();
+    const {
+      transferProxy,
+      signers: [_, notowner],
+    } = await loadFixture(fixture);
+    const operators = [
+      ethers.Wallet.createRandom(),
+      ethers.Wallet.createRandom(),
+      ethers.Wallet.createRandom(),
+      ethers.Wallet.createRandom(),
+      ethers.Wallet.createRandom(),
+    ];
 
-    expect(await transferProxy.operators(operator.address)).eq(false);
+    // setOperator
+    for (const operator of operators) {
+      expect(await transferProxy.operators(operator.address)).eq(false);
+      await transferProxy.setOperator(operator.address, true);
+      expect(await transferProxy.operators(operator.address)).eq(true);
+      await transferProxy.setOperator(operator.address, false);
+      expect(await transferProxy.operators(operator.address)).eq(false);
+    }
 
-    // add operator
-    await transferProxy.setOperator(operator.address, true);
-    expect(await transferProxy.operators(operator.address)).eq(true);
+    // setOperators
+    await transferProxy.setOperators(
+      operators.map((operator) => operator.address),
+      operators.map(() => true)
+    );
+    for (const operator of operators) {
+      expect(await transferProxy.operators(operator.address)).eq(true);
+    }
+    await transferProxy.setOperators(
+      operators.map((operator) => operator.address),
+      operators.map(() => false)
+    );
+    for (const operator of operators) {
+      expect(await transferProxy.operators(operator.address)).eq(false);
+    }
 
-    // remove operator
-    await transferProxy.setOperator(operator.address, false);
-    expect(await transferProxy.operators(operator.address)).eq(false);
+    // onlyOwner
+    await expect(
+      transferProxy.connect(notowner).setOperator(notowner.address, true)
+    ).revertedWith("Ownable: caller is not the owner");
+    await expect(
+      transferProxy.connect(notowner).setOperators([notowner.address], [true])
+    ).revertedWith("Ownable: caller is not the owner");
   });
 
   it("Should transfer", async () => {

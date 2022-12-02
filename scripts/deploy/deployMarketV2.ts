@@ -33,18 +33,6 @@ async function main() {
   console.log("Market Contract Address : ", market.address);
 
   setAddress(chainId, ContractType.market, market.address);
-
-  console.log("add Market to TransferProxy.operators...");
-  const TransferProxy = await ethers.getContractFactory("TransferProxy");
-  const tx = await TransferProxy.attach(transferProxyAddress).setOperator(
-    market.address,
-    true
-  );
-  const receipt = await tx.wait();
-  console.log(
-    "Market has been added to TransferProxy.operators:",
-    receipt.transactionHash
-  );
 }
 
 main()

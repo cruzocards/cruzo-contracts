@@ -27,19 +27,6 @@ async function main() {
   console.log("Gift Contract Address : ", gift.address);
 
   setAddress(chainId, ContractType.gift, gift.address);
-
-  console.log("add Gift to TransferProxy.operators");
-  const TransferProxy = await ethers.getContractFactory("TransferProxy");
-  const tx = await TransferProxy.attach(transferProxyAddress).setOperator(
-    gift.address,
-    true
-  );
-  await tx.wait();
-  const receipt = await tx.wait();
-  console.log(
-    "Gift has been added to TransferProxy.operators:",
-    receipt.transactionHash
-  );
 }
 
 main()
