@@ -67,7 +67,7 @@ describe("CruzoAirdrop", () => {
       await expect(
         airdrop.connect(creator).create(token.address, tokenId, amount)
       )
-        .emit(airdrop, "AirdropCreated")
+        .emit(airdrop, "DropCreated")
         .withArgs(1, token.address, tokenId, creator.address, amount);
 
       const drop = await airdrop.drops(1);
@@ -131,7 +131,7 @@ describe("CruzoAirdrop", () => {
       expect(await token.balanceOf(claimer.address, tokenId)).eq(0);
 
       await expect(airdrop.connect(claimer).claim(1))
-        .emit(airdrop, "AirdropClaimed")
+        .emit(airdrop, "DropClaimed")
         .withArgs(1, claimer.address);
 
       expect(await token.balanceOf(claimer.address, tokenId)).eq(1);

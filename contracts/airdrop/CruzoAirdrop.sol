@@ -27,7 +27,7 @@ contract CruzoAirdrop is
         mapping(address => bool) claimers;
     }
 
-    event AirdropCreated(
+    event DropCreated(
         uint256 id,
         address tokenAddress,
         uint256 tokenId,
@@ -35,7 +35,7 @@ contract CruzoAirdrop is
         uint256 amount
     );
 
-    event AirdropClaimed(uint256 id, address claimer);
+    event DropClaimed(uint256 id, address claimer);
 
     CountersUpgradeable.Counter private ids;
 
@@ -67,7 +67,7 @@ contract CruzoAirdrop is
             1,
             ""
         );
-        emit AirdropClaimed(_id, _msgSender());
+        emit DropClaimed(_id, _msgSender());
     }
 
     function create(
@@ -89,7 +89,7 @@ contract CruzoAirdrop is
             _amount,
             ""
         );
-        emit AirdropCreated(
+        emit DropCreated(
             ids.current(),
             _tokenAddress,
             _tokenId,
