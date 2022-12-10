@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.6;
+pragma solidity ^0.8.13;
 
 import "./ERC1155CruzoBase.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
@@ -17,7 +17,7 @@ abstract contract ERC1155URI is Initializable, ERC1155CruzoBase {
 
     URIType private _uriType;
 
-    function initialize() public initializer {
+    function __ERC1155URI_init_unchained() internal onlyInitializing {
         _uriType = URIType.IPFS;
     }
 

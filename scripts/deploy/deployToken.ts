@@ -1,16 +1,47 @@
-import { ContractType } from "../../utils/addressTracking";
-import { deployToken } from "../../utils/deployToken";
+import { ContractReceipt } from "ethers";
+import { ethers, network } from "hardhat";
+import { NewTokenCreatedEvent } from "../../typechain/Cruzo1155Factory";
+import {
+  ContractType,
+  getAddress,
+  setAddress,
+} from "../../utils/addressTracking";
+import { getEvent } from "../../utils/getEvent";
+
+const params = {
+  name: "Cruzo",
+  symbol: "CRZ",
+  baseURI: "",
+  contractURI: "",
+  publiclyMintable: true,
+};
 
 async function main() {
-  await deployToken(
-    {
-      name: "Cruzo",
-      symbol: "CRZ",
-      contractURI: "https://cruzo.cards/contract-metadata",
-      publiclyMintable: true,
-    },
-    ContractType.token
+  const chainId = network.config.chainId;
+  if (!chainId) {
+    throw "Chain ID is undefined, terminating";
+  }
+  const factoryAddress = getAddress(chainId)?.factory;
+  if (!factoryAddress) {
+    throw "Factory address is undefined, nothing to update, terminating";
+  }
+
+  console.log("Deploying Token contract");
+  const Factory = await ethers.getContractFactory("Cruzo1155Factory");
+  const factory = await Factory.attach(factoryAddress);
+  const tx = await factory.create(
+    params.name,
+    params.symbol,
+    params.baseURI,
+    params.contractURI,
+    params.publiclyMintable
   );
+  const receipt: ContractReceipt = await tx.wait();
+  const event = getEvent<NewTokenCreatedEvent>(receipt, "NewTokenCreated");
+  const tokenAddress = event.args?.tokenAddress;
+  console.log("Token Contract Deployed");
+  console.log("Token Contract Address : ", tokenAddress);
+  setAddress(chainId, ContractType.token, tokenAddress);
 }
 
 main()

@@ -16,23 +16,17 @@ async function main() {
     throw `TransferProxy address is undefined, terminating`;
   }
 
-  console.log("Deploying market contract");
-  const marketServiceFee = parseInt(process.env.MARKET_SERVICE_FEE || "");
-  const Market = await ethers.getContractFactory("CruzoMarket");
+  console.log("Deploying Gift contract");
+  const Gift = await ethers.getContractFactory("CruzoGift");
+  const gift = await upgrades.deployProxy(Gift, [transferProxyAddress], {
+    kind: "uups",
+  });
+  await gift.deployed();
 
-  const market = await upgrades.deployProxy(
-    Market,
-    [transferProxyAddress, marketServiceFee],
-    {
-      kind: "uups",
-    }
-  );
-  await market.deployed();
+  console.log("Gift Contract Deployed");
+  console.log("Gift Contract Address : ", gift.address);
 
-  console.log("Market Contract Deployed");
-  console.log("Market Contract Address : ", market.address);
-
-  setAddress(chainId, ContractType.market, market.address);
+  setAddress(chainId, ContractType.gift, gift.address);
 }
 
 main()

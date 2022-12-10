@@ -2,18 +2,21 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { parseEther } from "ethers/lib/utils";
 import { ethers, upgrades } from "hardhat";
-import { RAW_FACTORY_INITIALIZE_SIGNATURE } from "../constants/signatures";
+
 import {
   ALLOCATION,
   MAX_PER_ACCOUNT,
   MAX_SUPPLY,
   PRICE,
   REWARDS,
-} from "../constants/pass-sale";
-import { Cruzo1155, CruzoPassSale } from "../typechain";
-import { sign } from "../utils/pass-sale";
+} from "../../constants/pass-sale";
+import { Cruzo1155, CruzoPassSale } from "../../typechain";
+import { sign } from "../../utils/pass-sale";
 
-describe("CruzoPassSale", () => {
+const RAW_FACTORY_INITIALIZE_SIGNATURE =
+  "initialize(string[2],string,string,address,address,bool)";
+
+describe.skip("CruzoPassSale", () => {
   const contractURI =
     "ipfs://bafkreic7g3c57uef4sw7yxn7exx6eeugv4ynuoxle5yalorxkzqw5kz7xq";
   const baseURI =

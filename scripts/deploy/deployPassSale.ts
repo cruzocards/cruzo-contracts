@@ -8,7 +8,13 @@ import {
 import { PRICE } from "../../constants/pass-sale";
 import { parseEther } from "ethers/lib/utils";
 
+const deprecated = true;
+
 async function main() {
+  if (deprecated) {
+    throw new Error("DEPRECATED");
+  }
+
   const chainId = network.config.chainId;
   if (!chainId) {
     throw "Chain ID is undefined, terminating";

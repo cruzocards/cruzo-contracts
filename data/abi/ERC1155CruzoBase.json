@@ -30,6 +30,25 @@
       {
         "indexed": true,
         "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "hasApproval",
+        "type": "bool"
+      }
+    ],
+    "name": "DefaultApproval",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
         "name": "previousOwner",
         "type": "address"
       },
@@ -298,12 +317,12 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "account",
+        "name": "_owner",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "operator",
+        "name": "_operator",
         "type": "address"
       }
     ],
