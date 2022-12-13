@@ -94,7 +94,7 @@ describe("CruzoAirdrop", () => {
 
       await expect(
         airdrop.connect(creator).create(token.address, tokenId, amount)
-      ).revertedWith("Airdrop: amount must be greater than 0");
+      ).revertedWithCustomError(airdrop, "ErrInvalidAmount");
     });
 
     it("Should revert if the creator doesn't have enough tokens", async () => {
@@ -140,14 +140,15 @@ describe("CruzoAirdrop", () => {
       expect(drop.claimed).eq(1);
     });
 
-    it("Airdrop: not found", async () => {
+    it("ErrNotFound", async () => {
       const {
         airdrop,
         signers: [claimer],
       } = await loadFixture(fixture);
 
-      await expect(airdrop.connect(claimer).claim(123)).revertedWith(
-        "Airdrop: not found"
+      await expect(airdrop.connect(claimer).claim(123)).revertedWithCustomError(
+        airdrop,
+        "ErrNotFound"
       );
     });
 
@@ -171,12 +172,13 @@ describe("CruzoAirdrop", () => {
 
       await airdrop.connect(claimer2).claim(1);
 
-      await expect(airdrop.connect(claimer3).claim(1)).revertedWith(
-        "Airdrop: closed"
+      await expect(airdrop.connect(claimer3).claim(1)).revertedWithCustomError(
+        airdrop,
+        "ErrClosed"
       );
     });
 
-    it("Airdrop: already claimed", async () => {
+    it("ErrAlreadyClaimed", async () => {
       const {
         airdrop,
         token,
@@ -194,8 +196,9 @@ describe("CruzoAirdrop", () => {
 
       await airdrop.connect(claimer).claim(1);
 
-      await expect(airdrop.connect(claimer).claim(1)).revertedWith(
-        "Airdrop: already claimed"
+      await expect(airdrop.connect(claimer).claim(1)).revertedWithCustomError(
+        airdrop,
+        "ErrAlreadyClaimed"
       );
     });
   });

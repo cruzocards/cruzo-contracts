@@ -11,6 +11,11 @@ import "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155HolderUpg
 
 import "../transfer-proxy/ITransferProxy.sol";
 
+error ErrNotFound();
+error ErrClosed();
+error ErrInvalidAmount();
+error ErrAlreadyClaimed();
+
 contract CruzoAirdrop is
     Initializable,
     UUPSUpgradeable,
@@ -54,20 +59,32 @@ contract CruzoAirdrop is
 
     function claim(uint256 _id) external {
         Drop storage drop = drops[_id];
-        require(drop.amount > 0, "Airdrop: not found");
-        require(drop.claimed < drop.amount, "Airdrop: closed");
-        require(!drop.claimers[_msgSender()], "Airdrop: already claimed");
+
+        if (drop.amount == 0) {
+            revert ErrNotFound();
+        }
+
+        if (drop.claimed == drop.amount) {
+            revert ErrClosed();
+        }
+
+        address claimer = _msgSender();
+
+        if (drop.claimers[claimer]) {
+            revert ErrAlreadyClaimed();
+        }
+
         drop.claimed++;
-        drop.claimers[_msgSender()] = true;
+        drop.claimers[claimer] = true;
         transferProxy.safeTransferFrom(
             IERC1155Upgradeable(drop.tokenAddress),
             address(this),
-            _msgSender(),
+            claimer,
             drop.tokenId,
             1,
             ""
         );
-        emit DropClaimed(_id, _msgSender());
+        emit DropClaimed(_id, claimer);
     }
 
     function create(
@@ -75,15 +92,21 @@ contract CruzoAirdrop is
         uint256 _tokenId,
         uint256 _amount
     ) external onlyOwner {
-        require(_amount > 0, "Airdrop: amount must be greater than 0");
+        if (_amount == 0) {
+            revert ErrInvalidAmount();
+        }
+
         ids.increment();
         Drop storage drop = drops[ids.current()];
         drop.tokenAddress = _tokenAddress;
         drop.tokenId = _tokenId;
         drop.amount = _amount;
+
+        address creator = _msgSender();
+
         transferProxy.safeTransferFrom(
             IERC1155Upgradeable(_tokenAddress),
-            _msgSender(),
+            creator,
             address(this),
             _tokenId,
             _amount,
@@ -93,7 +116,7 @@ contract CruzoAirdrop is
             ids.current(),
             _tokenAddress,
             _tokenId,
-            _msgSender(),
+            creator,
             _amount
         );
     }
