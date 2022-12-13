@@ -11,6 +11,10 @@ import "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155HolderUpg
 
 import "../transfer-proxy/ITransferProxy.sol";
 
+error ErrInvalidAmount();
+error ErrLinkNotFound();
+error ErrInvalidSecret();
+
 contract CruzoGift is
     Initializable,
     UUPSUpgradeable,
@@ -67,7 +71,9 @@ contract CruzoGift is
         address _to,
         uint256 _amount
     ) external {
-        require(_amount > 0, "Gift: amount must be greater than 0");
+        if (_amount == 0) {
+            revert ErrInvalidAmount();
+        }
         giftIds.increment();
         transferProxy.safeTransferFrom(
             IERC1155Upgradeable(_tokenAddress),
@@ -93,7 +99,9 @@ contract CruzoGift is
         uint256 _amount,
         bytes32 _hash
     ) external {
-        require(_amount > 0, "Gift: amount must be greater than 0");
+        if (_amount == 0) {
+            revert ErrInvalidAmount();
+        }
         giftIds.increment();
         links[giftIds.current()] = Link({
             tokenAddress: _tokenAddress,
@@ -121,11 +129,12 @@ contract CruzoGift is
 
     function claimLink(uint256 _giftId, string calldata _secretKey) external {
         Link memory link = links[_giftId];
-        require(link.amount > 0, "Gift: link not found");
-        require(
-            link.hash == keccak256(bytes(_secretKey)),
-            "Gift: invalid secret key"
-        );
+        if (link.amount == 0) {
+            revert ErrLinkNotFound();
+        }
+        if (link.hash != keccak256(bytes(_secretKey))) {
+            revert ErrInvalidSecret();
+        }
         delete links[_giftId];
         transferProxy.safeTransferFrom(
             IERC1155Upgradeable(link.tokenAddress),
