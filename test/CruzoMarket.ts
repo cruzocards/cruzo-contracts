@@ -90,7 +90,7 @@ describe("CruzoMarket", () => {
       expect(trade.amount).eq(tradeAmount);
     });
 
-    it("Market: amount must be greater than 0", async () => {
+    it("ErrInvalidAmount", async () => {
       const {
         token,
         signers: [seller],
@@ -103,7 +103,7 @@ describe("CruzoMarket", () => {
       ).revertedWithCustomError(market, "ErrInvalidAmount");
     });
 
-    it("Market: trade is already open", async () => {
+    it("ErrAlreadyOpen", async () => {
       const {
         token,
         market,
@@ -158,7 +158,7 @@ describe("CruzoMarket", () => {
       expect(trade.amount).eq(0);
     });
 
-    it("Market: trade is not open", async () => {
+    it("ErrNotOpen", async () => {
       const {
         market,
         token,
@@ -205,7 +205,7 @@ describe("CruzoMarket", () => {
       expect(trade.price).eq(newPrice);
     });
 
-    it("Market: trade is not open", async () => {
+    it("ErrNotOpen", async () => {
       const {
         market,
         token,
@@ -425,7 +425,7 @@ describe("CruzoMarket", () => {
       );
     });
 
-    it("Market: cannot be executed by the seller", async () => {
+    it("ErrExecutedBySeller", async () => {
       const {
         token,
         market,
@@ -451,7 +451,7 @@ describe("CruzoMarket", () => {
       ).revertedWithCustomError(market, "ErrExecutedBySeller");
     });
 
-    it("Market: amount must be greater than 0", async () => {
+    it("ErrInvalidAmount", async () => {
       const {
         token,
         market,
@@ -477,7 +477,7 @@ describe("CruzoMarket", () => {
       ).revertedWithCustomError(market, "ErrInvalidAmount");
     });
 
-    it("Market: not enough items", async () => {
+    it("ErrNotEnoughItems", async () => {
       const {
         token,
         market,
@@ -508,7 +508,7 @@ describe("CruzoMarket", () => {
       ).revertedWithCustomError(market, "ErrNotEnoughItems");
     });
 
-    it("Market: ether value sent is incorrect", async () => {
+    it("ErrIncorrectEtherValue", async () => {
       const {
         token,
         market,

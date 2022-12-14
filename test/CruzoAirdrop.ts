@@ -152,7 +152,7 @@ describe("CruzoAirdrop", () => {
       );
     });
 
-    it("Airdrop: closed", async () => {
+    it("ErrClosed", async () => {
       const {
         airdrop,
         token,
