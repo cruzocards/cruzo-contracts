@@ -1956,9 +1956,9 @@
         }
       }
     },
-    "4739b35e3fd3f96d5879804a605d18fd6e34b126fed541f009a0171497ae4053": {
+    "55ce9605823db525710039b4ecc74edecf79e76301323341fa99b06ebb7b4554": {
       "address": "0x34B40BA116d5Dec75548a9e9A8f15411461E8c70",
-      "txHash": "0x070f9b4740d8b83467ffdbe4125b854eb63722dc40b8a72138ee4270b407228f",
+      "txHash": "0x25cfeaa74746cc6566a0041c58428abed2d2a3481fc5e6e1ddbe42c83ad0c38c",
       "layout": {
         "storage": [
           {

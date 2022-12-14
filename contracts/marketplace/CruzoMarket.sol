@@ -11,7 +11,7 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "../transfer-proxy/ITransferProxy.sol";
 
 error ErrInvalidAmount();
-error ErrAlredyOpen();
+error ErrAlreadyOpen();
 error ErrNotOpen();
 
 error ErrExecutedBySeller();
@@ -92,7 +92,7 @@ contract CruzoMarket is Initializable, UUPSUpgradeable, OwnableUpgradeable {
         address seller = _msgSender();
 
         if (trades[_tokenAddress][_tokenId][seller].amount > 0) {
-            revert ErrAlredyOpen();
+            revert ErrAlreadyOpen();
         }
 
         trades[_tokenAddress][_tokenId][seller] = Trade({

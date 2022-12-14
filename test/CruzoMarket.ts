@@ -126,7 +126,7 @@ describe("CruzoMarket", () => {
         market
           .connect(seller)
           .openTrade(token.address, tokenId, tradeAmount, price)
-      ).revertedWithCustomError(market, "ErrAlredyOpen");
+      ).revertedWithCustomError(market, 'ErrAlreadyOpen');
     });
   });
 

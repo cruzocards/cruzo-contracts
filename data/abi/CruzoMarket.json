@@ -6,7 +6,7 @@
   },
   {
     "inputs": [],
-    "name": "ErrAlredyOpen",
+    "name": "ErrAlreadyOpen",
     "type": "error"
   },
   {
