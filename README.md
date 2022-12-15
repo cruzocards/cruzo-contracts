@@ -109,7 +109,7 @@ yarn verify --network ethGoerli --contract contracts/marketplace/CruzoMarket.sol
 #### Verify Factory
 
 ```sh
-yarn verify --network ethGoerli --contract contracts/factory/CruzoFactory.sol:CruzoFactory <address> <beaconAddress> <transferProxyAddress>
+yarn verify --network ethGoerli --contract contracts/factory/Cruzo1155Factory.sol:Cruzo1155Factory <address> <beaconAddress> <transferProxyAddress>
 ```
 
 #### Verify Token
