@@ -85,7 +85,7 @@ describe("CruzoGift", () => {
       const [from, to] = signers;
       await expect(
         gift.connect(from).gift(token.address, 1, to.address, 0)
-      ).revertedWith("Gift: amount must be greater than 0");
+      ).revertedWithCustomError(gift, "ErrInvalidAmount");
     });
 
     it("Should revert if the sender doesn't have enough tokens", async () => {
@@ -181,7 +181,7 @@ describe("CruzoGift", () => {
 
       await expect(
         gift.connect(from).createLink(token.address, tokenId, amount, hash)
-      ).revertedWith("Gift: amount must be greater than 0");
+      ).revertedWithCustomError(gift, "ErrInvalidAmount");
     });
 
     it("Should revert if the sender doesn't have enough tokens", async () => {
@@ -255,18 +255,18 @@ describe("CruzoGift", () => {
       );
     });
 
-    it("Gift: link not found", async () => {
+    it("ErrLinkNotFound", async () => {
       const {
         gift,
         signers: [claimer],
       } = await loadFixture(fixture);
 
-      await expect(gift.connect(claimer).claimLink(123, "")).revertedWith(
-        "Gift: link not found"
-      );
+      await expect(
+        gift.connect(claimer).claimLink(123, "")
+      ).revertedWithCustomError(gift, "ErrLinkNotFound");
     });
 
-    it("Gift: invalid secret key", async () => {
+    it("ErrInvalidSecret", async () => {
       const {
         gift,
         token,
@@ -284,9 +284,9 @@ describe("CruzoGift", () => {
         .create(tokenId, amount, from.address, "", [], from.address, 0);
 
       await gift.connect(from).createLink(token.address, tokenId, amount, hash);
-      await expect(gift.connect(claimer).claimLink(1, "")).revertedWith(
-        "Gift: invalid secret key"
-      );
+      await expect(
+        gift.connect(claimer).claimLink(1, "")
+      ).revertedWithCustomError(gift, "ErrInvalidSecret");
     });
   });
 });

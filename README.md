@@ -6,6 +6,7 @@
 - CruzoMarket
 - Factory
 - CruzoGift
+- CruzoAirdrop
 - CruzoPassSale
 
 ## Networks
@@ -73,6 +74,7 @@ yarn lint
 yarn deployTransferProxy --network <network>
 yarn deployMarket --network <network>
 yarn deployGift --network <network>
+yarn deployAirdrop --network <network>
 yarn setTransferProxyOperators --network <network>
 
 yarn deployBeacon --network <network>
@@ -120,6 +122,12 @@ TBD
 yarn verify --network ethGoerli --contract contracts/gift/CruzoGift.sol:CruzoGift <address>
 ```
 
+#### Verify Airdrop
+
+```sh
+yarn verify --network ethGoerli --contract contracts/airdrop/CruzoAirdrop.sol:CruzoAirdrop <address>
+```
+
 #### Verify Pass Sale
 
 ```sh
@@ -128,7 +136,7 @@ yarn verify --network ethGoerli --contract contracts/pass-sale/CruzoPassSale.sol
 
 ## Upgrades, Proxy approach
 
-We use UUPS proxy pattern for TransferProxy, CruzoMarket, CruzoGift contracts and BeaconProxy for instances of Cruzo1155 contracts.
+We use UUPS proxy pattern for TransferProxy, CruzoMarket, CruzoGift, CruzoAirdrop contracts and BeaconProxy for instances of Cruzo1155 contracts.
 
 **Requires:** openzeppelin/hardhat-upgrades
 
@@ -162,6 +170,7 @@ We use UUPS proxy pattern for TransferProxy, CruzoMarket, CruzoGift contracts an
 yarn upgradeMarket --network <network>
 yarn upgradeBeacon --network <network>
 yarn upgradeGift --network <network>
+yarn upgradeAirdrop --network <network>
 yarn upgradeTransferProxy --network <network>
 ```
 
@@ -184,7 +193,7 @@ $ NFTSTORAGE_TOKEN=<token> yarn run ts-node scripts/pass-sale/generate-uris.ts
 $ SIGNER_KEY=<key> yarn run ts-node scripts/pass-sale/sign.ts
 ```
 
-### Deploy
+### ~~Deploy~~
 
 ```sh
 # make sure you deploy these contracts before

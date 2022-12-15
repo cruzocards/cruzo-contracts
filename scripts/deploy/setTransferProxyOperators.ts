@@ -22,7 +22,12 @@ async function main() {
     throw `Gift address is undefined, terminating`;
   }
 
-  const operators = [marketAddress, giftAddress];
+  let airdropAddress = getAddress(chainId)?.airdrop;
+  if (!airdropAddress) {
+    throw `Airdrop address is undefined, terminating`;
+  }
+
+  const operators = [marketAddress, giftAddress, airdropAddress];
   const TransferProxy = await ethers.getContractFactory("TransferProxy");
   const tx = await TransferProxy.attach(transferProxyAddress).setOperators(
     operators,

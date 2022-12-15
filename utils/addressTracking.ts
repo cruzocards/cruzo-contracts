@@ -8,6 +8,7 @@ export enum ContractType {
   token = "token",
   passSale = "passSale",
   gift = "gift",
+  airdrop = "airdrop",
 }
 
 type AddressTrackingEntry = {

@@ -5,6 +5,41 @@
     "type": "constructor"
   },
   {
+    "inputs": [],
+    "name": "ErrAlreadyOpen",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ErrExecutedBySeller",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ErrIncorrectEtherValue",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ErrInvalidAmount",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ErrInvalidServiceFee",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ErrNotEnoughItems",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ErrNotOpen",
+    "type": "error"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
