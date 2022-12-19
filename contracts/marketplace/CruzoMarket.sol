@@ -65,8 +65,6 @@ contract CruzoMarket is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     mapping(address => mapping(uint256 => mapping(address => Trade)))
         public trades;
 
-    constructor() {}
-
     function _authorizeUpgrade(address) internal override onlyOwner {}
 
     function initialize(ITransferProxy _transferProxy, uint16 _serviceFee)
