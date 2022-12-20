@@ -56,6 +56,7 @@ contract CruzoGift is
 
     mapping(uint256 => Link) public links;
 
+    /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {}
 
     function _authorizeUpgrade(address) internal override onlyOwner {}

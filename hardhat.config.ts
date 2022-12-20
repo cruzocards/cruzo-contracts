@@ -5,7 +5,7 @@ import "@nomiclabs/hardhat-etherscan";
 import "hardhat-abi-exporter";
 import "hardhat-gas-reporter";
 import "@openzeppelin/hardhat-upgrades";
-
+import "solidity-coverage";
 
 import { task, HardhatUserConfig } from "hardhat/config";
 import * as dotenv from "dotenv";
@@ -27,16 +27,21 @@ const {
   MOONBEAM_API_KEY = "",
   EVMOS_API_KEY = "",
   CUBE_API_KEY = "",
+
+  COMPILER_VIA_IR = "true",
 } = process.env;
 
 const config: HardhatUserConfig = {
   solidity: {
     version: "0.8.13",
     settings: {
-      viaIR: true,
+      viaIR: COMPILER_VIA_IR === "true",
       optimizer: {
         enabled: true,
         runs: 200,
+        details: {
+          yul: true,
+        },
       },
     },
   },
@@ -63,12 +68,12 @@ const config: HardhatUserConfig = {
       accounts: PKS,
     },
     polygonMumbai: {
-      url: "https://polygon-mumbai.infura.io/v3/2439f263ff0c4b29bfa0cf70da744d46", // https://rpc-mumbai.maticvigil.com
+      url: "https://rpc-mumbai.maticvigil.com", // https://polygon-mumbai.infura.io/v3/2439f263ff0c4b29bfa0cf70da744d46
       chainId: 80001,
       accounts: PKS,
     },
     polygonMainnet: {
-      url: "https://polygon-mainnet.infura.io/v3/2439f263ff0c4b29bfa0cf70da744d46", // https://rpc-mainnet.matic.network
+      url: "https://rpc-mainnet.matic.network", // https://polygon-mainnet.infura.io/v3/2439f263ff0c4b29bfa0cf70da744d46
       chainId: 137,
       accounts: PKS,
     },
