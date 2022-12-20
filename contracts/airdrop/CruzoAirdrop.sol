@@ -48,6 +48,9 @@ contract CruzoAirdrop is
 
     mapping(uint256 => Drop) public drops;
 
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {}
+
     function _authorizeUpgrade(address) internal override onlyOwner {}
 
     function initialize(ITransferProxy _transferProxy) public initializer {

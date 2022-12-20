@@ -15,6 +15,9 @@ contract TransferProxy is
     OwnableUpgradeable,
     OperatorRole
 {
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() {}
+
     function _authorizeUpgrade(address) internal override onlyOwner {}
 
     function initialize() public initializer {
