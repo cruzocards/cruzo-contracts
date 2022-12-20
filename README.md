@@ -91,25 +91,25 @@ yarn abi
 ### Verify contract
 
 ```sh
-yarn verify --contract <contract source:contract name> --network <netowrk> <contract> [<arg1> <arg2> ...]
+yarn verify --contract <contract source:contract name> --network <network> <contract> [<arg1> <arg2> ...]
 ```
 
 ### Verify TransferProxy
 
 ```sh
-yarn verify --network ethGoerli --contract contracts/transfer-proxy/TransferProxy.sol:TransferProxy <address>
+yarn verify --network <network> --contract contracts/transfer-proxy/TransferProxy.sol:TransferProxy <address>
 ```
 
 #### Verify Market
 
 ```sh
-yarn verify --network ethGoerli --contract contracts/marketplace/CruzoMarket.sol:CruzoMarket <address>
+yarn verify --network <network> --contract contracts/marketplace/CruzoMarket.sol:CruzoMarket <address>
 ```
 
 #### Verify Factory
 
 ```sh
-yarn verify --network ethGoerli --contract contracts/factory/Cruzo1155Factory.sol:Cruzo1155Factory <address> <beaconAddress> <transferProxyAddress>
+yarn verify --network <network> --contract contracts/factory/Cruzo1155Factory.sol:Cruzo1155Factory <address> <beaconAddress> <transferProxyAddress>
 ```
 
 #### Verify Token
@@ -119,19 +119,19 @@ TBD
 #### Verify Gift
 
 ```sh
-yarn verify --network ethGoerli --contract contracts/gift/CruzoGift.sol:CruzoGift <address>
+yarn verify --network <network> --contract contracts/gift/CruzoGift.sol:CruzoGift <address>
 ```
 
 #### Verify Airdrop
 
 ```sh
-yarn verify --network ethGoerli --contract contracts/airdrop/CruzoAirdrop.sol:CruzoAirdrop <address>
+yarn verify --network <network> --contract contracts/airdrop/CruzoAirdrop.sol:CruzoAirdrop <address>
 ```
 
 #### Verify Pass Sale
 
 ```sh
-yarn verify --network ethGoerli --contract contracts/pass-sale/CruzoPassSale.sol:CruzoPassSale --constructor-args data/pass-sale/verify-args.js <address>
+yarn verify --network <network> --contract contracts/pass-sale/CruzoPassSale.sol:CruzoPassSale --constructor-args data/pass-sale/verify-args.js <address>
 ```
 
 ## Upgrades, Proxy approach

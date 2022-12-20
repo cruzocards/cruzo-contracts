@@ -2,541 +2,30 @@
   "manifestVersion": "3.2",
   "proxies": [
     {
+      "address": "0x340FC720E9abc2dc46F48F277eBa9AFFf746a01c",
+      "txHash": "0xbc2069caba87a608eea6d28a9388a1bedb83d56af840945159b9c3627ee8df3b",
+      "kind": "uups"
+    },
+    {
       "address": "0xbdfE5Cb87D9F619c18FAF5b29BaE18998c0593F9",
-      "txHash": "0x69dbdf2882e51b05f3273e82507c073268c9b203a0a5a93bdf47363839cdba03",
+      "txHash": "0xf08e7bd8bfcb0ada83a615fda0eae2b7b95127c0cb6cf3e447c0b707a2f15eaf",
       "kind": "uups"
     },
     {
-      "address": "0xA090E0f3883deeb4f2834C9cc9D6F146F2ba311D",
-      "txHash": "0xbfc3b093d84fe71b2e33d85691fa4b3e77b9d537b68cb370893894ab501994b5",
+      "address": "0x2BF3AaF733d7Ee227852B72A4c422bb6183a2697",
+      "txHash": "0xe35a593b00fe43693c408356135cd07c905a97e8825d7bb2950a27ac69e1c399",
       "kind": "uups"
     },
     {
-      "address": "0xB24d3FE6B02f661a142130eFb7b97A1E36875CA5",
-      "txHash": "0xb49ee4e861aaf1b537becdf631bb2be4b0f6c2d583e0436b2e286d962a621255",
-      "kind": "uups"
-    },
-    {
-      "address": "0x2B729961504fADdc6bA8f14F4Fdb45862aAe76e7",
-      "txHash": "0x286bc485847dc22ca7f6ed2d47836436447ff755b9da48f44f8152babfa74594",
-      "kind": "uups"
-    },
-    {
-      "address": "0x60eFBa0C45F503573566625579EDFB7a0beb0686",
-      "txHash": "0xda635226de9bd50701dcb4712d44e279cd743d5cab9397373a9e11a73c1fc949",
+      "address": "0x05C649fc12eeC067246874F956c8d1C4E330F2B5",
+      "txHash": "0x97660f4b989ef0677e13f4be31d43e92d9c8f699838ded4947f06b8579525626",
       "kind": "uups"
     }
   ],
   "impls": {
-    "e4469bf81399949c709c3f0da95d45376083a58a8d2eb72a02705f67bd52bc69": {
-      "address": "0x1b5075FD5BE46eb423b9580530f9bDeA0654C487",
-      "txHash": "0x7741ce1a229754eee2f8c0f1f72d498399d38b58537cc87419af32c9051209a0",
-      "layout": {
-        "storage": [
-          {
-            "label": "_initialized",
-            "offset": 0,
-            "slot": "0",
-            "type": "t_bool",
-            "contract": "Initializable",
-            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:39"
-          },
-          {
-            "label": "_initializing",
-            "offset": 1,
-            "slot": "0",
-            "type": "t_bool",
-            "contract": "Initializable",
-            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:44"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "1",
-            "type": "t_array(t_uint256)50_storage",
-            "contract": "ContextUpgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "51",
-            "type": "t_array(t_uint256)50_storage",
-            "contract": "ERC165Upgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol:41"
-          },
-          {
-            "label": "_balances",
-            "offset": 0,
-            "slot": "101",
-            "type": "t_mapping(t_uint256,t_mapping(t_address,t_uint256))",
-            "contract": "ERC1155Upgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol:25"
-          },
-          {
-            "label": "_operatorApprovals",
-            "offset": 0,
-            "slot": "102",
-            "type": "t_mapping(t_address,t_mapping(t_address,t_bool))",
-            "contract": "ERC1155Upgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol:28"
-          },
-          {
-            "label": "_uri",
-            "offset": 0,
-            "slot": "103",
-            "type": "t_string_storage",
-            "contract": "ERC1155Upgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol:31"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "104",
-            "type": "t_array(t_uint256)47_storage",
-            "contract": "ERC1155Upgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol:475"
-          },
-          {
-            "label": "_totalSupply",
-            "offset": 0,
-            "slot": "151",
-            "type": "t_mapping(t_uint256,t_uint256)",
-            "contract": "ERC1155SupplyUpgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155SupplyUpgradeable.sol:23"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "152",
-            "type": "t_array(t_uint256)49_storage",
-            "contract": "ERC1155SupplyUpgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/ERC1155SupplyUpgradeable.sol:70"
-          },
-          {
-            "label": "_owner",
-            "offset": 0,
-            "slot": "201",
-            "type": "t_address",
-            "contract": "OwnableUpgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "202",
-            "type": "t_array(t_uint256)49_storage",
-            "contract": "OwnableUpgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:87"
-          },
-          {
-            "label": "_paused",
-            "offset": 0,
-            "slot": "251",
-            "type": "t_bool",
-            "contract": "PausableUpgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:29"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "252",
-            "type": "t_array(t_uint256)49_storage",
-            "contract": "PausableUpgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol:102"
-          },
-          {
-            "label": "creators",
-            "offset": 0,
-            "slot": "301",
-            "type": "t_mapping(t_uint256,t_address)",
-            "contract": "ERC1155CruzoBase",
-            "src": "contracts/tokens/ERC1155CruzoBase.sol:17"
-          },
-          {
-            "label": "_uriType",
-            "offset": 0,
-            "slot": "302",
-            "type": "t_enum(URIType)6688",
-            "contract": "ERC1155URI",
-            "src": "contracts/tokens/ERC1155URI.sol:18"
-          },
-          {
-            "label": "_tokenURIs",
-            "offset": 0,
-            "slot": "303",
-            "type": "t_mapping(t_uint256,t_string_storage)",
-            "contract": "ERC1155URI",
-            "src": "contracts/tokens/ERC1155URI.sol:25"
-          },
-          {
-            "label": "_baseURI",
-            "offset": 0,
-            "slot": "304",
-            "type": "t_string_storage",
-            "contract": "ERC1155URI",
-            "src": "contracts/tokens/ERC1155URI.sol:28"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "305",
-            "type": "t_array(t_uint256)50_storage",
-            "contract": "ERC1155URI",
-            "src": "contracts/tokens/ERC1155URI.sol:131"
-          },
-          {
-            "label": "marketAddress",
-            "offset": 0,
-            "slot": "355",
-            "type": "t_address",
-            "contract": "Cruzo1155",
-            "src": "contracts/tokens/Cruzo1155.sol:9"
-          },
-          {
-            "label": "name",
-            "offset": 0,
-            "slot": "356",
-            "type": "t_string_storage",
-            "contract": "Cruzo1155",
-            "src": "contracts/tokens/Cruzo1155.sol:11"
-          },
-          {
-            "label": "symbol",
-            "offset": 0,
-            "slot": "357",
-            "type": "t_string_storage",
-            "contract": "Cruzo1155",
-            "src": "contracts/tokens/Cruzo1155.sol:12"
-          },
-          {
-            "label": "contractURI",
-            "offset": 0,
-            "slot": "358",
-            "type": "t_string_storage",
-            "contract": "Cruzo1155",
-            "src": "contracts/tokens/Cruzo1155.sol:13"
-          },
-          {
-            "label": "_defaultRoyaltyInfo",
-            "offset": 0,
-            "slot": "359",
-            "type": "t_struct(RoyaltyInfo)6087_storage",
-            "contract": "Cruzo1155",
-            "src": "contracts/tokens/Cruzo1155.sol:20"
-          },
-          {
-            "label": "_tokenRoyaltyInfo",
-            "offset": 0,
-            "slot": "360",
-            "type": "t_mapping(t_uint256,t_struct(RoyaltyInfo)6087_storage)",
-            "contract": "Cruzo1155",
-            "src": "contracts/tokens/Cruzo1155.sol:21"
-          },
-          {
-            "label": "publiclyMintable",
-            "offset": 0,
-            "slot": "361",
-            "type": "t_bool",
-            "contract": "Cruzo1155",
-            "src": "contracts/tokens/Cruzo1155.sol:23"
-          }
-        ],
-        "types": {
-          "t_address": {
-            "label": "address",
-            "numberOfBytes": "20"
-          },
-          "t_array(t_uint256)47_storage": {
-            "label": "uint256[47]",
-            "numberOfBytes": "1504"
-          },
-          "t_array(t_uint256)49_storage": {
-            "label": "uint256[49]",
-            "numberOfBytes": "1568"
-          },
-          "t_array(t_uint256)50_storage": {
-            "label": "uint256[50]",
-            "numberOfBytes": "1600"
-          },
-          "t_bool": {
-            "label": "bool",
-            "numberOfBytes": "1"
-          },
-          "t_enum(URIType)6688": {
-            "label": "enum ERC1155URI.URIType",
-            "members": [
-              "DEFAULT",
-              "IPFS",
-              "ID",
-              "URI"
-            ],
-            "numberOfBytes": "1"
-          },
-          "t_mapping(t_address,t_bool)": {
-            "label": "mapping(address => bool)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_address,t_mapping(t_address,t_bool))": {
-            "label": "mapping(address => mapping(address => bool))",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_address,t_uint256)": {
-            "label": "mapping(address => uint256)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_address)": {
-            "label": "mapping(uint256 => address)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_mapping(t_address,t_uint256))": {
-            "label": "mapping(uint256 => mapping(address => uint256))",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_string_storage)": {
-            "label": "mapping(uint256 => string)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_struct(RoyaltyInfo)6087_storage)": {
-            "label": "mapping(uint256 => struct Cruzo1155.RoyaltyInfo)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_uint256)": {
-            "label": "mapping(uint256 => uint256)",
-            "numberOfBytes": "32"
-          },
-          "t_string_storage": {
-            "label": "string",
-            "numberOfBytes": "32"
-          },
-          "t_struct(RoyaltyInfo)6087_storage": {
-            "label": "struct Cruzo1155.RoyaltyInfo",
-            "members": [
-              {
-                "label": "receiver",
-                "type": "t_address",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "royaltyFraction",
-                "type": "t_uint96",
-                "offset": 20,
-                "slot": "0"
-              }
-            ],
-            "numberOfBytes": "32"
-          },
-          "t_uint256": {
-            "label": "uint256",
-            "numberOfBytes": "32"
-          },
-          "t_uint96": {
-            "label": "uint96",
-            "numberOfBytes": "12"
-          }
-        }
-      }
-    },
-    "a86a38345cfd8d41abe06421428d9e64889d84fefd4a23fb7fdafb7fed7f89eb": {
-      "address": "0x39925D216bB294369b0Dec7b3e0Bc5d387b02f37",
-      "txHash": "0x930a69c25db54c85c2b67237b8cc7a218bd54077273714f797de929a66d65774",
-      "layout": {
-        "storage": [
-          {
-            "label": "_initialized",
-            "offset": 0,
-            "slot": "0",
-            "type": "t_bool",
-            "contract": "Initializable",
-            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:39"
-          },
-          {
-            "label": "_initializing",
-            "offset": 1,
-            "slot": "0",
-            "type": "t_bool",
-            "contract": "Initializable",
-            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol:44"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "1",
-            "type": "t_array(t_uint256)50_storage",
-            "contract": "ERC1967UpgradeUpgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/proxy/ERC1967/ERC1967UpgradeUpgradeable.sol:211"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "51",
-            "type": "t_array(t_uint256)50_storage",
-            "contract": "ContextUpgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol:36"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "101",
-            "type": "t_array(t_uint256)50_storage",
-            "contract": "UUPSUpgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol:107"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "151",
-            "type": "t_array(t_uint256)50_storage",
-            "contract": "ERC165Upgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol:41"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "201",
-            "type": "t_array(t_uint256)50_storage",
-            "contract": "ERC1155ReceiverUpgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155ReceiverUpgradeable.sol:31"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "251",
-            "type": "t_array(t_uint256)50_storage",
-            "contract": "ERC1155HolderUpgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/token/ERC1155/utils/ERC1155HolderUpgradeable.sol:48"
-          },
-          {
-            "label": "_owner",
-            "offset": 0,
-            "slot": "301",
-            "type": "t_address",
-            "contract": "OwnableUpgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:22"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "302",
-            "type": "t_array(t_uint256)49_storage",
-            "contract": "OwnableUpgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol:87"
-          },
-          {
-            "label": "_status",
-            "offset": 0,
-            "slot": "351",
-            "type": "t_uint256",
-            "contract": "ReentrancyGuardUpgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:38"
-          },
-          {
-            "label": "__gap",
-            "offset": 0,
-            "slot": "352",
-            "type": "t_array(t_uint256)49_storage",
-            "contract": "ReentrancyGuardUpgradeable",
-            "src": "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol:74"
-          },
-          {
-            "label": "trades",
-            "offset": 0,
-            "slot": "401",
-            "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_struct(Trade)5142_storage)))",
-            "contract": "CruzoMarket",
-            "src": "contracts/marketplace/CruzoMarket.sol:158"
-          },
-          {
-            "label": "serviceFee",
-            "offset": 0,
-            "slot": "402",
-            "type": "t_uint16",
-            "contract": "CruzoMarket",
-            "src": "contracts/marketplace/CruzoMarket.sol:162"
-          },
-          {
-            "label": "rawVaultFuncSignature",
-            "offset": 0,
-            "slot": "403",
-            "type": "t_string_storage",
-            "contract": "CruzoMarket",
-            "src": "contracts/marketplace/CruzoMarket.sol:164"
-          },
-          {
-            "label": "vaultAddress",
-            "offset": 0,
-            "slot": "404",
-            "type": "t_address",
-            "contract": "CruzoMarket",
-            "src": "contracts/marketplace/CruzoMarket.sol:166"
-          }
-        ],
-        "types": {
-          "t_address": {
-            "label": "address",
-            "numberOfBytes": "20"
-          },
-          "t_array(t_uint256)49_storage": {
-            "label": "uint256[49]",
-            "numberOfBytes": "1568"
-          },
-          "t_array(t_uint256)50_storage": {
-            "label": "uint256[50]",
-            "numberOfBytes": "1600"
-          },
-          "t_bool": {
-            "label": "bool",
-            "numberOfBytes": "1"
-          },
-          "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_struct(Trade)5142_storage)))": {
-            "label": "mapping(address => mapping(uint256 => mapping(address => struct CruzoMarket.Trade)))",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_address,t_struct(Trade)5142_storage)": {
-            "label": "mapping(address => struct CruzoMarket.Trade)",
-            "numberOfBytes": "32"
-          },
-          "t_mapping(t_uint256,t_mapping(t_address,t_struct(Trade)5142_storage))": {
-            "label": "mapping(uint256 => mapping(address => struct CruzoMarket.Trade))",
-            "numberOfBytes": "32"
-          },
-          "t_string_storage": {
-            "label": "string",
-            "numberOfBytes": "32"
-          },
-          "t_struct(Trade)5142_storage": {
-            "label": "struct CruzoMarket.Trade",
-            "members": [
-              {
-                "label": "amount",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "0"
-              },
-              {
-                "label": "price",
-                "type": "t_uint256",
-                "offset": 0,
-                "slot": "1"
-              }
-            ],
-            "numberOfBytes": "64"
-          },
-          "t_uint16": {
-            "label": "uint16",
-            "numberOfBytes": "2"
-          },
-          "t_uint256": {
-            "label": "uint256",
-            "numberOfBytes": "32"
-          }
-        }
-      }
-    },
     "03d4a1affbd4ec177c0e812cb8d56a2d682f2f1b6df3df0ce0a5b9c84b75f8ee": {
-      "address": "0xebcdf62D03b90CAfdDbe0555aa03363d0f6b6d41",
-      "txHash": "0xa1e62effd1505e8adee08dd7f470436180b5a0f218deeb1556773318d0316467",
+      "address": "0x1b5075FD5BE46eb423b9580530f9bDeA0654C487",
+      "txHash": "0xfda1342ba593594d03ec81f26b8c23718c9da85ec831c0faa2cd498adec12c7c",
       "layout": {
         "storage": [
           {
@@ -641,8 +130,8 @@
       }
     },
     "55ce9605823db525710039b4ecc74edecf79e76301323341fa99b06ebb7b4554": {
-      "address": "0x5C6A6fb4869B94C8f6Caa5c49634DD2378906010",
-      "txHash": "0x9151e229802c3a8fdab5c96edfd080e9c59ba2fb0c3a1dc1bca55edb8a6d90b6",
+      "address": "0x39925D216bB294369b0Dec7b3e0Bc5d387b02f37",
+      "txHash": "0x219cba2bd62e6a018023f902696ecb6d1b2335a7af6c71cd67c183a3d7e87ba0",
       "layout": {
         "storage": [
           {
@@ -705,7 +194,7 @@
             "label": "transferProxy",
             "offset": 0,
             "slot": "201",
-            "type": "t_contract(ITransferProxy)6960",
+            "type": "t_contract(ITransferProxy)1745",
             "contract": "CruzoMarket",
             "src": "contracts/marketplace/CruzoMarket.sol:59"
           },
@@ -721,7 +210,7 @@
             "label": "trades",
             "offset": 0,
             "slot": "202",
-            "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_struct(Trade)5245_storage)))",
+            "type": "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_struct(Trade)1257_storage)))",
             "contract": "CruzoMarket",
             "src": "contracts/marketplace/CruzoMarket.sol:65"
           }
@@ -743,23 +232,23 @@
             "label": "bool",
             "numberOfBytes": "1"
           },
-          "t_contract(ITransferProxy)6960": {
+          "t_contract(ITransferProxy)1745": {
             "label": "contract ITransferProxy",
             "numberOfBytes": "20"
           },
-          "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_struct(Trade)5245_storage)))": {
+          "t_mapping(t_address,t_mapping(t_uint256,t_mapping(t_address,t_struct(Trade)1257_storage)))": {
             "label": "mapping(address => mapping(uint256 => mapping(address => struct CruzoMarket.Trade)))",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_address,t_struct(Trade)5245_storage)": {
+          "t_mapping(t_address,t_struct(Trade)1257_storage)": {
             "label": "mapping(address => struct CruzoMarket.Trade)",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_uint256,t_mapping(t_address,t_struct(Trade)5245_storage))": {
+          "t_mapping(t_uint256,t_mapping(t_address,t_struct(Trade)1257_storage))": {
             "label": "mapping(uint256 => mapping(address => struct CruzoMarket.Trade))",
             "numberOfBytes": "32"
           },
-          "t_struct(Trade)5245_storage": {
+          "t_struct(Trade)1257_storage": {
             "label": "struct CruzoMarket.Trade",
             "members": [
               {
@@ -789,8 +278,8 @@
       }
     },
     "b7119804ed13f0a7e749d9940cd3751e5ee0dc8526dbf6100f8abbb1ac381106": {
-      "address": "0x56FcACc9C9354325C140Bc28B3ab361891ca423D",
-      "txHash": "0x4a12a8a7692bab7a81049ff57c8de1b84aa27b60f4ee4045cd80e04daa955bec",
+      "address": "0x97C1b4F0E5E16bD1E6B4A3661A141C29bB177D66",
+      "txHash": "0x03357ae87d52ffebd5a204cdf71b44165ad03abb3b26bf9093083c35f7205926",
       "layout": {
         "storage": [
           {
@@ -877,7 +366,7 @@
             "label": "giftIds",
             "offset": 0,
             "slot": "351",
-            "type": "t_struct(Counter)2720_storage",
+            "type": "t_struct(Counter)1304_storage",
             "contract": "CruzoGift",
             "src": "contracts/gift/CruzoGift.sol:53"
           },
@@ -885,7 +374,7 @@
             "label": "transferProxy",
             "offset": 0,
             "slot": "352",
-            "type": "t_contract(ITransferProxy)6960",
+            "type": "t_contract(ITransferProxy)1806",
             "contract": "CruzoGift",
             "src": "contracts/gift/CruzoGift.sol:55"
           },
@@ -893,7 +382,7 @@
             "label": "links",
             "offset": 0,
             "slot": "353",
-            "type": "t_mapping(t_uint256,t_struct(Link)4949_storage)",
+            "type": "t_mapping(t_uint256,t_struct(Link)1524_storage)",
             "contract": "CruzoGift",
             "src": "contracts/gift/CruzoGift.sol:57"
           }
@@ -919,15 +408,15 @@
             "label": "bytes32",
             "numberOfBytes": "32"
           },
-          "t_contract(ITransferProxy)6960": {
+          "t_contract(ITransferProxy)1806": {
             "label": "contract ITransferProxy",
             "numberOfBytes": "20"
           },
-          "t_mapping(t_uint256,t_struct(Link)4949_storage)": {
+          "t_mapping(t_uint256,t_struct(Link)1524_storage)": {
             "label": "mapping(uint256 => struct CruzoGift.Link)",
             "numberOfBytes": "32"
           },
-          "t_struct(Counter)2720_storage": {
+          "t_struct(Counter)1304_storage": {
             "label": "struct CountersUpgradeable.Counter",
             "members": [
               {
@@ -939,7 +428,7 @@
             ],
             "numberOfBytes": "32"
           },
-          "t_struct(Link)4949_storage": {
+          "t_struct(Link)1524_storage": {
             "label": "struct CruzoGift.Link",
             "members": [
               {
@@ -977,8 +466,8 @@
       }
     },
     "8f8a77b4cd55ccc50ddcf0060ce65277db22a684cedcf984c89e3af3caf9f922": {
-      "address": "0xBb41Ba1C8191a5228F12bb2BE5c961e23667F708",
-      "txHash": "0x2ef9cd86a8b0fcc4cf2723831f3f60db56c4c5c50396b589ecb13c554122365c",
+      "address": "0x1749F632ADc405C0c6312b2b6bBB147B1f8792dA",
+      "txHash": "0xa27d9551afc0eb812e069500b13f616699dc8d14abe267994f129347727b5051",
       "layout": {
         "storage": [
           {
@@ -1065,7 +554,7 @@
             "label": "ids",
             "offset": 0,
             "slot": "351",
-            "type": "t_struct(Counter)2720_storage",
+            "type": "t_struct(Counter)1304_storage",
             "contract": "CruzoAirdrop",
             "src": "contracts/airdrop/CruzoAirdrop.sol:45"
           },
@@ -1073,7 +562,7 @@
             "label": "transferProxy",
             "offset": 0,
             "slot": "352",
-            "type": "t_contract(ITransferProxy)6960",
+            "type": "t_contract(ITransferProxy)1774",
             "contract": "CruzoAirdrop",
             "src": "contracts/airdrop/CruzoAirdrop.sol:47"
           },
@@ -1081,7 +570,7 @@
             "label": "drops",
             "offset": 0,
             "slot": "353",
-            "type": "t_mapping(t_uint256,t_struct(Drop)4584_storage)",
+            "type": "t_mapping(t_uint256,t_struct(Drop)1530_storage)",
             "contract": "CruzoAirdrop",
             "src": "contracts/airdrop/CruzoAirdrop.sol:49"
           }
@@ -1103,7 +592,7 @@
             "label": "bool",
             "numberOfBytes": "1"
           },
-          "t_contract(ITransferProxy)6960": {
+          "t_contract(ITransferProxy)1774": {
             "label": "contract ITransferProxy",
             "numberOfBytes": "20"
           },
@@ -1111,11 +600,11 @@
             "label": "mapping(address => bool)",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_uint256,t_struct(Drop)4584_storage)": {
+          "t_mapping(t_uint256,t_struct(Drop)1530_storage)": {
             "label": "mapping(uint256 => struct CruzoAirdrop.Drop)",
             "numberOfBytes": "32"
           },
-          "t_struct(Counter)2720_storage": {
+          "t_struct(Counter)1304_storage": {
             "label": "struct CountersUpgradeable.Counter",
             "members": [
               {
@@ -1127,7 +616,7 @@
             ],
             "numberOfBytes": "32"
           },
-          "t_struct(Drop)4584_storage": {
+          "t_struct(Drop)1530_storage": {
             "label": "struct CruzoAirdrop.Drop",
             "members": [
               {
@@ -1171,8 +660,8 @@
       }
     },
     "811d74c075c3b56f1bf8fecf0412329d872648501bc3f4c78b8f650f8fcdb0d4": {
-      "address": "0x8f942Ae6385C58BCc66AE44F6311E5834775e645",
-      "txHash": "0x5dcdc448c1fda6c2f7c380a27a2637bf0d8f06a4447fa9b1a912bae3c6d47498",
+      "address": "0x102E04C740E1e8F422fD042370560EB7dBc5E985",
+      "txHash": "0x3cd7ea6377dd898a4290f8e65c8bd4444442253cdc60e0efdb3ece6f9c95fcb8",
       "layout": {
         "storage": [
           {
@@ -1315,7 +804,7 @@
             "label": "_uriType",
             "offset": 0,
             "slot": "353",
-            "type": "t_enum(URIType)6705",
+            "type": "t_enum(URIType)4133",
             "contract": "ERC1155URI",
             "src": "contracts/tokens/ERC1155URI.sol:18"
           },
@@ -1371,7 +860,7 @@
             "label": "_defaultRoyaltyInfo",
             "offset": 0,
             "slot": "409",
-            "type": "t_struct(RoyaltyInfo)6047_storage",
+            "type": "t_struct(RoyaltyInfo)3475_storage",
             "contract": "Cruzo1155",
             "src": "contracts/tokens/Cruzo1155.sol:18"
           },
@@ -1379,7 +868,7 @@
             "label": "_tokenRoyaltyInfo",
             "offset": 0,
             "slot": "410",
-            "type": "t_mapping(t_uint256,t_struct(RoyaltyInfo)6047_storage)",
+            "type": "t_mapping(t_uint256,t_struct(RoyaltyInfo)3475_storage)",
             "contract": "Cruzo1155",
             "src": "contracts/tokens/Cruzo1155.sol:19"
           },
@@ -1413,7 +902,7 @@
             "label": "bool",
             "numberOfBytes": "1"
           },
-          "t_enum(URIType)6705": {
+          "t_enum(URIType)4133": {
             "label": "enum ERC1155URI.URIType",
             "members": [
               "DEFAULT",
@@ -1447,7 +936,7 @@
             "label": "mapping(uint256 => string)",
             "numberOfBytes": "32"
           },
-          "t_mapping(t_uint256,t_struct(RoyaltyInfo)6047_storage)": {
+          "t_mapping(t_uint256,t_struct(RoyaltyInfo)3475_storage)": {
             "label": "mapping(uint256 => struct Cruzo1155.RoyaltyInfo)",
             "numberOfBytes": "32"
           },
@@ -1459,7 +948,7 @@
             "label": "string",
             "numberOfBytes": "32"
           },
-          "t_struct(RoyaltyInfo)6047_storage": {
+          "t_struct(RoyaltyInfo)3475_storage": {
             "label": "struct Cruzo1155.RoyaltyInfo",
             "members": [
               {
