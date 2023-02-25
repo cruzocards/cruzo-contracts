@@ -6,7 +6,6 @@ import "hardhat-abi-exporter";
 import "hardhat-gas-reporter";
 import "@openzeppelin/hardhat-upgrades";
 
-
 import { task, HardhatUserConfig } from "hardhat/config";
 import * as dotenv from "dotenv";
 
@@ -165,6 +164,12 @@ const config: HardhatUserConfig = {
       url: "https://public-node-api.klaytnapi.com/v1/baobab",
       chainId: 1001,
       accounts: PKS,
+    },
+    filHyperspace: {
+      url: "https://api.hyperspace.node.glif.io/rpc/v1",
+      chainId: 3141,
+      accounts: PKS,
+      timeout: 1000 * 60 * 10,
     },
     localhost: {
       url: "http://127.0.0.1:8545/",

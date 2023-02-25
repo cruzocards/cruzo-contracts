@@ -37,6 +37,7 @@
 | Cube       | testnet | cubeTestnet       |
 | Klaytn     | mainnet | klaytnMainnet     |
 | Klaytn     | testnet | klaytnTestnet     |
+| Filecoin   | testnet | filHyperspace     |
 
 ## Configuration
 
