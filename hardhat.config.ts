@@ -171,6 +171,11 @@ const config: HardhatUserConfig = {
       accounts: PKS,
       timeout: 1000 * 60 * 10,
     },
+    optimismGoerli: {
+      url: "https://goerli.optimism.io",
+      chainId: 420,
+      accounts: PKS,
+    },
     localhost: {
       url: "http://127.0.0.1:8545/",
       chainId: 31337,
