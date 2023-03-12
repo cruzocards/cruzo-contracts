@@ -11,34 +11,35 @@
 
 ## Networks
 
-| Blockchain     | Network | Name              |
-| -------------- | ------- | ----------------- |
-| Ethereum       | mainnet | ethMainnet        |
-| Ethereum       | testnet | ethGoerli         |
-| Binance        | mainnet | bscMainnet        |
-| Binance        | testnet | bscTestnet        |
-| Polygon        | mainnet | polygonMainnet    |
-| Polygon        | testnet | polygonMumbai     |
-| Cronos         | mainnet | cronosMainnetBeta |
-| Cronos         | testnet | cronosTestnet     |
-| Avalanche      | mainnet | avaxMainnet       |
-| Avalanche      | testnet | avaxFuji          |
-| Moonbeam       | mainnet | moonbeam          |
-| Moonbeam       | testnet | moonbaseAlpha     |
-| Boba           | mainnet | bobaMainnet       |
-| Boba           | testnet | bobaRinkeby       |
-| BitTorrent     | mainnet | bitTorrentMainnet |
-| BitTorrent     | testnet | bitTorrentDonau   |
-| XDC            | mainnet | xdcMainnet        |
-| XDC            | testnet | xdcApothem        |
-| Lukso          | testnet | l16Testnet        |
-| Evmos          | testnet | evmosTestnet      |
-| Cube           | mainnet | cubeMainnet       |
-| Cube           | testnet | cubeTestnet       |
-| Klaytn         | mainnet | klaytnMainnet     |
-| Klaytn         | testnet | klaytnTestnet     |
-| Filecoin       | testnet | filHyperspace     |
-| OptimismGoerli | testnet | optimismGoerli    |
+| Blockchain         | Network | Name               |
+| ------------------ | ------- | ------------------ |
+| Ethereum           | mainnet | ethMainnet         |
+| Ethereum           | testnet | ethGoerli          |
+| Binance            | mainnet | bscMainnet         |
+| Binance            | testnet | bscTestnet         |
+| Polygon            | mainnet | polygonMainnet     |
+| Polygon            | testnet | polygonMumbai      |
+| Cronos             | mainnet | cronosMainnetBeta  |
+| Cronos             | testnet | cronosTestnet      |
+| Avalanche          | mainnet | avaxMainnet        |
+| Avalanche          | testnet | avaxFuji           |
+| Moonbeam           | mainnet | moonbeam           |
+| Moonbeam           | testnet | moonbaseAlpha      |
+| Boba               | mainnet | bobaMainnet        |
+| Boba               | testnet | bobaRinkeby        |
+| BitTorrent         | mainnet | bitTorrentMainnet  |
+| BitTorrent         | testnet | bitTorrentDonau    |
+| XDC                | mainnet | xdcMainnet         |
+| XDC                | testnet | xdcApothem         |
+| Lukso              | testnet | l16Testnet         |
+| Evmos              | testnet | evmosTestnet       |
+| Cube               | mainnet | cubeMainnet        |
+| Cube               | testnet | cubeTestnet        |
+| Klaytn             | mainnet | klaytnMainnet      |
+| Klaytn             | testnet | klaytnTestnet      |
+| Filecoin           | testnet | filHyperspace      |
+| OptimismGoerli     | testnet | optimismGoerli     |
+| ScrollAlphaTestnet | testnet | scrollAlphaTestnet |
 
 ## Configuration
 

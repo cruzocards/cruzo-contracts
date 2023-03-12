@@ -176,6 +176,16 @@ const config: HardhatUserConfig = {
       chainId: 420,
       accounts: PKS,
     },
+    gnosisChiadoTestnet: {
+      url: "https://rpc.chiadochain.net",
+      chainId: 10200,
+      accounts: PKS,
+    },
+    scrollAlphaTestnet: {
+      url: "https://alpha-rpc.scroll.io/l2",
+      chainId: 534353,
+      accounts: PKS,
+    },
     localhost: {
       url: "http://127.0.0.1:8545/",
       chainId: 31337,
