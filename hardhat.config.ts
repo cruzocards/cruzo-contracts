@@ -186,6 +186,16 @@ const config: HardhatUserConfig = {
       chainId: 534353,
       accounts: PKS,
     },
+    iceArctic: {
+      url: 'https://arctic-rpc.icenetwork.io:9933',
+      chainId: 553,
+      accounts: PKS
+    },
+    polygonZkEvmTestnet: {
+      url: 'https://rpc.public.zkevm-test.net',
+      chainId: 1442,
+      accounts: PKS
+    },
     localhost: {
       url: "http://127.0.0.1:8545/",
       chainId: 31337,
