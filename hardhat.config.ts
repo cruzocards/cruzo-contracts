@@ -206,6 +206,11 @@ const config: HardhatUserConfig = {
       chainId: 31337,
       accounts: PKS,
     },
+    artheraTestnet: {
+      url: 'https://rpc-test.arthera.net',
+      chainId: 10243,
+      accounts: PKS,
+    }
   },
   etherscan: {
     apiKey: {
